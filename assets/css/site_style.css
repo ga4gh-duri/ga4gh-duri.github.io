@@ -1,0 +1,62 @@
+body { padding: 15px; }
+
+section { width: 570px; }
+footer { bottom: 20px; }
+
+h1,h2,h3 {
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+h4,h5,h6 {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+
+div {
+  display: block;
+  clear: both;
+}
+
+div.navboxleft {
+  padding-right: 30px;
+  padding-top: 20px;
+  padding-bottom: 0px;
+}
+
+h4.navleft {
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+div.header_sublink {
+  padding-left: 8px;
+  font-size: 0.9em;
+  margin-bottom: 2px;
+}
+
+li {
+  margin-top: 0px;
+  margin-bottom: 2px;
+}
+
+section p {
+  margin-top: 0px;
+  margin-bottom: 4px;
+}
+
+section div.excerpt {
+  display: block;
+  padding: 3px 3px 3px 10px;
+  margin-bottom: 5px;
+  background-color: #fcfcfc;
+  font-size: 0.8em;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+}
+
+.tiny { font-size: 9px; color: #ccc; }
+
+.tiny a  { color: #cde;  }
+.tiny a:hover { color: #cdf; }
