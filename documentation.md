@@ -1,5 +1,5 @@
 ---
-title:  "GA4GH::Metadata Examples & Guides"
+title:  "GA4GH::DUO Documentation"
 layout: default
 permalink: /documentation.html
 category:
