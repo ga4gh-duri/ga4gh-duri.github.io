@@ -9,7 +9,7 @@ The DUO ([GA4GH::DUO](http://ga4gh-duo.github.io)) Work Stream is one of the ele
 
 ### Leads:
 - [Melanie Courtot](http://purl.org/net/mcourtot)
-- [Moran Cabili]
+- [Moran Cabili](https://www.linkedin.com/in/moran-cabili-kalmar-4727303/)
 
 #### Technical Programme Manager
 
