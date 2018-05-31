@@ -13,4 +13,4 @@ The DUO ([GA4GH::DUO](http://ga4gh-duo.github.io)) Work Stream is one of the ele
 
 #### Technical Programme Manager
 
-- [Melissa Konopko]
+- [Melissa Konopko](https://www.linkedin.com/in/melissakonopko)
