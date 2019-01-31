@@ -1,37 +1,93 @@
-title: GA4GH - DUO
-label: GA4GH::DUO
+title: 'GA4GH - DUO'
+label: 'GA4GH::DURI'
+tagline: 'A Workstream of the Global Alliance for Genomics and Health'
+description: |
+  DURI represents the data use requirements & conditions workstream of the Global Alliance for Genomics and Health
+keywords:
+  - genomics
+  - Beacon
+  - DNA
+  - GA4GH
+  - DUO
+site_domain_name: "ga4gh-duri.github.io"
+url: "http://ga4gh-duri.github.io"
 email: ga4gh-data-use-subgroup@ga4gh.org
 github_organisation: ebispot
-future: true
-navigation_categories:
+
+# instructions for processing specific directories
+
+include:        # usually only pages in / and /_posts are "seen" => processed
+  - categories  # contains landing pages for each category
+  - tags        # contains landing pages for each tag
+
+# Collections are used to organise pages into logical groups; these do not need 
+# to have a relation to the "categories", though this is highly recommended
+# Collection directories reside in "/collections_dir/_(collection name)".
+
+collections:
+  news:
+    output: true
+    permalink: /news/:path/
+  people:
+    output: true
+    permalink: /people/:path/
+  documentation:
+    output: true
+    permalink: /documentation/:path/
+  howto:
+    output: true
+    permalink: /howto/:path/
+  minutes:
+    output: true
+    permalink: /minutes/:path/
+# optional; here, all collections are inside "/pages"
+# if used, also the standard "_posts" directory has to be moved there!
+collections_dir: pages  
+
+# navigation blocks can be used to separate different categories and add e.g. 
+# external link block(s), in combination with a properly modified layout
+
+nav_cat_blocks: # comma-separated "label,type,label_visibility"
+  General: 'General,categories,hide'
+  related_sites: 'Related Sites,related_sites,show'
+
+General:
   news: News
+  people: Participants
   documentation: Documentation
-  howto: Examples & Guides
-navigation_static_links:
-  ga4gh:
-    url: "http://ga4gh.org"
-    label: "GA4GH Main Site"
-  ga4gh-cp:
-    url: "http://ga4gh-cp.github.io"
-    label: "GA4GH::CP"
-  ga4gh-duo:
-    url: "http://ga4gh-duo.github.io"
-    label: "GA4GH::DUO"
-  ga4gh-gks:
-    url: "http://ga4gh-gks.github.io"
-    label: "GA4GH::GKS"
-  ga4gh-metadata:
-    url: "http://ga4gh-metadata.github.io"
-    label: "GA4GH::Metadata"
-  ga4gh-lsg:
-    url: "https://github.com/ga4gh/large-scale-genomics-wiki/wiki/"
-    label: "GA4GH Large Scale Genomics"   
-  phenopackets:
-    url: "https://github.com/phenopackets"
-    label: "Phenopackets PXF"   
-  ga4gh-github:
-    url: "https://github.com/ga4gh/"
-    label: "GA4GH Github Projects"
-navigation_max_items: 4
-tag_title_prefix: ''
-tag_title_suffix: ''
+  howto: 'Examples, Guides & FAQ'
+  minutes: 'Meeting minutes'
+  contact: Contacts
+
+related_sites: 
+  'GA4GH::Discovery': 'http://ga4gh-discovery.github.io'
+  'GA4GH::CLP': 'http://ga4gh-cp.github.io'
+  'GA4GH::GKS': 'http://ga4gh-gks.github.io'
+  'SchemaBlocks': 'http://schemablocks.org'
+  GA4GH: 'http://www.ga4gh.org'
+
+# tag_cloud items
+
+cloud_tags:
+  - CP
+  - Discovery
+  - GA4GH
+  - GKS
+  - code
+  - admins
+  - contacts
+  - contributors
+  - developers
+  - leads
+  - press
+
+# additional Jekyll instructions
+
+plugins:
+ - jekyll-seo-tag
+type: website
+show_downloads: true
+future: true
+safe: false
+navigation_max_items: 4 # number of shown links in current category
+emptyArray: []          # dummy element for array initialisation
