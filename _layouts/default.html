@@ -156,7 +156,7 @@
     {%- endif -%}
   {%- endfor -%}
  
-   {%- unless tag contains '.' -%}
+  {%- unless tag contains '.' or counter < 1 -%}
 
     <div class="site-tag">
       <a href="{{ '/tags' | relative_url }}/{{ tag }}.html" style="font-size: {{ counter | plus: 70 }}%">{{ tag | replace: "--", "::" | replace: "_", " " }}</a>
