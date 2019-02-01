@@ -50,6 +50,10 @@ collections_dir: pages
 nav_cat_blocks: # comma-separated "label,type,label_visibility"
   General: 'General,categories,hide'
   related_sites: 'Related Sites,related_sites,show'
+  
+categories_year_sorted:
+  - news
+  - minutes
 
 General:
   news: News
