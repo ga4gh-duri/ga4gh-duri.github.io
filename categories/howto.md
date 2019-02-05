@@ -7,6 +7,9 @@ layout: default
 
 <h2 class="page_title">{{ this_category | capitalize }}</h2>
 
+
+This is a test for the how to file
+
 {%- comment -%}
   * collecting the pages
 {%- endcomment -%}
