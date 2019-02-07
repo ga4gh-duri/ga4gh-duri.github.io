@@ -63,7 +63,7 @@ General:
   people: Participants
   documentation: Documentation
   # howto: 'Examples, Guides & FAQ'
-  hwelcome: 'Examples, Guides & FAQ'
+  welcome: 'Examples, Guides & FAQ'
   minutes: 'Meeting minutes'
   contact: Contacts
 
