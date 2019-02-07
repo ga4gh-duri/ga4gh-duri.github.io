@@ -34,9 +34,12 @@ collections:
   documentation:
     output: true
     permalink: /documentation/:path/
-  howto:
+  # howto:
+  #   output: true
+  #   permalink: /howto/:path/
+  welcome:
     output: true
-    permalink: /howto/:path/
+    permalink: /welcome/:path/
   minutes:
     output: true
     permalink: /minutes/:path/
@@ -59,13 +62,14 @@ General:
   news: News
   people: Participants
   documentation: Documentation
-  howto: 'Examples, Guides & FAQ'
+  # howto: 'Examples, Guides & FAQ'
+  hwelcome: 'Examples, Guides & FAQ'
   minutes: 'Meeting minutes'
   contact: Contacts
 
 related_sites: 
   'GA4GH::Discovery': 'http://ga4gh-discovery.github.io'
-  'GA4GH::CLP': 'http://ga4gh-cp.github.io'
+  'GA4GH::CP': 'http://ga4gh-cp.github.io'
   'GA4GH::GKS': 'http://ga4gh-gks.github.io'
   'SchemaBlocks': 'http://schemablocks.org'
   GA4GH: 'http://www.ga4gh.org'
