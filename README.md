@@ -17,15 +17,17 @@ We envision a world where biomedical researchers will be able to efficiently dis
 To achieve this, researchers need to have a reliable global electronic identity that is recognised for data access. In collaboration with the data authorities who are responsible for proper data use, this researcher identity would be authorised to access restricted data. We envision this type of access could be allowed for this use across a federated network of data repositories for researchers who have a trust attribute on their identities. For example: researchers would be able to query a network of repositories across country borders and find the genomes and phenotypes of all females of the age of 20-40 that have a BRCA mutation and can be used to study cancer; once they found that data they would be able to apply to access the data in an easy fashion and could often also instantly get access to research the data based on a digital assessment of appropriate claims, trust credentials and agreed policy.
 
 ## DURI structure
-The DURI is plit into 2 subgroups
+The DURI is split into 2 subgroups
 
-## GA4GH Data Use Ontology
+### GA4GH Data Use Ontology
 
-### Leads:
+#### Leads:
 - [Melanie Courtot](http://purl.org/net/mcourtot)
 - [Moran Cabili](https://www.linkedin.com/in/moran-cabili-kalmar-4727303/)
 
-## GA4GH Researcher Identity
+### GA4GH Researcher Identity
+#### Leads:
+
 
 #### Technical Programme Manager
 
