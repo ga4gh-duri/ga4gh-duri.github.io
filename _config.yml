@@ -28,15 +28,15 @@ collections:
    #news:
    #  output: true
    #  permalink: /news/:path/
-   people:
-   #  output: true
-   #  permalink: /people/:path/
+  people:
+     output: true
+     permalink: /people/:path/
   documentation:
     output: true
     permalink: /documentation/:path/
-  # howto:
-  #   output: true
-  #   permalink: /howto/:path/
+  howto:
+     output: true
+     permalink: /howto/:path/
   welcome:
     output: true
     permalink: /welcome/:path/
@@ -61,8 +61,8 @@ categories_year_sorted:
 General:
   #news: News
   documentation: Documentation
-  #howto : 'Examples, Guides & FAQ'
-  welcome: 'Examples, Guides & FAQ'
+  welcome: 'Strategy'
+  howto : 'Examples, Guides & FAQ'
   minutes: 'Meeting minutes'
   people: Contact
   #contact: Contacts
