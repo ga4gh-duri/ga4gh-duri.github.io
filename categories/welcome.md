@@ -1,13 +1,5 @@
-## GA4GH DURI onboarding
 
-Status: DRAFT!
-
-Author: [nmcabili@broadinstitute.org](mailto:nmcabili@broadinstitute.org),  [nyronen@csc.fi](mailto:nyronen@csc.fi) , 
-
-Modified 14.11.2018
-
-Welcome to the GA4GH Data Use and Researcher Identity (DURI) product line!
-
+##Welcome to the GA4GH Data Use and Researcher Identity (DURI) product line!
 
 ### Vision (draft)
 
@@ -16,25 +8,13 @@ There are restrictions on the use of human genomics data that are derived from e
 **We envision a world where biomedical researchers will be able to efficiently discover genomics and health data, and then apply and get access automatically based on their digital identity and, if required, a machine readable research purpose.**
 
  To achieve this, researchers need to have a reliable global electronic identity that is recognised for data access. In collaboration with the data authorities who are responsible for proper data use, this researcher identity would be authorised to access restricted data. We envision this type of access could be allowed for this use across a federated network of data repositories for researchers who have a trust attribute on their identities.  For example: researchers would be able to query a network of repositories across country borders and _find the genomes and phenotypes of all females of the age of 20-40 that have a BRCA mutation and can be used to study cancer_; once they found that data they would be able to apply  to access the data in an easy fashion and could often also instantly  get access to research the data based on a digital assessment of appropriate claims, trust credentials and agreed policy. 
+                                                                               
 
-
-
-### Insert Diagram 1
-**--->** 
-
-### Insert diagram 2
-
-
-                                                                                   
-
-
-### Mission (draft)
+### Mission
 
 Our group's mission is to create the standards that will enable automated data discovery and access and drive their evolution. We do this in partnership with driver projects that support our standard creation and promote their adoption.
 
 Specifically, we:
-
-
 
 1.  Establish a globally recognised researcher identity standard that human data service providers can rely on, and create a model to decorate these electronic identities with trusted claims/attributes.
 1.  Develop a Data Use Ontology (DUO) that supports algorithm-based automated matching between a research purpose and data use restrictions on datasets. 
@@ -48,10 +28,6 @@ Specifically, we:
 To become a member please email: [melissa.konopko@ga4gh.org](mailto:melissa.konopko@ga4gh.org)
 
 Or [CLICK HERE](https://groups.google.com/a/ga4gh.org/forum/#!forum/ga4gh-data-use-subgroup) and choose "Apply for membership".
-
-
-### Product line leads
-
 
 ### Background reading
 
@@ -83,7 +59,7 @@ Federated identity management for research collaborations [https://zenodo.org/re
 ELIXIR Authentication and Authorisation [https://f1000research.com/articles/7-1199/v1](https://f1000research.com/articles/7-1199/v1) 
 
 
-#### Product design documents - work in progress
+#### Product design documents
 
 [GA4GH research identity claims (RFC)](https://docs.google.com/document/d/1jvMpHmCWqcigqy1FuEzqXzHlaGeNP2mClOU2Ui4Djhg/edit)
 
@@ -92,14 +68,11 @@ ELIXIR Authentication and Authorisation [https://f1000research.com/articles/7-11
 [Meeting minutes ](https://drive.google.com/open?id=0B09Q6AWnrBnScGR2VmJ3OHNicWs)(directory)
 
 
-#### Presentations- Basel 2018
+#### Presentations at Basel 2018 plenary meeting
 
 [Researcher Identity product](https://docs.google.com/presentation/d/1H9p0rbnYUx64mFWO_iHBYchxs6lBGHJyJ1bm5flcztg/edit#slide=id.p) 2018
 
 [Data Use Ontology](https://docs.google.com/presentation/d/1B4jsqnZIqwxLjL8Y1q41kYFNN8BsmmiEC6I9_WZZPt0/edit#slide=id.p) 2018
-
-
-### Dictionary
 
 
 ### 2019 Proposed Goals
@@ -138,5 +111,6 @@ RI:
         *   NHGRI AnVIL data environment with [DUOS](https://duos.broadinstitute.org/#/home)
 
 
-### 2019 roadmap
+### Current roadmap
 
+Please see the global [GA4GH strategic roadmap](https://www.ga4gh.org/how-we-work/strategic-roadmap/)
