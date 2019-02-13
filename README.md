@@ -7,7 +7,7 @@ permalink: index.html
 
 The DURI ([GA4GH::DURI](http://ga4gh-duri.github.io)) Work Stream is one of the elements of the Global Alliance for Genomics and Health ([GA4GH](http://ga4gh.org)), aimed at developing standard formats for the exchange of genomic data for research and biomedical applications.
 
-The GA4GH DURI workstream is led by [Moran Cabili](https://www.linkedin.com/in/moran-cabili-kalmar-4727303/) and [Tommi Nyronen](https://www.linkedin.com/in/nyronen/). All members of this team must follow the [GA4GH Standards of Professional Conduct]( https://www.ga4gh.org/docs/GA4GH-Standards-for-Professional-Conduct_22-Jan-2018.pdf).
+The GA4GH DURI workstream is led by [Moran Cabili](https://www.linkedin.com/in/moran-cabili-kalmar-4727303/) and [Tommi Nyronen](https://www.linkedin.com/in/nyronen/). All members of this team must follow the [GA4GH Standards of Professional Conduct](https://www.ga4gh.org/wp-content/uploads/GA4GH-Standards-for-Professional-Conduct_22-Jan-2018.pdf).
 
 ## DURI vision
 There are restrictions on the use of human genomics data that are derived from ethical requirements including participants' research consent. For example: "Data can only be used for breast cancer research with non-commercial purpose". The current process to request access to data to ensure studies are consistent with these restrictions is inefficient and slows down science.
