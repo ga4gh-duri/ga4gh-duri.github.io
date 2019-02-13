@@ -28,7 +28,7 @@ collections:
    #news:
    #  output: true
    #  permalink: /news/:path/
-  # people:
+   people:
    #  output: true
    #  permalink: /people/:path/
   documentation:
@@ -59,13 +59,13 @@ categories_year_sorted:
   - minutes
 
 General:
-   #news: News
-  people: Participants
+  #news: News
   documentation: Documentation
   #howto : 'Examples, Guides & FAQ'
   welcome: 'Examples, Guides & FAQ'
   minutes: 'Meeting minutes'
-  contact: Contacts
+  people: Contact
+  #contact: Contacts
 
 related_sites: 
   'GA4GH::Discovery': 'http://ga4gh-discovery.github.io'
