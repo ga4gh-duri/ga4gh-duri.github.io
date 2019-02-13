@@ -1,7 +1,7 @@
 
 ## Welcome to the GA4GH Data Use and Researcher Identity (DURI) product line!
 
-### Vision (draft)
+### Vision
 
 There are restrictions on the use of human genomics data that are derived from ethical requirements including participants' research consent. For example: "Data can only be used for breast cancer research with non-commercial purpose". The current process to request access to data to ensure studies are consistent with these restrictions is inefficient and slows down science.
 
