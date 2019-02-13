@@ -64,8 +64,8 @@ General:
   welcome: 'Strategy'
   howto : 'Examples, Guides & FAQ'
   minutes: 'Meeting minutes'
-  people: Contact
-  #contact: Contacts
+  #people: Contact
+  contact: Contacts
 
 related_sites: 
   'GA4GH::Discovery': 'http://ga4gh-discovery.github.io'
