@@ -1,5 +1,5 @@
 
-##Welcome to the GA4GH Data Use and Researcher Identity (DURI) product line!
+## Welcome to the GA4GH Data Use and Researcher Identity (DURI) product line!
 
 ### Vision (draft)
 
