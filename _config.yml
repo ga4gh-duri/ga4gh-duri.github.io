@@ -62,7 +62,7 @@ General:
    #news: News
    #people: Participants
   documentation: Documentation
-  howto# : 'Examples, Guides & FAQ'
+  #howto : 'Examples, Guides & FAQ'
   welcome: 'Examples, Guides & FAQ'
   minutes: 'Meeting minutes'
   contact: Contacts
