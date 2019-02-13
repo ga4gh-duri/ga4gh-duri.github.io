@@ -60,7 +60,7 @@ categories_year_sorted:
 
 General:
    #news: News
-   #people: Participants
+  people: Participants
   documentation: Documentation
   #howto : 'Examples, Guides & FAQ'
   welcome: 'Examples, Guides & FAQ'
