@@ -25,18 +25,21 @@ include:        # usually only pages in / and /_posts are "seen" => processed
 # Collection directories reside in "/collections_dir/_(collection name)".
 
 collections:
-  news:
-    output: true
-    permalink: /news/:path/
+   #news:
+   #  output: true
+   #  permalink: /news/:path/
   people:
-    output: true
-    permalink: /people/:path/
+     output: true
+     permalink: /people/:path/
   documentation:
     output: true
     permalink: /documentation/:path/
   howto:
+     output: true
+     permalink: /howto/:path/
+  welcome:
     output: true
-    permalink: /howto/:path/
+    permalink: /welcome/:path/
   minutes:
     output: true
     permalink: /minutes/:path/
@@ -56,16 +59,17 @@ categories_year_sorted:
   - minutes
 
 General:
-  news: News
-  people: Participants
+  #news: News
   documentation: Documentation
-  howto: 'Examples, Guides & FAQ'
+  welcome: 'Strategy'
+  howto : 'Examples, Guides & FAQ'
   minutes: 'Meeting minutes'
+  #people: Contact
   contact: Contacts
 
 related_sites: 
   'GA4GH::Discovery': 'http://ga4gh-discovery.github.io'
-  'GA4GH::CLP': 'http://ga4gh-cp.github.io'
+  'GA4GH::CP': 'http://ga4gh-cp.github.io'
   'GA4GH::GKS': 'http://ga4gh-gks.github.io'
   'SchemaBlocks': 'http://schemablocks.org'
   GA4GH: 'http://www.ga4gh.org'

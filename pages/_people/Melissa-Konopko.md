@@ -4,7 +4,6 @@ layout: default
 excerpt_separator: <!--more-->
 image_file: 
 category:
-  - people
   - contact
 tags:
   - contacts
@@ -23,7 +22,7 @@ tags:
 
 ## {{ page.title }}
 
-Coordinator, GA4GH GLS & CP Workstreams  
+Technical Program Manager, GA4GH Data Use and Researcher IDs, Genomic Knowledge Standards, and Data Security Workstreams  
 Global Alliance for Genomics and Health  
 
 <!--more-->
