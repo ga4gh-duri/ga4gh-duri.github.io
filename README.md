@@ -27,7 +27,7 @@ The DURI is split into 2 subgroups
 
 ### GA4GH Researcher Identity
 #### Leads:
-- [Ilia Tulchinsky](https://www.linkedin.com/in/ilia-tulchinsky-44258a/)
+- [Craig Voisin](https://www.linkedin.com/in/craigvoisin/?originalSubdomain=ca)
 - Stephanie Dyke
 
 #### Technical Programme Manager
