@@ -412,59 +412,33 @@ GA4GH Researcher Identity Claim Definitions
 ### ga4gh.AffiliationAndRole
 
 -   The Identity’s role within the identity’s affiliated institution as
-    specified by
-    [eduPersonScopedAffiliation](http://software.internet2.edu/eduperson/internet2-mace-dir-eduperson-201602.html#eduPersonScopedAffiliation)
-    has controlled multi-valued vocabulary:  
-    faculty, student, staff, alum, member, affiliate, employee, library-walk-in.
+    specified by one of the following:
 
--   The controlled vocabulary defined in
-    [eduPersonAffiliation](http://software.internet2.edu/eduperson/internet2-mace-dir-eduperson-201602.html#eduPersonAffiliation)
-    is extended with the following extra values:
+    -   [eduPersonScopedAffiliation](http://software.internet2.edu/eduperson/internet2-mace-dir-eduperson-201602.html#eduPersonScopedAffiliation)
+        attributed value of: faculty, student, or member.  
+        This term is defined by eduPerson by the affiliated organization
+        (organization after the \@-sign).
 
-<table>
-  <tr>
-   <td>
-<strong>Value</strong>
-   </td>
-   <td><strong>Description</strong>
-   </td>
-  </tr>
-  <tr>
-   <td>industry-researcher
-   </td>
-   <td>The person is a health/medical/biomedical/biology researcher or teacher in their home organization.
-<p>
-The intention is that the primary focus of the person in his/her home organization is in research and/or education.
-<p>
-Note. This attribute value is for users in the private sector.
-   </td>
-  </tr>
-  <tr>
-   <td>clinical-care-professional
-   </td>
-   <td>The person is a clinical care professional, such as a medical practitioner, in their home organization. This person provides care directly to patients, virtually or in person.
-   </td>
-  </tr>
-</table>
+        -   Example: <faculty@cam.ac.uk>
 
+        -   Note: based on the eduPerson specification, it is possible that
+            institutions use a different definition for the meaning of "faculty"
+            ranging from "someone who does research", to "someone who teaches",
+            to "someone in education that works with students".
 
--   Example value: <faculty@cam.ac.uk>
+    -   A custom role that includes a namespace prefix followed by a dot (“.”)
+        where the implementers coordinate with the DURI committee to ensure that
+        the namespace does not conflict with other implementations and that the
+        vocabulary is not already defined by others.
 
--   Having no AffiliationAndRole claim covers citizen scientist that have no
-    institutional affiliation.
+        -   Example: “<nih.researcher@med.stanford.edu>” where “nih” is the
+            namespace and “researcher” is the custom role within that namespace.
 
--   If the role is known to be within the domain of faculty, staff, student, and
-    other persons with a full set of basic privileges but without the context of
-    being able to name a specific role more precisely, then the RI Claim issuer
-    can use the more general role of “member” (as defined in
-    [eduPerson](http://software.internet2.edu/eduperson/internet2-mace-dir-eduperson-201602.html#eduPersonAffiliation)):
-    “*"Member" is intended to include faculty, staff, student, and other persons
-    with a full set of basic privileges that go with membership in the
-    university community (e.g., they are given institutional calendar
-    privileges, library privileges and/or vpn accounts). It could be glossed as
-    "member in good standing of the university community. The "member"
-    affiliation MUST be asserted for people carrying one or more of the
-    following affiliations: faculty or staff or student or employee”*
+-   If there is no affiliated institution associated with a given claim, the
+    affiliation portion of AffliationAndRole MUST be set to “no_org.ga4gh.org”.
+
+    -   Example: “public.citizen-scientist\@no_org.ga4gh.org”
+
 
 ### ga4gh.AcceptedTermsAndPolicies
 
