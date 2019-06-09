@@ -275,7 +275,7 @@ claim objects within a “ga4gh” root OIDC claim object (see
 
     -   For example:
 
-        ```
+```
 "condition": {
   "AffiliationAndRole": {
     "value": [
