@@ -275,8 +275,20 @@ claim objects within a “ga4gh” root OIDC claim object (see
 
     -   For example:
 
-| "condition": { "AffiliationAndRole": { "value": [ "faculty\@uni-heidelberg.de", "student\@uni-heidelberg.de" ], "by": [ "so", "system" ] } } |
-|----------------------------------------------------------------------------------------------------------------------------------------------|
+        ```
+"condition": {
+  "AffiliationAndRole": {
+    "value": [
+      "faculty@uni-heidelberg.de",
+      "student@uni-heidelberg.de"
+    ],
+    "by": [
+      "so",
+      "system"
+    ]
+  }
+}
+```
 
 
 >   Would match a corresponding AffiliationAndRole claim within the same
@@ -409,10 +421,32 @@ GA4GH Researcher Identity Claim Definitions
     [eduPersonAffiliation](http://software.internet2.edu/eduperson/internet2-mace-dir-eduperson-201602.html#eduPersonAffiliation)
     is extended with the following extra values:
 
-| **Value**                  | **Description**                                                                                                                                                                                                                                                                        |
-|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| industry-researcher        | The person is a health/medical/biomedical/biology researcher or teacher in their home organization. The intention is that the primary focus of the person in his/her home organization is in research and/or education. Note. This attribute value is for users in the private sector. |
-| clinical-care-professional | The person is a clinical care professional, such as a medical practitioner, in their home organization. This person provides care directly to patients, virtually or in person.                                                                                                        |
+<table>
+  <tr>
+   <td>
+<strong>Value</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>industry-researcher
+   </td>
+   <td>The person is a health/medical/biomedical/biology researcher or teacher in their home organization.
+<p>
+The intention is that the primary focus of the person in his/her home organization is in research and/or education.
+<p>
+Note. This attribute value is for users in the private sector.
+   </td>
+  </tr>
+  <tr>
+   <td>clinical-care-professional
+   </td>
+   <td>The person is a clinical care professional, such as a medical practitioner, in their home organization. This person provides care directly to patients, virtually or in person.
+   </td>
+  </tr>
+</table>
+
 
 -   Example value: <faculty@cam.ac.uk>
 
@@ -552,106 +586,56 @@ JWT that is signed by an Identity Broker:
 -   **ResearcherStatus**: A Signing Official at Stanford Medicine has asserted
     that this person is a bona fide researcher as defined by Registered Access.
 
-| "ga4gh": { |
-|------------|
-
-
->   "AffiliationAndRole": [
-
->   {
-
->   "value": "faculty\@med.stanford.edu",
-
->   "source": "<https://grid.ac/institutes/grid.240952.8>",
-
->   "by": "so",
-
->   "asserted": 1549680000,
-
->   "expires": 1581208000
-
->   }
-
->   ],
-
->   "ControlledAccessGrants": [
-
->   {
-
->   "value": "https://nih.gov/dbgap/phs000710",
-
->   "source": "<https://grid.ac/institutes/grid.48336.3a>",
-
->   "by": "dac",
-
->   "asserted": 1549632872,
-
->   "expires": 1581168872
-
->   },
-
->   {
-
->   "value": "https://ega-archive.org/datasets/00000432",
-
->   "source": "<https://grid.ac/institutes/grid.225360.0>",
-
->   "condition": {
-
->   "ga4gh.AffiliationAndRole" : {
-
->   "value": ["faculty\@med.stanford.edu"],
-
->   "source": ["<https://grid.ac/institutes/grid.240952.8>"],
-
->   "by": [
-
->   "so",
-
->   "system"
-
->   ]
-
->   }
-
->   },
-
->   "by": "dac",
-
->   "asserted": 1549640000,
-
->   "expires": 1581168000
-
->   }
-
->   ],
-
->   "AcceptedTermsAndPolicies": [
-
->   "value": "<https://doi.org/10.1038/s41431-018-0219-y>",
-
->   "source": "<https://grid.ac/institutes/grid.240952.8>",
-
->   "by": "self",
-
->   "asserted": 1549680000,
-
->   "expires": 1581208000
-
->   ],
-
->   "ResearcherStatus": [
-
->   "value": "<https://doi.org/10.1038/s41431-018-0219-y>",
-
->   "source": "<https://grid.ac/institutes/grid.240952.8>",
-
->   "by": "so",
-
->   "asserted": 1549680000,
-
->   "expires": 1581208000
-
->   ]
-
+  ```
+"ga4gh": {
+"AffiliationAndRole": [
+  {
+    "value": "faculty@med.stanford.edu",
+    "source": "https://grid.ac/institutes/grid.240952.8",
+    "by": "so",
+    "asserted": 1549680000,
+    "expires": 1581208000
+  }
+],
+"ControlledAccessGrants": [
+  {
+    "value": "https://nih.gov/dbgap/phs000710",
+    "source": "https://grid.ac/institutes/grid.48336.3a",
+    "by": "dac",
+    "asserted": 1549632872,
+    "expires": 1581168872
+  },
+  {
+    "value": "https://ega-archive.org/datasets/00000432",
+    "source": "https://grid.ac/institutes/grid.225360.0",
+    "condition": {
+      "ga4gh.AffiliationAndRole" : {
+         "value": ["faculty@med.stanford.edu"],
+         "source": ["https://grid.ac/institutes/grid.240952.8"],
+         "by": [
+           "so",
+           "system"
+         ]
+      }
+    },
+    "by": "dac",
+    "asserted": 1549640000,
+    "expires": 1581168000
+  }
+],
+"AcceptedTermsAndPolicies": [
+    "value": "https://doi.org/10.1038/s41431-018-0219-y",
+    "source": "https://grid.ac/institutes/grid.240952.8",
+    "by": "self",
+    "asserted": 1549680000,
+    "expires": 1581208000
+],
+"ResearcherStatus": [
+    "value": "https://doi.org/10.1038/s41431-018-0219-y",
+    "source": "https://grid.ac/institutes/grid.240952.8",
+    "by": "so",
+    "asserted": 1549680000,
+    "expires": 1581208000
+]
 }
+```
