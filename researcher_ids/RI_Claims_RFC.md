@@ -5,9 +5,7 @@
 
 **Product Name**: Researcher Identity & Access Claims (a.k.a. “RI Claims”)
 
-**Product Description: **This document provides the GA4GH technical specification for 
-
-<p id="gdcalert1" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: undefined internal link (link text: "GA4GH Researcher Identity Claims"). Did you generate a TOC? </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert2">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+**Product Description: **This document provides the GA4GH technical specification for ["GA4GH Researcher Identity Claims"](#ri-claim).
 
 [GA4GH Researcher Identity Claims](#heading=h.5j4id9dmcpvz) to be consumed by 
 
@@ -30,7 +28,7 @@
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in[ RFC 2119](https://tools.ietf.org/html/rfc2119).
 
-<h4>**Researcher Identity Claim (“RI Claim”)**</h4>
+<h4>**Researcher Identity Claim (“RI Claim”)**</h4>(#ri-claim)
 
 
 
