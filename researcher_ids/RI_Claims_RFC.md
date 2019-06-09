@@ -230,7 +230,8 @@ claim objects within a “ga4gh” root OIDC claim object (see
 -   Fields that are not specified in the condition are not required to match
     (i.e. any value will be accepted within that field).
 
--   Format: \
+-   Format: 
+\
 
 
     ```
