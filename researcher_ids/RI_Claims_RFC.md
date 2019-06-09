@@ -5,17 +5,7 @@
 
 **Product Name**: Researcher Identity & Access Claims (a.k.a. “RI Claims”)
 
-**Product Description: **This document provides the GA4GH technical specification for ["GA4GH Researcher Identity Claims"](#researcher-identity-claim).
-
-[GA4GH Researcher Identity Claims](#heading=h.5j4id9dmcpvz) to be consumed by 
-
-<p id="gdcalert2" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: undefined internal link (link text: "Claim Clearinghouses"). Did you generate a TOC? </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert3">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-[Claim Clearinghouses](#heading=h.xw365l61d6wv) in a standardized approach to determine whether or not data access should be granted. Additionally, the specification provides guidance on 
-
-<p id="gdcalert3" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: undefined internal link (link text: "encoding of Registered Access claims"). Did you generate a TOC? </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert4">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-[encoding of Registered Access claims](#heading=h.z7gm6m7vr2pk) as defined in the “[Registered access: authorizing data access](https://www.nature.com/articles/s41431-018-0219-y)” publication.
+**Product Description: **This document provides the GA4GH technical specification for [GA4GH Researcher Identity Claims](#researcher-identity-claim) to be consumed by ["Claim Clearinghouses"](#claim-clearinghouse) in a standardized approach to determine whether or not data access should be granted. Additionally, the specification provides guidance on [encoding of Registered Access claims](#encoding-registered-Access) as defined in the “[Registered access: authorizing data access](https://www.nature.com/articles/s41431-018-0219-y)” publication.
 
 **Co-Chairs of Product Subgroup**: Stephanie Dyke (McGill) & Craig Voisin (Google)
 
@@ -28,8 +18,7 @@
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in[ RFC 2119](https://tools.ietf.org/html/rfc2119).
 
-### Researcher Identity Claim
-<h4>**Researcher Identity Claim (“RI Claim”)**</h4>
+### Researcher Identity Claim ("RI Claim")
 
 
 
@@ -75,7 +64,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 [researcher identity claims](#heading=h.5j4id9dmcpvz) that is collected into a [specialized JWT token](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.sbvh8xj8gogg) and signed by an [Identity Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.an88npsnugjl) as per the [GA4GH AAI specification](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit) for the purpose of evaluating authorization.
 
-<h4>**Claim Clearinghouse**</h4>
+###Claim Clearinghouse
 
 
 
@@ -457,7 +446,7 @@ Note. This attribute value is for users in the private sector.
 
 [condition](#heading=h.opryxxsqpmt5)” field.
 
-<h2>Encoding Registered Access</h2>
+##Encoding Registered Access
 
 
 
