@@ -231,22 +231,18 @@ claim objects within a “ga4gh” root OIDC claim object (see
     (i.e. any value will be accepted within that field).
 
 -   Format: 
-\
 
-
-    ```
-"condition": {
-  "ClaimName1" : {
-    "FieldName1": [
-      "Value1a",
-      "Value1b"
-    ],
-    "FieldName2": ["Value2"],
-    ...
-  },
-  "{ClaimName2}" : { ... }
-}
-```
+| "condition": { 
+    "*ClaimName1*" : { 
+       "**FieldName1**": [ 
+          "**Value1a**", 
+          "**Value1b**" 
+       ], 
+       "**FieldName2**": ["**Value2**"],
+       ... 
+    }, 
+    "*{ClaimName2}*" : { ... } } |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 
 -   Condition fields are restricted to only “[value](#value-required)”,
