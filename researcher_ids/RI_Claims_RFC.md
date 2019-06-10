@@ -393,7 +393,7 @@ following algorithm options to ensure that claim expiry is accounted for:
 for the entire duration of the requested duration:
 
 ```
-now()+requestedTTL \< min("claim.expires", "claim.asserted"+maxAuthzTTL)
+now()+requestedTTL < min("claim.expires", "claim.asserted"+maxAuthzTTL)
 ```
 
 Where:
@@ -413,7 +413,7 @@ system has an advanced revocation scheme that does not need to specify a
 maxAuthzTTL as per Option A, then the check can be simplified:
 
 ```
-now()+accessTokenTTL \< claim.expires
+now()+accessTokenTTL < claim.expires
 ```
 
 Where:
