@@ -1,30 +1,40 @@
----
-title: "GA4GH Researcher Identity & Access Claims (FROZEN RFC)"
----
+--------------------------------------------------------------------------------
+
+# GA4GH Researcher Identity & Access Claims (FROZEN RFC)
 
 **Work Stream Name**: Data Use and Researcher Identity
 
 **Product Name**: Researcher Identity & Access Claims (a.k.a. “RI Claims”)
 
 **Product Description:** This document provides the GA4GH technical
-specification for [GA4GH Researcher Identity
-Claims](#researcher-identity-claim-ri-claim) to be consumed by [Claim
-Clearinghouses](#claim-clearinghouse) in a standardized approach to determine
-whether or not data access should be granted. Additionally, the specification
-provides guidance on [encoding of Registered Access
-claims](#encoding-registered-access) as defined in the “[Registered access:
-authorizing data access](https://www.nature.com/articles/s41431-018-0219-y)”
+specification for
+[GA4GH Researcher Identity Claims](#researcher-identity-claim-ri-claim) to be
+consumed by [Claim Clearinghouses](#claim-clearinghouse) in a standardized
+approach to determine whether or not data access should be granted.
+Additionally, the specification provides guidance on
+[encoding of Registered Access claims](#encoding-registered-access) as defined
+in the
+“[Registered access: authorizing data access](https://www.nature.com/articles/s41431-018-0219-y)”
 publication.
 
 **Co-Chairs of Product Subgroup**: Stephanie Dyke (McGill) & Craig Voisin
 (Google)
 
-Conventions and Terminology
----------------------------
+## Conventions and Terminology
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+
+Additonal terms on fields:
+
+-   **[required]**: A field that MUST be present within a
+    [Claim Object](#claim-object-fields).
+-   **[optional]** : A field that MAY be present within a
+    [Claim Object](#claim-object-fields).
+-   **[optional on specific RI claims]** : A field that MAY be present only on
+    claims when where the claim definition explicitly mentions that this field
+    MAY be specified. All other claims MUST NOT define this field.
 
 #### **Researcher Identity Claim (“RI Claim”)**
 
@@ -41,71 +51,70 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     within the organization that made the claim.
 
 -   This is NOT necessarily the organization that stores the claim, or the
-    [Identity
-    Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.an88npsnugjl)’s
+    [Identity Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.an88npsnugjl)’s
     organization that signs the [passport](#passport); it is the organization
     that has the authority to assert the claim on behalf of the user that is
     responsible for making and maintaining the assertion.
 
 #### **Passport**
 
--   A bundle of [researcher identity
-    claims](#researcher-identity-claim-ri-claim) that is collected into a
-    [specialized JWT
-    token](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.sbvh8xj8gogg)
-    and signed by an [Identity
-    Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.an88npsnugjl)
-    as per the [GA4GH AAI
-    specification](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit)
+-   A bundle of
+    [researcher identity claims](#researcher-identity-claim-ri-claim) that is
+    collected into a
+    [specialized JWT token](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.sbvh8xj8gogg)
+    and signed by an
+    [Identity Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.an88npsnugjl)
+    as per the
+    [GA4GH AAI specification](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit)
     for the purpose of evaluating authorization.
 
 #### **Claim Clearinghouse**
 
 -   The service consuming claims via a [Passport](#_553aqob9ijlr) as defined by
-    the [Claim Clearinghouses section of the GA4GH AAI
-    specification](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.5va9qbe4vsfw).
+    the
+    [Claim Clearinghouses section of the GA4GH AAI specification](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.5va9qbe4vsfw).
 
-Researcher Identity Claim Overview
-----------------------------------
+## Researcher Identity Claim Overview
 
 ### RI Claims Requirements
 
-1.  [RI Claims](#researcher-identity-claim-ri-claim) and tokens that contain RI
-    Claims MUST conform the the [GA4GH AAI
-    Spec](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.pnom2c7wov36).
+1.  <a name="requirement-1"></a>
+    [RI Claims](#researcher-identity-claim-ri-claim) and tokens that contain RI
+    Claims MUST conform the the
+    [GA4GH AAI Spec](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.pnom2c7wov36).
 
-2.  Each RI Claim MAY be multi-valued.
+2.  <a name="requirement-2"></a> Each RI Claim MAY be multi-valued.
 
-3.  Each RI Claim may have a different expiry.
+3.  <a name="requirement-3"></a> Each RI Claim may have a different expiry.
 
     -   This allows a token carrying the claims to be short lived (e.g. 10
         minutes).
 
-    -   The same document can encode claims for any [Claim
-        Clearinghouse](#claim-clearinghouse) to evaluate when requesting
+    -   The same document can encode claims for any
+        [Claim Clearinghouse](#claim-clearinghouse) to evaluate when requesting
         pre-authorization for a longer duration (e.g. a request can establish
         intent to access a resource over the next 60 days, even if this access
         ends up being revoked after 15 days for other reasons).
 
-4.  RI Claims MUST have an indication of which organization asserted the claim
-    (i.e. the “[source](#source-required)” field), but claims do not indicate
-    individual persons involved in making the assertion (i.e. who
-    assigned/signed the claim) as it is not generally needed to make an access
-    decision.
+4.  <a name="requirement-4"></a> RI Claims MUST have an indication of which
+    organization asserted the claim (i.e. the “[source](#source-required)”
+    field), but claims do not indicate individual persons involved in making the
+    assertion (i.e. who assigned/signed the claim) as it is not generally needed
+    to make an access decision.
 
-5.  Additional information about claims that is not needed to make an access
-    decision SHOULD not be included in the claim. Auditing and other purposes
-    are not the intent of these standard RI Claims, and must be handled via
-    another means beyond the scope of this specification with sufficient
-    authority to expose such information.
+5.  <a name="requirement-5"></a> Additional information about claims that is not
+    needed to make an access decision SHOULD not be included in the claim.
+    Auditing and other purposes are not the intent of these standard RI Claims,
+    and must be handled via another means beyond the scope of this specification
+    with sufficient authority to expose such information.
 
-6.  All RI Claims within the “ga4gh” scope eligible for release to the requestor
-    MUST be provided. Reasons for limiting exchange may include user approval,
-    contractual limitations, regulatory restrictions, or filtering claims to
-    only the subset needed for a particular purpose, etc.
+6.  <a name="requirement-6"></a> All RI Claims within the “ga4gh” scope eligible
+    for release to the requestor MUST be provided. Reasons for limiting exchange
+    may include user approval, contractual limitations, regulatory restrictions,
+    or filtering claims to only the subset needed for a particular purpose, etc.
 
-7.  When an [Identity
-    Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit?ts=5b5bc642#heading=h.ufz3k0fqgxh0)
+7.  <a name="requirement-7"></a> When an
+    [Identity Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit?ts=5b5bc642#heading=h.ufz3k0fqgxh0)
     receives a request with the “ga4gh” scope, it MUST provide RI claims under
     the “ga4gh” OIDC token claim as follows:
 
@@ -121,12 +130,13 @@ Researcher Identity Claim Overview
         ligitimently derived from the sources of authority, and are presented
         accurately.
 
-8.  RI Claims are designed for machine interpretation only to make an access
-    decision and is a non-goal to support rich user interface requirements nor
-    do these claims fully encode the audit trail.
+8.  <a name="requirement-8"></a> RI Claims are designed for machine
+    interpretation only to make an access decision and is a non-goal to support
+    rich user interface requirements nor do these claims fully encode the audit
+    trail.
 
-9.  An identity can have several affiliations and the permissions can be coupled
-    to one of them using the
+9.  <a name="requirement-9"></a> An identity can have several affiliations and
+    the permissions can be coupled to one of them using the
     “[condition](#condition-optional-on-specific-ri-claims)” field.
 
 ### Support for User Interfaces
@@ -153,8 +163,7 @@ interfaces, such as:
 -   May provide a rich set of internationalization/localization features for
     clients to consume.
 
-Claim Object Fields
--------------------
+## Claim Object Fields
 
 Each [RI claim](#researcher-identity-claim-ri-claim) name maps to an array of
 claim objects within a “ga4gh” root OIDC claim object (see
@@ -163,8 +172,8 @@ claim objects within a “ga4gh” root OIDC claim object (see
 #### “**value**” [required]
 
 -   A string that represents the type, process and version of the claim. The
-    format of the string can vary by the [claim
-    definition](#ga4gh-researcher-identity-claim-definitions).
+    format of the string can vary by the
+    [claim definition](#ga4gh-researcher-identity-claim-definitions).
 
 -   For example, ga4gh.ResearcherStatus.value =
     "<https://doi.org/10.1038/s41431-018-0219-y>” represents the Registered
@@ -205,22 +214,28 @@ claim objects within a “ga4gh” root OIDC claim object (see
     [by](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit?disco=AAAAClo87-0&ts=5cac94bb#heading=h.bjnftdj471t6)
     field, if present).
 
--   Its use by a Claim Clearinghouse is described in the [Claim
-    Expiry](#url-claim-fields) section.
+-   Its use by a Claim Clearinghouse is described in the
+    [Claim Expiry](#url-claim-fields) section.
 
 #### “**expires**” [required]
 
--   Generally, it is seconds since unix epoch of when the [Claim
-    Authority](#claim-authority) requires such a claim to be no longer valid. A
-    Claim Authority MAY choose to make a claim very long lived. However, an
-    Identity Broker MAY choose an earlier timestamp if it wishes to limit the
-    claim’s duration of use within downstream Claim Clearinghouses.
+-   Generally, it is seconds since unix epoch of when the
+    [Claim Authority](#claim-authority) requires such a claim to be no longer
+    valid. A Claim Authority MAY choose to make a claim very long lived.
+    However, an Identity Broker MAY choose an earlier timestamp if it wishes to
+    limit the claim’s duration of use within downstream Claim Clearinghouses.
 
 -   Represents the expiry of the individual claim itself, not the token that
     carries it.
 
--   Its use by a Claim Clearinghouse is described in the [Claim
-    Expiry](#url-claim-fields) section.
+-   Access is NOT necessarily removed by the `expires` timestamp. Instead, this
+    timestamp may be viewed as a cut-off after which no new access will be
+    granted and action to remove any existing access may commence anytime
+    shortly after this cut-off period.
+
+-   Its use by a Claim Clearinghouse is described in the
+    [Claim Expiry](#url-claim-fields) section and
+    [Token Revocation](#claim-and-token-revocation) section.
 
 #### “**condition**” [optional on specific RI claims]
 
@@ -230,7 +245,7 @@ claim objects within a “ga4gh” root OIDC claim object (see
 -   Fields that are not specified in the condition are not required to match
     (i.e. any value will be accepted within that field).
 
--   Format: 
+-   Format:
 
 ```
 "condition": {
@@ -246,7 +261,6 @@ claim objects within a “ga4gh” root OIDC claim object (see
 }
 ```
 
-
 -   Condition fields are restricted to only “[value](#value-required)”,
     “[source](#source-required)”, and “[by](#by-optional)” fields (i.e.
     timestamp fields and conditions on conditions are not permitted).
@@ -255,14 +269,14 @@ claim objects within a “ga4gh” root OIDC claim object (see
         condition’s claim name and value, and is not the source of the claim to
         which the condition is attached.
 
-    -   For example, “claimNameA.sourceA” asserts that “sourceA” is the [Claim
-        Authority](#claim-authority) of “claimNameA” whereas
+    -   For example, “claimNameA.sourceA” asserts that “sourceA” is the
+        [Claim Authority](#claim-authority) of “claimNameA” whereas
         “claimNameA.condition.claimNameB.sourceB” expects that “claimNameB”
         exists elsewhere in the passport and is provided by “sourceB”.
 
 -   The Claim Clearinghouse MUST verify that for each condition claim and each
-    condition field present, a single corresponding [RI
-    claim](#researcher-identity-claim-ri-claim) and its corresponding
+    condition field present, a single corresponding
+    [RI claim](#researcher-identity-claim-ri-claim) and its corresponding
     [fields](#claim-object-fields) match as per the matching algorithms
     described elsewhere in this specification, along with the following
     requirements:
@@ -290,9 +304,8 @@ claim objects within a “ga4gh” root OIDC claim object (see
 }
 ```
 
-
->   Would match a corresponding AffiliationAndRole claim within the same
->   passport that has any of the following:
+> Would match a corresponding AffiliationAndRole claim within the same passport
+> that has any of the following:
 
 -   value = "faculty\@uni-heidelberg.de" AND by = "so"
 
@@ -358,8 +371,8 @@ format with the following limitations:
         if the human readable document will resolve using either scheme.
 
     -   Research institutions are encouraged to use a persistent URL pointing to
-        established organizational ontology URL such as a [GRID
-        URL](https://grid.ac/institutes) as their canonical “source” URL.
+        established organizational ontology URL such as a
+        [GRID URL](https://grid.ac/institutes) as their canonical “source” URL.
 
 3.  The URL SHOULD also be as short as reasonably possible while avoid
     collisions, and MUST NOT exceed 255 characters.
@@ -379,15 +392,17 @@ following algorithm options to ensure that claim expiry is accounted for:
 **Option A**: use the following algorithm to determine if the RI Claim is valid
 for the entire duration of the requested duration:
 
-now()+requestedTTL \< min("claim.expires", "claim.asserted"+maxAuthzTTL)
+```
+now()+requestedTTL < min("claim.expires", "claim.asserted"+maxAuthzTTL)
+```
 
 Where:
 
--   requestedTTL represents the duration for which access is being requested.
+-   `requestedTTL` represents the duration for which access is being requested.
     Alternatively a solution may choose to have a stronger revocation policy
     instead of requiring such a duration.
 
--   maxAuthzTTL represents any additional expiry policy that the Claim
+-   `maxAuthzTTL` represents any additional expiry policy that the Claim
     Clearinghouse may choose to enforce. If this is not needed, it can
     effectively ignored by using a large number of years or otherwise have
     "claim.asserted"+maxAuthzTTL removed and simplify the right hand side
@@ -397,17 +412,18 @@ Where:
 system has an advanced revocation scheme that does not need to specify a
 maxAuthzTTL as per Option A, then the check can be simplified:
 
-now()+accessTokenTTL \< claim.expires
+```
+now()+accessTokenTTL < claim.expires
+```
 
 Where:
 
--   accessTokenTTL represents the duration for which an access token will be
+-   `accessTokenTTL` represents the duration for which an access token will be
     accepted and is bounded by the next refresh token cycle and/or any larger
     propagation delay before access is revoked, which needs to be assessed based
     on the revocation model.
 
-GA4GH Researcher Identity Claim Definitions
--------------------------------------------
+## GA4GH Researcher Identity Claim Definitions
 
 ### ga4gh.AffiliationAndRole
 
@@ -415,7 +431,7 @@ GA4GH Researcher Identity Claim Definitions
     specified by one of the following:
 
     -   [eduPersonScopedAffiliation](http://software.internet2.edu/eduperson/internet2-mace-dir-eduperson-201602.html#eduPersonScopedAffiliation)
-        attributed value of: faculty, student, or member.  
+        attributed value of: faculty, student, or member. \
         This term is defined by eduPerson by the affiliated organization
         (organization after the \@-sign).
 
@@ -439,7 +455,6 @@ GA4GH Researcher Identity Claim Definitions
 
     -   Example: “public.citizen-scientist\@no_org.ga4gh.org”
 
-
 ### ga4gh.AcceptedTermsAndPolicies
 
 -   The set of unique identifiers in the form of URLs that indicate that a
@@ -451,8 +466,9 @@ GA4GH Researcher Identity Claim Definitions
     where the claims are consumed.
 
 -   Example value: “<https://doi.org/10.1038/s41431-018-0219-y>” acknowledges
-    the ethics terms as needed for [Registered
-    Access](#encoding-registered-access) Bona Fide researcher status.
+    the ethics terms as needed for
+    [Registered Access](#encoding-registered-access) Bona Fide researcher
+    status.
 
 -   MUST include “[by](#by-optional)” field.
 
@@ -468,8 +484,9 @@ GA4GH Researcher Identity Claim Definitions
     process that has been followed and the qualifications this person has met.
 
 -   Example value: “<https://doi.org/10.1038/s41431-018-0219-y>” acknowledges
-    the registration process as needed for [Registered
-    Access](#encoding-registered-access) Bona Fide researcher status.
+    the registration process as needed for
+    [Registered Access](#encoding-registered-access) Bona Fide researcher
+    status.
 
 ### ga4gh.ControlledAccessGrants
 
@@ -483,30 +500,28 @@ GA4GH Researcher Identity Claim Definitions
 -   This claim MAY include a
     “[condition](#condition-optional-on-specific-ri-claims)” field.
 
-Encoding Registered Access
---------------------------
+## Encoding Registered Access
 
--   To meet the requirements of [Registered
-    Access](https://www.nature.com/articles/s41431-018-0219-y) to data, a user
-    needs to have **all** of the following claims:
+-   To meet the requirements of
+    [Registered Access](https://www.nature.com/articles/s41431-018-0219-y) to
+    data, a user needs to have **all** of the following claims:
 
     -   Meeting the ethics requirements is represented by
-        ga4gh.AcceptedTermsAndPolicies.value=  
+        ga4gh.AcceptedTermsAndPolicies.value= \
         "<https://doi.org/10.1038/s41431-018-0219-y>"
 
     -   Meeting the bona fide status is represented by
-        ga4gh.ResearcherStatus.value=  
+        ga4gh.ResearcherStatus.value= \
         "<https://doi.org/10.1038/s41431-018-0219-y>"
 
 -   The [Claim Clearinghouse](#claim-clearinghouse) (e.g. to authorize a
     registered access beacon) needs to evaluate the multiple claims listed above
     to ensure their values match before granting access.
 
-Claim and Token Revocation
---------------------------
+## Claim and Token Revocation
 
-As per the [GA4GH AAI Specification on Token
-Revocation](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.4sjj6uuxbok),
+As per the
+[GA4GH AAI Specification on Token Revocation](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.4sjj6uuxbok),
 the following mechanisms are available within RI Claims:
 
 1.  Claims have an [asserted](#asserted-required) field to allow downstream
@@ -518,14 +533,15 @@ the following mechanisms are available within RI Claims:
 
 At a minimum, these RI Claim fields MUST be checked by all Claim Clearinghouses
 and systems MUST be in place to take action to remove access by the expiry
-timestamp or shortly thereafter propagation of these permission changes may
-require some reasonable delay. Systems implementing RI Claims can also employ
-other mechanisms outlined in the GA4GH AAI Specification. Systems employing RI
-Claims MUST provide mechanisms to limit the life of access, and specifically
-MUST conform to the GA4GH AAI Specification requirements in this regard.
+timestamp or shortly thereafter. Propagation of these permission changes may
+also require some reasonable delay.
 
-Example RI Claims
------------------
+Systems implementing RI Claims MAY also employ other mechanisms outlined in the
+GA4GH AAI Specification. Systems employing RI Claims MUST provide mechanisms to
+limit the life of access, and specifically MUST conform to the GA4GH AAI
+Specification requirements in this regard.
+
+## Example RI Claims
 
 This non-normative example illustrates RI claims representing Registered Access
 bona fide researcher status along with RI claims for access to specific
@@ -560,56 +576,60 @@ JWT that is signed by an Identity Broker:
 -   **ResearcherStatus**: A Signing Official at Stanford Medicine has asserted
     that this person is a bona fide researcher as defined by Registered Access.
 
-  ```
-"ga4gh": {
-"AffiliationAndRole": [
-  {
-    "value": "faculty@med.stanford.edu",
-    "source": "https://grid.ac/institutes/grid.240952.8",
-    "by": "so",
-    "asserted": 1549680000,
-    "expires": 1581208000
-  }
-],
-"ControlledAccessGrants": [
-  {
-    "value": "https://nih.gov/dbgap/phs000710",
-    "source": "https://grid.ac/institutes/grid.48336.3a",
-    "by": "dac",
-    "asserted": 1549632872,
-    "expires": 1581168872
-  },
-  {
-    "value": "https://ega-archive.org/datasets/00000432",
-    "source": "https://grid.ac/institutes/grid.225360.0",
-    "condition": {
-      "ga4gh.AffiliationAndRole" : {
-         "value": ["faculty@med.stanford.edu"],
-         "source": ["https://grid.ac/institutes/grid.240952.8"],
-         "by": [
-           "so",
-           "system"
-         ]
+    ```
+    "ga4gh": {
+    "AffiliationAndRole": [
+      {
+        "value": "faculty@med.stanford.edu",
+        "source": "https://grid.ac/institutes/grid.240952.8",
+        "by": "so",
+        "asserted": 1549680000,
+        "expires": 1581208000
       }
-    },
-    "by": "dac",
-    "asserted": 1549640000,
-    "expires": 1581168000
-  }
-],
-"AcceptedTermsAndPolicies": [
-    "value": "https://doi.org/10.1038/s41431-018-0219-y",
-    "source": "https://grid.ac/institutes/grid.240952.8",
-    "by": "self",
-    "asserted": 1549680000,
-    "expires": 1581208000
-],
-"ResearcherStatus": [
-    "value": "https://doi.org/10.1038/s41431-018-0219-y",
-    "source": "https://grid.ac/institutes/grid.240952.8",
-    "by": "so",
-    "asserted": 1549680000,
-    "expires": 1581208000
-]
-}
-```
+    ],
+    "ControlledAccessGrants": [
+      {
+        "value": "https://nih.gov/dbgap/phs000710",
+        "source": "https://grid.ac/institutes/grid.48336.3a",
+        "by": "dac",
+        "asserted": 1549632872,
+        "expires": 1581168872
+      },
+      {
+        "value": "https://ega-archive.org/datasets/00000432",
+        "source": "https://grid.ac/institutes/grid.225360.0",
+        "condition": {
+          "ga4gh.AffiliationAndRole" : {
+             "value": ["faculty@med.stanford.edu"],
+             "source": ["https://grid.ac/institutes/grid.240952.8"],
+             "by": [
+               "so",
+               "system"
+             ]
+          }
+        },
+        "by": "dac",
+        "asserted": 1549640000,
+        "expires": 1581168000
+      }
+    ],
+    "AcceptedTermsAndPolicies": [
+      {
+        "value": "https://doi.org/10.1038/s41431-018-0219-y",
+        "source": "https://grid.ac/institutes/grid.240952.8",
+        "by": "self",
+        "asserted": 1549680000,
+        "expires": 1581208000
+      }
+    ],
+    "ResearcherStatus": [
+      {
+        "value": "https://doi.org/10.1038/s41431-018-0219-y",
+        "source": "https://grid.ac/institutes/grid.240952.8",
+        "by": "so",
+        "asserted": 1549680000,
+        "expires": 1581208000
+      }
+    ]
+    }
+    ```
