@@ -16,7 +16,7 @@ Research groups around the world are making datasets available to other research
 The genomics community was therefore in need of:
 
 - a consistent definition of who a bona fide researcher is
-- ne or more identity providers that respect this definition and provide identities in the virtual world that travel with the researcher across various data sharing repositories
+- one or more identity providers that respect this definition and provide identities in the virtual world that travel with the researcher across various data sharing repositories
 
 The GA4GH Researcher Identity & Access Claims (aka RI Claims) specification aims to support access policies that rely on either a researcher's role, affiliation, or access status, which may all form part of the researcher's claims "passport". To support the Registered Access data access model, RI Claims allows for the encoding and recognition of researchers with Bona Fide Researcher Registered Access status.
 
@@ -72,7 +72,7 @@ Here is an example of the life of a claim:
 
 ## Flow Of Claims
 
-![alt text](https://github.com/ga4gh-duri/flow_of_claims.png "Flow of Claims")
+![alt text](https://github.com/ga4gh-duri/assets/img/flow_of_claims.png "Flow of Claims")
 
 ## Why so many expiry timestamps?
 
