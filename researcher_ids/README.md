@@ -2,7 +2,7 @@
 
 ## Quick Links
 
-- [GA4GH Researcher Identity & Access Claims Specification](http://bit.ly/ri-claims)
+- [GA4GH Researcher Identity & Access Claims Specification](http://bit.ly/ga4gh-ri-v1)
 - [GA4GH Authentication and Authorization Infrastructure (AAI) OpenID Connect Profile](http://bit.ly/g4gh-aai)
 
 ## Introduction
@@ -23,7 +23,7 @@ The GA4GH Researcher Identity & Access Claims (aka RI Claims) specification aims
 
 ## Specification Overview
 
-The [GA4GH Researcher Identity & Access Claims (RI Claims) specification](http://bit.ly/ri-claims) defines a technical standard specifying a machine readable data format to attribute credentials to a person to validate their identity and verify that they are permitted to access data held by a third-party data custodian. The RI Claims specification further defines the mechanism by which such credentials are assigned and exchanged in a secure manner. By adopting the RI Claims specification a data custodian should have the ability to greatly speed-up the sharing of data with trusted persons such as researchers working on next generations health studies.
+The [GA4GH Researcher Identity & Access Claims (RI Claims) specification](http://bit.ly/ga4gh-ri-v1) defines a technical standard specifying a machine readable data format to attribute credentials to a person to validate their identity and verify that they are permitted to access data held by a third-party data custodian. The RI Claims specification further defines the mechanism by which such credentials are assigned and exchanged in a secure manner. By adopting the RI Claims specification a data custodian should have the ability to greatly speed-up the sharing of data with trusted persons such as researchers working on next generations health studies.
 
 Credentials for data access are assigned to a person in the form of Claims. A number of Claims can be assigned to a person and included in a signed access token, thereby constituting a Passport for that person. Claim Authorities, such as research institutions, can create Claims associate with a person's identity.
 
@@ -44,7 +44,7 @@ The precise method to create claims, inject them into passports, and use them do
 
 Here is an example of the life of a claim:
 
-1. A source of authority ([Claim Authority](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit#heading=h.h79hhcau08w5)) creates a new claim in a system that stores claim metadata into a database. The Claim Authority could be a specialized user who has knowledge of the researcher they are making a claim on behalf of, or it could be a researcher making a claim about themselves. Another alternative is that a system can collect metadata about a user from another system and make the claim on the researcher's behalf.
+1. A source of authority ([Claim Authority](http://bit.ly/ga4gh-ri-v1#claim-authority)) creates a new claim in a system that stores claim metadata into a database. The Claim Authority could be a specialized user who has knowledge of the researcher they are making a claim on behalf of, or it could be a researcher making a claim about themselves. Another alternative is that a system can collect metadata about a user from another system and make the claim on the researcher's behalf.
     1. The claim information is stored in a database.
     2. Audit information is added about who asserted the claim, when the claim was made, and any other artifacts it may have about around making the claim.
     3. The Claim Authority may choose to have the claim expire in 30 days, and can reissue a replacement claim if needed again after that. 
@@ -59,10 +59,10 @@ Here is an example of the life of a claim:
         1. Protected access using a Beacon may require the Registered Access claims to be present.
         2. Access to some datasets may require a specific ControlledAccessGrants claim to be present.
     4. The claims are extracted from the Passport and the contents of the claims are compared to the required claims for the access policy. The Claim Clearinghouse will accept or reject claims and tries to find a set of acceptable claims that match the access policy.  
-        1. The "[expires](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit#heading=h.tdge5487ert9)" field is checked to make sure it hasn't expired, and may use [special expiry checking logic](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit#heading=h.ruipgcz7pe27) to make sure it isn't going to expire soon.
-        2. The "[source](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit#heading=h.7gkkcdjjulcj)" field is checked to see if it is from a trusted source from a trusted source whitelist.
-        3. The "[value](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit#heading=h.vddhgptnqj4f)" field is checked to see if it meets the requirements of the access policy.
-        4. The "[asserted](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit#heading=h.x2qu20cktltz)" and "[by](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit#heading=h.bjnftdj471t6)" fields may be checked as well, depending on the policy.
+        1. The "[expires](http://bit.ly/ga4gh-ri-v1#expires-required)" field is checked to make sure it hasn't expired, and may use [special expiry checking logic](http://bit.ly/ga4gh-ri-v1#claim-expiry) to make sure it isn't going to expire soon.
+        2. The "[source](http://bit.ly/ga4gh-ri-v1#source-required)" field is checked to see if it is from a trusted source from a trusted source whitelist.
+        3. The "[value](http://bit.ly/ga4gh-ri-v1#value-required)" field is checked to see if it meets the requirements of the access policy.
+        4. The "[asserted](http://bit.ly/ga4gh-ri-v1#asserted-required)" and "[by](http://bit.ly/ga4gh-ri-v1#by-optional)" fields may be checked as well, depending on the policy.
 4. If the Claim Clearinghouse decides that the Passport meets the access policy for the data in question, the service proceeds to authorize the researcher's use of the data.
     1. Some Claim Clearinghouses will authorize use of the data by changing the researcher's permissions and issuing a cloud-specific access token to read the bytes using their own cloud-native tools and services.
     2. Other Claim Clearinghouses will read the bytes from another service using special access token that it holds which contains permission to do so, then return the bytes back to the researcher.
@@ -73,7 +73,7 @@ Here is an example of the life of a claim:
 
 ## Flow Of Claims
 
-![alt text](https://github.com/ga4gh-duri/assets/img/flow_of_claims.png "Flow of Claims")
+![alt text](/assets/img/flow_of_claims.png)
 
 ## Why so many expiry timestamps?
 
