@@ -19,7 +19,7 @@ The genomics community was therefore in need of:
 - one or more identity providers that respect this definition and provide secure digital identities that researchers can use online to access various federated data repositories around the world
 - a standard way to express data access rights that can be used to authorise researchers to compute on data in an increasingly automated manner
 
-The GA4GH Researcher Identity & Access Claims (aka RI Claims) specification aims to support access policies that rely on either a researcher's role, affiliation, or access status, which may all form part of the researcher's claims "passport". To support the Registered Access data access model, RI Claims allows for the encoding and recognition of researchers with Bona Fide Researcher Registered Access status.
+The GA4GH Researcher Identity & Access Claims (aka RI Claims) specification aims to support Registered or Controlled access to federated genomics and health data. Access claim may rely on researcher’s role, affiliation, or status given by data access authorities. These claims form researcher’s “passport” that can be interpreted to authorize data access. To support the Registered Access data access model, RI Claims allows for the encoding and recognition of researchers with Bona Fide Researcher Registered Access status.
 
 ## Specification Overview
 
