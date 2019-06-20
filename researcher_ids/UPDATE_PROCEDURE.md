@@ -25,9 +25,12 @@ Prior to recommending changes please:
   * identify and provide the following information:
       1. Your name and affiliation
       2. If you are currently a member of GA4GH and in what capacity
-      2. If you are currently using an implementation of RI Claims
-      3. If you are recommending a change to an implementation, the specifications, or the documentation
-      4. A full description of the recommendation you are making
+      3. If you are currently using an implementation of RI Claims
+      4. Whether you are recommending the change on behalf of one or more of the following: 
+          * an implementation of the spec  
+          * the RI Claims specification itself  
+          * or other documentation in the researcher_ids directory  
+      5. A full description of the recommendation you are making
       
-A maintainer will get back to you shortly and may elect to raise your recommendation at the next RI Claims work stream meeting which typically occur every 2 weeks. 
+A maintainer will get back to you shortly and may elect to raise your recommendation at the next RI Claims work stream meeting which typically occur every 4 weeks. 
 The RI Claims specifications are a community driven project and we value your input.
