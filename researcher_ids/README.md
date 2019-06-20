@@ -2,8 +2,9 @@
 
 ## Quick Links
 
-- [GA4GH Researcher Identity & Access Claims Specification](http://bit.ly/ga4gh-ri-v1)
+- [GA4GH Researcher Identity & Access Claims (RI Claims) Specification](http://bit.ly/ga4gh-ri-v1)
 - [GA4GH Authentication and Authorization Infrastructure (AAI) OpenID Connect Profile](http://bit.ly/ga4gh-aai)
+- [Update Procedure](UPDATE_PROCEDURE.md) for Researcher IDs content 
 
 ## Introduction
 
