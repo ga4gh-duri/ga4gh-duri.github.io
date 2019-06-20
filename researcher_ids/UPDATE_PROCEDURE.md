@@ -12,7 +12,7 @@ This document outlines the maintainers and update procedures to suggest and inni
 **Name**: Mikael Linden  
     Host Institute: CSC  
     Email Address: mikael.linden@csc.fi  
-    GitHub:  
+    GitHub: @mikael-linden 
 
 ## Specifications updates
 
