@@ -71,7 +71,7 @@ Additonal terms on fields:
 -   An assertion from a [Claim Authority](#claim-authority) that is bound to a
     researcher identity. Claims have various properties or fields that describe
     the attestations and limitations thereof. These claims can then be bundled
-    together in a [Passport](#_553aqob9ijlr).
+    together in a [Passport](#passport).
 
 #### **Claim Authority**
 
@@ -100,7 +100,7 @@ Additonal terms on fields:
 
 #### **Claim Clearinghouse**
 
--   The service consuming claims via a [Passport](#_553aqob9ijlr) as defined by
+-   The service consuming claims via a [Passport](#passport) as defined by
     the
     [Claim Clearinghouses section of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-claim-clearinghouses-consuming-access-tokens-to-give-access-to-data).
 
@@ -243,7 +243,7 @@ claim objects within a “ga4gh” root OIDC claim object (see
     field, if present).
 
 -   Its use by a Claim Clearinghouse is described in the
-    [Claim Expiry](#url-claim-fields) section.
+    [Claim Expiry](#claim-expiry) section.
 
 #### “**expires**” [required]
 
@@ -262,7 +262,7 @@ claim objects within a “ga4gh” root OIDC claim object (see
     shortly after this cut-off period.
 
 -   Its use by a Claim Clearinghouse is described in the
-    [Claim Expiry](#url-claim-fields) section and
+    [Claim Expiry](#claim-expiry) section and
     [Token Revocation](#claim-and-token-revocation) section.
 
 #### “**condition**” [optional on specific RI claims]
@@ -566,7 +566,7 @@ Use cases include, but are not limited to the following:
     -   [ga4gh.AffiliationAndRole](#ga4ghaffiliationandrole) to associate a user
         with a role within a specific organization. Additionally the
         ga4gh.ControlledAccessGrants MAY make use of the role and affiliation
-        through a [condition](#condition-optional-on-specific-claims) field.
+        through a [condition](#condition-optional-on-specific-ri-claims) field.
         
     -   Any other RI claim that may be required to meet controlled access policies.
 
