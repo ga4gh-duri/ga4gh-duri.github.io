@@ -11,14 +11,44 @@ specification for
 [GA4GH Researcher Identity Claims](#researcher-identity-claim-ri-claim) to be
 consumed by [Claim Clearinghouses](#claim-clearinghouse) in a standardized
 approach to determine whether or not data access should be granted.
-Additionally, the specification provides guidance on
-[encoding of Registered Access claims](#encoding-registered-access) as defined
-in the
-“[Registered access: authorizing data access](https://www.nature.com/articles/s41431-018-0219-y)”
-publication.
+Additionally, the specification provides guidance on encoding specific
+[use cases](#encoding-use-cases).
 
 **Co-Chairs of Product Subgroup**: Stephanie Dyke (McGill) & Craig Voisin
 (Google)
+
+### Table of Contents
+
+- [**Conventions and Terminology**](#conventions-and-terminology)
+  - [Researcher Identity Claim (“RI Claim”)](#researcher-identity-claim-ri-claim)     
+  - [Claim Authority](#claim-authority)
+  - [Passport](#passport)
+  - [Claim Clearinghouse](#claim-clearinghouse)
+- [**Researcher Identity Claim Overview**](#researcher-identity-claim-overview)
+  - [RI Claims Requirements](#ri-claims-requirements)
+  - [Support for User Interfaces](#support-for-user-interfaces)
+- [**Claim Object Fields**](#claim-object-fields)
+  - Field Definitions:
+    - [value](#value-required)
+    - [source](#source-required)
+    - [asserted](#asserted-required)
+    - [expires](#expires-required)
+    - [condition](#condition-optional-on-specific-ri-claims)
+    - [by](#by-optional)          
+  - [URL Claim Fields](#url-claim-fields)
+  - [Claim Expiry](#claim-expiry)
+- [**GA4GH Researcher Identity Claim Definitions**](#ga4gh-researcher-identity-claim-definitions)
+  - [ga4gh.AffiliationAndRole](#ga4ghaffiliationandrole)
+  - [ga4gh.AcceptedTermsAndPolicies](#ga4ghacceptedtermsandpolicies)
+  - [ga4gh.ResearcherStatus](#ga4ghresearcherstatus)
+  - [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants)
+- [**Encoding Use Cases**](#encoding-use-cases)
+  - [Public Access](#public-access)
+  - [Registered Access](#registered-access)
+  - [Controlled Access](#controlled-access)
+- [**Claim and Token Revocation**](#claim-and-token-revocation)
+- [**Example RI Claims**](#example-ri-claims)
+- [**Specification Revision History**](#specification-revision-history)
 
 ## Conventions and Terminology
 
@@ -51,7 +81,7 @@ Additonal terms on fields:
     within the organization that made the claim.
 
 -   This is NOT necessarily the organization that stores the claim, or the
-    [Identity Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.an88npsnugjl)’s
+    [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)’s
     organization that signs the [passport](#passport); it is the organization
     that has the authority to assert the claim on behalf of the user that is
     responsible for making and maintaining the assertion.
@@ -61,18 +91,18 @@ Additonal terms on fields:
 -   A bundle of
     [researcher identity claims](#researcher-identity-claim-ri-claim) that is
     collected into a
-    [specialized JWT token](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.sbvh8xj8gogg)
+    [specialized JWT token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#ga4gh-jwt-format)
     and signed by an
-    [Identity Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.an88npsnugjl)
+    [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)
     as per the
-    [GA4GH AAI specification](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit)
+    [GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
     for the purpose of evaluating authorization.
 
 #### **Claim Clearinghouse**
 
 -   The service consuming claims via a [Passport](#_553aqob9ijlr) as defined by
     the
-    [Claim Clearinghouses section of the GA4GH AAI specification](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.5va9qbe4vsfw).
+    [Claim Clearinghouses section of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-claim-clearinghouses-consuming-access-tokens-to-give-access-to-data).
 
 ## Researcher Identity Claim Overview
 
@@ -81,11 +111,11 @@ Additonal terms on fields:
 1.  <a name="requirement-1"></a>
     [RI Claims](#researcher-identity-claim-ri-claim) and tokens that contain RI
     Claims MUST conform the the
-    [GA4GH AAI Spec](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.pnom2c7wov36).
+    [GA4GH AAI Spec](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
-2.  <a name="requirement-2"></a> Each RI Claim MAY be multi-valued.
+2.  <a name="requirement-2"></a> Each RI Claim consists of a list of [Claim Objects](#claim-object-fields).
 
-3.  <a name="requirement-3"></a> Each RI Claim may have a different expiry.
+3.  <a name="requirement-3"></a> Each RI Claim object may have a different expiry.
 
     -   This allows a token carrying the claims to be short lived (e.g. 10
         minutes).
@@ -114,7 +144,7 @@ Additonal terms on fields:
     or filtering claims to only the subset needed for a particular purpose, etc.
 
 7.  <a name="requirement-7"></a> When an
-    [Identity Broker](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit?ts=5b5bc642#heading=h.ufz3k0fqgxh0)
+    [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)
     receives a request with the “ga4gh” scope, it MUST provide RI claims under
     the “ga4gh” OIDC token claim as follows:
 
@@ -177,7 +207,7 @@ claim objects within a “ga4gh” root OIDC claim object (see
 
 -   For example, ga4gh.ResearcherStatus.value =
     "<https://doi.org/10.1038/s41431-018-0219-y>” represents the Registered
-    Access Bona Fide standard.
+    Access Bona Fide researcher status.
 
 -   A Claim Clearinghouse SHOULD match the full string value as part of
     enforcing its policies for access.
@@ -208,10 +238,8 @@ claim objects within a “ga4gh” root OIDC claim object (see
 -   Shortened name for “asserted at”.
 
 -   Seconds since unix epoch of when the [Claim Authority](#claim-authority)
-    that made the claim (i.e. the entity identified by the
-    [source](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit?disco=AAAAClo87-0&ts=5cac94bb#heading=h.7gkkcdjjulcj)
-    field and potentially more specific using the optional
-    [by](https://docs.google.com/document/d/11Wg-uL75ypU5eNu2p_xh9gspmbGtmLzmdq5VfPHBirE/edit?disco=AAAAClo87-0&ts=5cac94bb#heading=h.bjnftdj471t6)
+    that made the claim (i.e. the entity identified by the [source](#source-required)
+    field and potentially more specific using the optional [by](#by-optional)
     field, if present).
 
 -   Its use by a Claim Clearinghouse is described in the
@@ -467,7 +495,7 @@ Where:
 
 -   Example value: “<https://doi.org/10.1038/s41431-018-0219-y>” acknowledges
     the ethics terms as needed for
-    [Registered Access](#encoding-registered-access) Bona Fide researcher
+    [Registered Access](#registered-access) Bona Fide researcher
     status.
 
 -   MUST include “[by](#by-optional)” field.
@@ -485,7 +513,7 @@ Where:
 
 -   Example value: “<https://doi.org/10.1038/s41431-018-0219-y>” acknowledges
     the registration process as needed for
-    [Registered Access](#encoding-registered-access) Bona Fide researcher
+    [Registered Access](#registered-access) Bona Fide researcher
     status.
 
 ### ga4gh.ControlledAccessGrants
@@ -500,7 +528,17 @@ Where:
 -   This claim MAY include a
     “[condition](#condition-optional-on-specific-ri-claims)” field.
 
-## Encoding Registered Access
+## Encoding Use Cases
+
+Use cases include, but are not limited to the following:
+
+### Public Access
+
+-   Public access data MAY wish to make use of RI Claims to encode information about
+    who is making the data or access request in addition to the `sub` field within
+    the passport itself.
+
+### Registered Access
 
 -   To meet the requirements of
     [Registered Access](https://www.nature.com/articles/s41431-018-0219-y) to
@@ -518,10 +556,24 @@ Where:
     registered access beacon) needs to evaluate the multiple claims listed above
     to ensure their values match before granting access.
 
+### Controlled Access
+
+-   Controlled Access to data MAY make use of any of the following RI claims:
+
+    -   [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants) to encode
+        permissions associated with specific data or datasets.
+        
+    -   [ga4gh.AffiliationAndRole](#ga4ghaffiliationandrole) to associate a user
+        with a role within a specific organization. Additionally the
+        ga4gh.ControlledAccessGrants MAY make use of the role and affiliation
+        through a [condition](#condition-optional-on-specific-claims) field.
+        
+    -   Any other RI claim that may be required to meet controlled access policies.
+
 ## Claim and Token Revocation
 
 As per the
-[GA4GH AAI Specification on Token Revocation](https://docs.google.com/document/d/1zzsuNtbNY7agPRjfTe6gbWJ3BU6eX19JjWRKvkFg1ow/edit#heading=h.4sjj6uuxbok),
+[GA4GH AAI Specification on Token Revocation](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#token-revocation),
 the following mechanisms are available within RI Claims:
 
 1.  Claims have an [asserted](#asserted-required) field to allow downstream
@@ -633,3 +685,10 @@ JWT that is signed by an Identity Broker:
     ]
     }
     ```
+
+## Specification Revision History
+
+| Version | Date       | Editor                             | Notes                                                         |
+|---------|------------|------------------------------------|---------------------------------------------------------------|
+| 0.9.1   | 2019-07-08 | Craig Voisin                       | Clarify use cases, rephrase multi-value, update links         |
+| 0.9.0   | 2017-      | Craig Voisin, Mikael Linden et al. | Initial working version                                       |
