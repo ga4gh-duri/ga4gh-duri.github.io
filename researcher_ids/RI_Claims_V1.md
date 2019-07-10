@@ -71,7 +71,7 @@ Additonal terms on fields:
 
 -   A set of [RI Claim Objects](#researcher-identity-claim-object-ri-claim-object)
     provided by a common key value within the "ga4gh" OIDC claim. For example, the
-    following structure encodes a "ControlledAccessGrants" RI Claim:
+    following structure encodes a "ga4gh.ControlledAccessGrants" RI Claim:
     
     ```
     "ga4gh" : {
