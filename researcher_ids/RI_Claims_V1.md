@@ -20,15 +20,16 @@ Additionally, the specification provides guidance on encoding specific
 ### Table of Contents
 
 - [**Conventions and Terminology**](#conventions-and-terminology)
-  - [Researcher Identity Claim (“RI Claim”)](#researcher-identity-claim-ri-claim)     
+  - [Researcher Identity Claim (“RI Claim”)](#researcher-identity-claim-ri-claim)
+  - [Researcher Identity Claim Object (“RI Claim Object”)](#researcher-identity-claim-object-ri-claim-object)
   - [Claim Authority](#claim-authority)
   - [Passport](#passport)
   - [Claim Clearinghouse](#claim-clearinghouse)
 - [**Researcher Identity Claim Overview**](#researcher-identity-claim-overview)
   - [RI Claims Requirements](#ri-claims-requirements)
   - [Support for User Interfaces](#support-for-user-interfaces)
-- [**Claim Object Fields**](#claim-object-fields)
-  - Field Definitions:
+- [**Claim Objects**](#claim-objects)
+  - [Claim Object Fields](#claim-object-fields)
     - [value](#value-required)
     - [source](#source-required)
     - [asserted](#asserted-required)
@@ -68,10 +69,30 @@ Additonal terms on fields:
 
 #### **Researcher Identity Claim (“RI Claim”)**
 
--   An assertion from a [Claim Authority](#claim-authority) that is bound to a
-    researcher identity. Claims have various properties or fields that describe
-    the attestations and limitations thereof. These claims can then be bundled
-    together in a [Passport](#passport).
+-   A set of RI Claim Objects provided by a common key value within the "ga4gh"
+    OIDC claim. For example, the following structure encodes a
+    "ControlledAccessGrants" RI Claim:
+    
+    ```
+    "ga4gh" : {
+      "ControlledAccessGrants": [
+        Claim Object (see definition below),
+        Claim Object (if more than one),
+        ...
+      ]
+    }
+    ```
+    
+    RI Claims can be bundled together in a [Passport](#passport).
+
+#### **Researcher Identity Claim Object ("RI Claim Object")**
+
+-   An Assertion from [Claim Authority](#claim-authority) that is bound to a
+    researcher identity.
+
+-   Encoded as a JSON object that contains various properties
+    ([Claim Object Fields](#claim-object-fields)) that describe the assertion and
+    limitations thereof.
 
 #### **Claim Authority**
 
@@ -96,7 +117,7 @@ Additonal terms on fields:
     [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)
     as per the
     [GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
-    for the purpose of evaluating authorization.
+    for the purpose of encoding identity and evaluating authorization.
 
 #### **Claim Clearinghouse**
 
@@ -115,7 +136,7 @@ Additonal terms on fields:
 
 2.  <a name="requirement-2"></a> Each RI Claim consists of a list of [Claim Objects](#claim-object-fields).
 
-3.  <a name="requirement-3"></a> Each RI Claim object may have a different expiry.
+3.  <a name="requirement-3"></a> Each RI Claim Object may have a different expiry.
 
     -   This allows a token carrying the claims to be short lived (e.g. 10
         minutes).
@@ -126,9 +147,9 @@ Additonal terms on fields:
         intent to access a resource over the next 60 days, even if this access
         ends up being revoked after 15 days for other reasons).
 
-4.  <a name="requirement-4"></a> RI Claims MUST have an indication of which
+4.  <a name="requirement-4"></a> RI Claim Objects MUST have an indication of which
     organization asserted the claim (i.e. the “[source](#source-required)”
-    field), but claims do not indicate individual persons involved in making the
+    field), but RI Claim Objects do not indicate individual persons involved in making the
     assertion (i.e. who assigned/signed the claim) as it is not generally needed
     to make an access decision.
 
@@ -146,7 +167,7 @@ Additonal terms on fields:
 7.  <a name="requirement-7"></a> When an
     [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)
     receives a request with the “ga4gh” scope, it MUST provide RI claims under
-    the “ga4gh” OIDC token claim as follows:
+    the “ga4gh” OIDC claim as follows:
 
     -   The Identity Broker collects the claims, potentially from multiple
         sources including any upstream Identity Brokers, and flattens them into
@@ -155,7 +176,7 @@ Additonal terms on fields:
     -   The Identity Broker signs the token of claims.
 
     -   Note: a consumer of claims (e.g. a Claim Clearinghouse) accepting the
-        “ga4gh” OIDC token claim signed by a given Identity Broker also accepts
+        “ga4gh” OIDC claim signed by a given Identity Broker also accepts
         the chain of trust that such claims were collected correctly, are
         ligitimently derived from the sources of authority, and are presented
         accurately.
@@ -193,11 +214,15 @@ interfaces, such as:
 -   May provide a rich set of internationalization/localization features for
     clients to consume.
 
-## Claim Object Fields
+## Claim Objects
 
 Each [RI claim](#researcher-identity-claim-ri-claim) name maps to an array of
-claim objects within a “ga4gh” root OIDC claim object (see
-[example](#example-ri-claims)). Fields within the claim object are:
+claim JSON objects ([RI Claim Objects](#researcher-identity-claim-object-ri-claim-object))
+within a “ga4gh” root OIDC claim object (see [example](#example-ri-claims)).
+
+## Claim Object Fields
+
+Fields within a RI Claim Object are:
 
 #### “**value**” [required]
 
@@ -267,8 +292,9 @@ claim objects within a “ga4gh” root OIDC claim object (see
 
 #### “**condition**” [optional on specific RI claims]
 
--   A condition on a claim object that indicates it is only valid if the
-    contents of the condition are present elsewhere in the Passport.
+-   A condition on an RI Claim Object indicates that the RI Claim Object is
+    only valid if the contents of the condition are present elsewhere in the
+    Passport.
 
 -   Fields that are not specified in the condition are not required to match
     (i.e. any value will be accepted within that field).
@@ -304,16 +330,16 @@ claim objects within a “ga4gh” root OIDC claim object (see
 
 -   The Claim Clearinghouse MUST verify that for each condition claim and each
     condition field present, a single corresponding
-    [RI claim](#researcher-identity-claim-ri-claim) and its corresponding
-    [fields](#claim-object-fields) match as per the matching algorithms
-    described elsewhere in this specification, along with the following
-    requirements:
+    [RI Claim Object](#researcher-identity-claim-object-ri-claim-object) and its
+    corresponding [fields](#claim-object-fields) match as per the matching
+    algorithms described elsewhere in this specification, along with the
+    following requirements:
 
     -   A condition field matches when any one string within the specified list
-        matches a corresponding claim’s field in the passport.
+        matches a corresponding claim’s field in the Passport.
 
-    -   All condition fields that are specified MUST match the same claim in the
-        passport.
+    -   All condition fields that are specified MUST match the same RI Claim Object
+        in the Passport.
 
     -   For example:
 
@@ -343,9 +369,9 @@ claim objects within a “ga4gh” root OIDC claim object (see
 
 -   value = "student\@uni-heidelberg.de" AND by = "system"
 
--   The Condition field MUST NOT be present within a claim object unless a
+-   The Condition field MUST NOT be present within a RI Claim Object unless a
     [claim’s definition](#ga4gh-researcher-identity-claim-definitions)
-    explicitly indicates it is optional.
+    explicitly indicates it is optional or required.
 
 #### “**by**” [optional]
 
@@ -402,10 +428,10 @@ format with the following limitations:
         established organizational ontology URL such as a
         [GRID URL](https://grid.ac/institutes) as their canonical “source” URL.
 
-3.  The URL SHOULD also be as short as reasonably possible while avoid
+3.  The URL SHOULD also be as short as reasonably possible while avoiding
     collisions, and MUST NOT exceed 255 characters.
 
-4.  The URL MUST NOT be followed by the algorithm making an access decision.
+4.  The URL MUST NOT be fetched by the algorithm making an access decision.
 
 5.  URLs SHOULD resolve to a human readable document for a policy maker to
     reason about.
@@ -417,8 +443,8 @@ enforce, Claim Clearinghouses that provide access for a given duration provided
 by the user (excluding any revocation policies) MUST enforce one of the
 following algorithm options to ensure that claim expiry is accounted for:
 
-**Option A**: use the following algorithm to determine if the RI Claim is valid
-for the entire duration of the requested duration:
+**Option A**: use the following algorithm to determine if the RI Claim Object is
+valid for the entire duration of the requested duration:
 
 ```
 now()+requestedTTL < min("claim.expires", "claim.asserted"+maxAuthzTTL)
@@ -536,7 +562,7 @@ Use cases include, but are not limited to the following:
 
 -   Public access data MAY wish to make use of RI Claims to encode information about
     who is making the data or access request in addition to the `sub` field within
-    the passport itself.
+    the Passport itself.
 
 ### Registered Access
 
@@ -574,16 +600,16 @@ Use cases include, but are not limited to the following:
 
 As per the
 [GA4GH AAI Specification on Token Revocation](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#token-revocation),
-the following mechanisms are available within RI Claims:
+the following mechanisms are available within RI Claim Objects:
 
-1.  Claims have an [asserted](#asserted-required) field to allow downstream
+1.  RI Claim Objects have an [asserted](#asserted-required) field to allow downstream
     policies to limit the life, if needed, of how long assertions will be
     accepted for use with access and refresh tokens.
 
-2.  Claims have an [expires](#expires-required) field to allow Claim
+2.  RI Claim Objects have an [expires](#expires-required) field to allow Claim
     Clearinghouses to limit the life of access and refresh tokens.
 
-At a minimum, these RI Claim fields MUST be checked by all Claim Clearinghouses
+At a minimum, these RI Claim Object fields MUST be checked by all Claim Clearinghouses
 and systems MUST be in place to take action to remove access by the expiry
 timestamp or shortly thereafter. Propagation of these permission changes may
 also require some reasonable delay.
@@ -690,5 +716,6 @@ JWT that is signed by an Identity Broker:
 
 | Version | Date       | Editor                             | Notes                                                         |
 |---------|------------|------------------------------------|---------------------------------------------------------------|
+| 0.9.2   | 2019-07-09 | Craig Voisin                       | Introduce RI Claim Object definition and use it consistently  |
 | 0.9.1   | 2019-07-08 | Craig Voisin                       | Clarify use cases, rephrase multi-value, update links         |
 | 0.9.0   | 2017-      | Craig Voisin, Mikael Linden et al. | Initial working version                                       |
