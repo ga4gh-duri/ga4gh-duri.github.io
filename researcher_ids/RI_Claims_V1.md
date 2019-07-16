@@ -12,7 +12,7 @@ specification for
 consumed by [Claim Clearinghouses](#claim-clearinghouse) in a standardized
 approach to determine whether or not data access should be granted.
 Additionally, the specification provides guidance on encoding specific
-[use cases](#encoding-use-cases).
+[use cases](#encoding-use-cases), including [Registered Access claims](#registered-access) as described in the “[Registered access: authorizing data access](https://www.nature.com/articles/s41431-018-0219-y) publication.”
 
 **Co-Chairs of Product Subgroup**: Stephanie Dyke (McGill) & Craig Voisin
 (Google)
@@ -558,11 +558,6 @@ Where:
 
 Use cases include, but are not limited to the following:
 
-### Public Access
-
--   Public access data MAY wish to make use of RI Claims to encode information about
-    who is making the data or access request in addition to the `sub` field within
-    the Passport itself.
 
 ### Registered Access
 
@@ -586,7 +581,7 @@ Use cases include, but are not limited to the following:
 
 -   Controlled Access to data MAY make use of any of the following RI claims:
 
-    -   [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants) to encode
+    -   [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants) for
         permissions associated with specific data or datasets.
         
     -   [ga4gh.AffiliationAndRole](#ga4ghaffiliationandrole) to associate a user
