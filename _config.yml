@@ -54,7 +54,7 @@ nav_cat_blocks: # comma-separated "label,type,label_visibility"
   General: 'General,categories,hide'
   related_sites: 'Related Sites,related_sites,show'
   
-categories_year_sorted:
+categories-date-sorted:
   - news
   - minutes
 

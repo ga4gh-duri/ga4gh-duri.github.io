@@ -45,8 +45,8 @@ foreach $cat_block (keys %{ $config->{nav_cat_blocks} }) {
 foreach (@items) { copy($template, $type_path.'/'.$_.'.md') }
 foreach (@items) { print $type_path.'/'.$_.'.md'."\n" }
 
-$template       =   $base_path.'/_templates/_categories_year_sorted.md';
-@items          =   @{ $config->{categories_year_sorted} };
+$template       =   $base_path.'/_templates/_categories-date-sorted.md';
+@items          =   @{ $config->{categories-date-sorted} };
 foreach (@items) { copy($template, $type_path.'/'.$_.'.md') }
 foreach (@items) { print $type_path.'/'.$_.'.md'."\n" }
 
