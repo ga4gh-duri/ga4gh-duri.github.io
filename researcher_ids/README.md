@@ -20,7 +20,11 @@ The genomics community was therefore in need of:
 - one or more identity providers that respect this definition and provide secure digital identities that researchers can use online to access various federated data repositories around the world
 - a standard way to express data access rights that can be used to authorise researchers to compute on data in an increasingly automated manner
 
-The GA4GH Researcher Identity & Access Claims (aka RI Claims) specification aims to support Registered or Controlled access to federated genomics and health data. Access claim may rely on researcher’s role, affiliation, or status given by data access authorities. These claims form researcher’s “passport” that can be interpreted to authorize data access. To support the Registered Access data access model, RI Claims allows for the encoding and recognition of researchers with Bona Fide Researcher Registered Access status.
+GA4GH Researcher Identity & Access Claims (aka RI Claims) specification aims to support data access policies within current and evolving data access governance systems. RI Claims defines a standard way of communicating the data access authorizations that a user has based on either their role (e.g. researcher), affiliation, or access status. RI Claims from trusted organizations can therefore express data access authorizations that require either a registration process (for the [Registered Access data access model](https://doi.org/10.1038/s41431-018-0219-y)) or custom data access approval (such as the Controlled Access applications used for many datasets).
+
+Data access authorization information is stored according to RI Claims and consumed to provide access to the user in a technical environment. For example, to support Registered Access, RI Claims allows for the encoding and identification of users with Bona Fide Researcher Registered Access status. To simplify access to multiple data sets, different RI Claims that a user has acquired to authorize dataset access may be bundled to form an RI Claims “Passport”.
+
+Organizations and individuals issuing and using RI Claims must adhere to corresponding data access and data protection policies and regulations, with respect to both the data to which RI Claims may be used to gain access, and to the personal data of the individual to which RI Claims apply.
 
 ## Specification Overview
 
