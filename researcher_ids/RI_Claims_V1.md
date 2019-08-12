@@ -24,6 +24,7 @@ Additionally, the specification provides guidance on encoding specific
   - [Researcher Identity Claim Object (“RI Claim Object”)](#researcher-identity-claim-object-ri-claim-object)
   - [Claim Authority](#claim-authority)
   - [Passport](#passport)
+  - [Embedded Passport Token](#embedded-passport-token)
   - [Claim Clearinghouse](#claim-clearinghouse)
 - [**Researcher Identity Claim Overview**](#researcher-identity-claim-overview)
   - [RI Claims Requirements](#ri-claims-requirements)
@@ -35,7 +36,7 @@ Additionally, the specification provides guidance on encoding specific
     - [asserted](#asserted-required)
     - [expires](#expires-required)
     - [condition](#condition-optional-on-specific-ri-claims)
-    - [by](#by-optional)          
+    - [by](#by-optional)
   - [URL Claim Fields](#url-claim-fields)
   - [Claim Expiry](#claim-expiry)
 - [**GA4GH Researcher Identity Claim Definitions**](#ga4gh-researcher-identity-claim-definitions)
@@ -43,6 +44,8 @@ Additionally, the specification provides guidance on encoding specific
   - [ga4gh.AcceptedTermsAndPolicies](#ga4ghacceptedtermsandpolicies)
   - [ga4gh.ResearcherStatus](#ga4ghresearcherstatus)
   - [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants)
+- [**Embedded Passport Tokens**](#embedded-passport-tokens)
+  - [Example with Embedded Tokens](#example-with-embedded-tokens)
 - [**Encoding Use Cases**](#encoding-use-cases)
   - [Registered Access](#registered-access)
   - [Controlled Access](#controlled-access)
@@ -71,7 +74,7 @@ Additonal terms on fields:
 -   A set of [RI Claim Objects](#researcher-identity-claim-object-ri-claim-object)
     provided by a common key value within the "ga4gh" OIDC claim. For example, the
     following structure encodes a "ga4gh.ControlledAccessGrants" RI Claim:
-    
+
     ```
     "ga4gh" : {
       "ControlledAccessGrants": [
@@ -81,7 +84,7 @@ Additonal terms on fields:
       ]
     }
     ```
-    
+
     RI Claims can be bundled together in a [Passport](#passport).
 
 #### **Researcher Identity Claim Object ("RI Claim Object")**
@@ -95,16 +98,9 @@ Additonal terms on fields:
 
 #### **Claim Authority**
 
--   The [source](#source-required) of a claim assertion which at a minimum
-    includes the organization associated with asserting the claim, although can
-    optionally identify a sub-organization or a specific [role](#by-optional)
-    within the organization that made the claim.
-
--   This is NOT necessarily the organization that stores the claim, or the
-    [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)’s
-    organization that signs the [passport](#passport); it is the organization
-    that has the authority to assert the claim on behalf of the user that is
-    responsible for making and maintaining the assertion.
+-   The
+    [AAI Claim Authority](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-authority)
+    as encoded by the [source field](#source-required).
 
 #### **Passport**
 
@@ -117,6 +113,33 @@ Additonal terms on fields:
     as per the
     [GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
     for the purpose of encoding identity and evaluating authorization.
+
+-   The bundle of claims includes any indirect RI Claims that such a JWT token
+    makes available to the caller of the corresponding /userinfo endpoint, as
+    well as any RI Claims that may be collected either directly on JWTs provided
+    within the “ga4gh_passports” object or within responses to the /userinfo
+    endpoints for the “ga4gh_passports” tokens.
+
+-   The bundle of claims includes all RI Claims made available to recursive
+    calls to /userinfo following other embedded Passport tokens that are present
+    within its claims.
+
+
+#### **Embedded Passport Token**
+
+-   A Passport token that is included as part of a “ga4gh_passports” claim
+    within another Passport as an
+    [Embedded Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token).
+
+-   For example, Passport Token 1’s /userinfo endpoint may return a
+    “ga4gh_passports” claim with a set of signed JWT token strings (token 2,
+    token 3). In this case, Passport Token 2 and 3 are said to be Embedded
+    Tokens within Passport Token 1 even though the embedded tokens are not
+    directly encoded in the Passport Token 1’s Access Token payload itself
+    (i.e. a /userinfo call is required to fetch the “ga4gh_passports” claim).
+
+-   See the [Embedded Passport Tokens](embedded-passport-tokens) section for
+    more details.
 
 #### **Claim Clearinghouse**
 
@@ -131,7 +154,8 @@ Additonal terms on fields:
 1.  <a name="requirement-1"></a>
     [RI Claims](#researcher-identity-claim-ri-claim) and tokens that contain RI
     Claims MUST conform the the
-    [GA4GH AAI Spec](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+    [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
+    ("AAI Specification").
 
 2.  <a name="requirement-2"></a> Each RI Claim consists of a list of [Claim Objects](#claim-object-fields).
 
@@ -168,26 +192,64 @@ Additonal terms on fields:
     receives a request with the “ga4gh” scope, it MUST provide RI claims under
     the “ga4gh” OIDC claim as follows:
 
-    -   The Identity Broker collects the claims, potentially from multiple
-        sources including any upstream Identity Brokers, and flattens them into
-        one set.
+    1.  The Identity Broker collects the claims, potentially from multiple
+        sources including any upstream Identity Brokers.
 
-    -   The Identity Broker signs the token of claims.
+    2.  The Identity Broker populates the "ga4gh_userinfo_claims" OIDC claim
+        on the token as well as other claims as per the
+        [GA4GH Access Token format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#access-token-issued-by-broker),
+        but MUST NOT include the "ga4gh" nor the "ga4gh_passports" claims
+        on the Access Token. These two claims are only available at the
+        /userinfo endpoint based on the "scope" claim as outlined elsewhere
+        within this specification.
 
-    -   Note: a consumer of claims (e.g. a Claim Clearinghouse) accepting the
-        “ga4gh” OIDC claim signed by a given Identity Broker also accepts
-        the chain of trust that such claims were collected correctly, are
-        ligitimently derived from the sources of authority, and are presented
-        accurately.
+    3.  The Identity Broker signs the access token, making it a Passport.
+
+    4.  The Identity Broker introduces new RI Claim Objects as a
+        [Root Claim Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-root-claim-broker)
+        by encoding objects within the "ga4gh" OIDC claim (available via
+        /userinfo) whereas the Identity Broker propagates RI Claims that it
+        received from upstream brokers using
+        [Embedded Passport Tokens](#embedded-passport-tokens).
+
+    5.  The Passport for the /userinfo request MUST contain "ga4gh" as a space-
+        separated sub-string within the "scope" claim in
+        order to include the "ga4gh" OIDC claim as part of the response.
+
+    6.  The Identity Broker MUST NOT include claims from upstream Identity
+        Brokers as part of the "ga4gh" OIDC claim unless the Identity Broker
+        wishes to follow an implicit trust security model and take
+        responsibility for presenting those upstream claims to a specific
+        audience. For example, an organization may provide an
+        intraorganizational security service that filters and flattens all
+        claims that meet that organization’s security and trust model on behalf
+        of many Claims Clearinghouses within that organization where each such
+        client of this service places absolute trust in its ability to filter
+        claims into a flattened claim set that gets signed as a Passport.
 
 8.  <a name="requirement-8"></a> RI Claims are designed for machine
     interpretation only to make an access decision and is a non-goal to support
     rich user interface requirements nor do these claims fully encode the audit
     trail.
 
-9.  <a name="requirement-9"></a> An identity can have several affiliations and
-    the permissions can be coupled to one of them using the
-    “[condition](#condition-optional-on-specific-ri-claims)” field.
+9.  <a name="requirement-9"></a> An RI Claim Object MAY contain a
+    "[condition](#condition-optional-on-specific-ri-claims)" field that
+    restricts the RI Claim Object to only be valid when the condition is met.
+
+    -   For example, an identity can have several affiliations and a
+        ControlledAccessGrants RI Claim Object MAY be coupled to one of them
+        using the Condition field.
+
+10. <a name="requirement-10"></a> Processing a Passport within a Claims
+    Clearinghouse is to abide by the following:
+
+    1.  A Claims Clearinghouse MUST ignore all RI Claim Objects is does not need
+        to process a particular request and MUST ignore all RI Claim Objects
+        unless it explicitly has a sufficient trust relationship with the
+        "[source](#source-required)" of the RI Claim Object.
+
+    2.  Claims Clearinghouses SHOULD ignore claims that aren’t needed for their
+        purposes.
 
 ### Support for User Interfaces
 
@@ -291,12 +353,27 @@ Fields within a RI Claim Object are:
 
 #### “**condition**” [optional on specific RI claims]
 
+-   A condition on an RI Claim Object indicates that the RI Claim Object is only
+    valid if the contents of the condition are present elsewhere in the
+    [Passport](#passport) and such content is both valid (e.g. hasn’t expired;
+    signature of embedded token has been verified against the public key; etc.)
+    and such content is accepted by the Claims Clearinghouse (e.g. the issuer is
+    trusted; the source field meets any policy criteria that has been
+    established, etc.).
+
 -   A condition on an RI Claim Object indicates that the RI Claim Object is
     only valid if the contents of the condition are present elsewhere in the
     Passport.
 
 -   Fields that are not specified in the condition are not required to match
     (i.e. any value will be accepted within that field).
+
+-   [Embedded Passport Tokens](#embedded-passport-tokens) (including those that
+    are nested within the limits and trust model set out elsewhere in the
+    related specifications (i.e. this specification, the AAI specification, and
+    relevant OIDC specifications) SHOULD be included as needed to satisfy a
+    condition, but such tokens that are not from trusted Identity Brokers or
+    that do not have relevant RI Claim Objects can be safely ignored.
 
 -   Format:
 
@@ -325,7 +402,7 @@ Fields within a RI Claim Object are:
     -   For example, “claimNameA.sourceA” asserts that “sourceA” is the
         [Claim Authority](#claim-authority) of “claimNameA” whereas
         “claimNameA.condition.claimNameB.sourceB” expects that “claimNameB”
-        exists elsewhere in the passport and is provided by “sourceB”.
+        exists elsewhere in the Passport and is provided by “sourceB”.
 
 -   The Claim Clearinghouse MUST verify that for each condition claim and each
     condition field present, a single corresponding
@@ -553,10 +630,101 @@ Where:
 -   This claim MAY include a
     “[condition](#condition-optional-on-specific-ri-claims)” field.
 
+## Embedded Passport Tokens
+
+-   The Passport for the /userinfo request MUST contain "ga4gh_passports" as a
+    space-separated substring of the "scope" claim (i.e. the "ga4gh_passports"
+    scope is present) in order to include the "ga4gh_passports" OIDC claim as
+    part of the response.
+
+-   When the "ga4gh_passports" scope is present, the Identity Broker MAY include
+    [Embedded Passport Tokens](#embedded-passport-token) as a response to the
+    /userinfo endpoint and MAY include "ga4gh_passports" as a string entry in
+    the "ga4gh_userinfo_claims" OIDC claim within the Access Token.
+
+-   The "ga4gh_passports" claim has the following format where `<src_name>` is a
+    variable:
+
+    ```
+    "ga4gh_passports": {
+      "<src_name>": {
+        "JWT": "<jwt_header.jwt_part2.jwt_part3>"
+      }
+    }
+    ```
+
+-   `<src_name>` SHOULD be defined by the Identity Broker as the "idp" claim
+    within the JWT token format or be a path tracing back a chain of IdP names
+    to the Claim Source’s Identity Broker
+    ("<root_broker_idp_name>.<next_broker_idp_name>.<current_broker_idp_name>")
+    whenever possible.
+
+-   Claims within Embedded Passport Tokens are not valid unless all other
+    Passport checks pass (such as the token hasn’t expired) as described
+    elsewhere in this specification, the GA4GH AAI specification, and the
+    relevant OIDC specifications.
+
+### Example with Embedded Tokens
+
+Passport:
+
+```
+{
+  "iss": "http://identity-broker.example.org",
+  "sub": "1111",
+  "idp": "orcid",
+  "scope": ["ga4gh", "ga4gh_passports"],
+  ...
+  "ga4gh_userinfo_claims": [
+    "ga4gh.ResearcherStatus",
+    "ga4gh_passports"
+  ]
+}
+```
+
+Identity Broker’s /userinfo endpoint for the Passport above:
+
+```
+"ga4gh" : {
+  "ResearcherStatus": [
+    ...
+  ]
+},
+"ga4gh_passports" : {
+  "elixir" : {
+    "JWT": "part1.part2.part3"
+  },
+  "ega.elixir" {
+    "JWT": "part1.part2.part3"
+  },
+}
+```
+
+Where “ega.elixir” Embedded Passport Token JWT body is:
+
+```
+{
+  "iss": "http://elixir.example.org/oidc",
+  "sub": "1234",
+  "iat": 1000000000,
+  "exp": 1002592000,
+  "idp": "google",
+  "scope": ["ga4gh", "ga4gh_passports"],
+  "ga4gh_userinfo_claims": [
+    "ga4gh.ControlledAccessGrants",
+    "ga4gh_passports"
+  ]
+}
+```
+
+Note that the Embedded Passport Token above has another layer of Embedded
+Passport Tokens within it, as indicated by it's "ga4gh_userinfo_claims" string
+entry of "ga4gh_passports". This next layer of tokens can be fetched at `elixir.example.org`'s /userinfo endpoint using the `ega.elixir` Embedded
+Passport Token above.
+
 ## Encoding Use Cases
 
 Use cases include, but are not limited to the following:
-
 
 ### Registered Access
 
@@ -709,7 +877,8 @@ JWT that is signed by an Identity Broker:
 ## Specification Revision History
 
 | Version | Date       | Editor                             | Notes                                                         |
-|---------|------------|------------------------------------|---------------------------------------------------------------|
+|---------|------------|------------------------------------|------------------------------------------------------------------|
+| 0.9.3   | 2019-08-09 | Craig Voisin                       | Updates related to introducing Embedded Passport Tokens       |
 | 0.9.2   | 2019-07-09 | Craig Voisin                       | Introduce RI Claim Object definition and use it consistently  |
 | 0.9.1   | 2019-07-08 | Craig Voisin                       | Clarify use cases, rephrase multi-value, update links         |
-| 0.9.0   | 2017-      | Craig Voisin, Mikael Linden et al. | Initial working version                                       |
+| 0.9.0   | 2017-      | Craig Voisin, Mikael Linden et al. | Initial working version                                    |
