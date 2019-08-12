@@ -24,6 +24,7 @@ Additionally, the specification provides guidance on encoding specific
   - [Researcher Identity Claim Object (“RI Claim Object”)](#researcher-identity-claim-object-ri-claim-object)
   - [Claim Authority](#claim-authority)
   - [Passport](#passport)
+  - [Embedded Passport Token](#embedded-passport-token)
   - [Claim Clearinghouse](#claim-clearinghouse)
 - [**Researcher Identity Claim Overview**](#researcher-identity-claim-overview)
   - [RI Claims Requirements](#ri-claims-requirements)
@@ -154,7 +155,8 @@ Additonal terms on fields:
 1.  <a name="requirement-1"></a>
     [RI Claims](#researcher-identity-claim-ri-claim) and tokens that contain RI
     Claims MUST conform the the
-    [GA4GH AAI Spec](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+    [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
+    ("AAI Specification").
 
 2.  <a name="requirement-2"></a> Each RI Claim consists of a list of [Claim Objects](#claim-object-fields).
 
@@ -191,10 +193,10 @@ Additonal terms on fields:
     receives a request with the “ga4gh” scope, it MUST provide RI claims under
     the “ga4gh” OIDC claim as follows:
 
-    -   The Identity Broker collects the claims, potentially from multiple
+    1.  The Identity Broker collects the claims, potentially from multiple
         sources including any upstream Identity Brokers.
 
-    -   The Identity Broker populates the "ga4gh_userinfo_claims" OIDC claim
+    2.  The Identity Broker populates the "ga4gh_userinfo_claims" OIDC claim
         on the token as well as other claims as per the
         [GA4GH Access Token format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#access-token-issued-by-broker),
         but MUST NOT include the "ga4gh" nor the "ga4gh_passports" claims
@@ -202,20 +204,20 @@ Additonal terms on fields:
         /userinfo endpoint based on the "scope" claim as outlined elsewhere
         within this specification.
 
-    -   The Identity Broker signs the access token, making it a Passport.
+    3.  The Identity Broker signs the access token, making it a Passport.
 
-    -   The Identity Broker introduces new RI Claim Objects as a
+    4.  The Identity Broker introduces new RI Claim Objects as a
         [Root Claim Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-root-claim-broker)
         by encoding objects within the "ga4gh" OIDC claim (available via
         /userinfo) whereas the Identity Broker propagates RI Claims that it
         received from upstream brokers using
         [Embedded Passport Tokens](#embedded-passport-tokens).
 
-    -   The Passport for the /userinfo request MUST contain "ga4gh" as a space-
+    5.  The Passport for the /userinfo request MUST contain "ga4gh" as a space-
         separated sub-string within the "scope" claim in
         order to include the "ga4gh" OIDC claim as part of the response.
 
-    -   The Identity Broker MUST NOT include claims from upstream Identity
+    6.  The Identity Broker MUST NOT include claims from upstream Identity
         Brokers as part of the "ga4gh" OIDC claim unless the Identity Broker
         wishes to follow an implicit trust security model and take
         responsibility for presenting those upstream claims to a specific
@@ -242,12 +244,12 @@ Additonal terms on fields:
 10. <a name="requirement-10"></a> Processing a Passport within a Claims
     Clearinghouse is to abide by the following:
 
-    -   A Claims Clearinghouse MUST ignore all RI Claim Objects is does not need
+    1.  A Claims Clearinghouse MUST ignore all RI Claim Objects is does not need
         to process a particular request and MUST ignore all RI Claim Objects
         unless it explicitly has a sufficient trust relationship with the
         "[source](#source-required)" of the RI Claim Object.
 
-    -   Claims Clearinghouses SHOULD ignore claims that aren’t needed for their
+    2.  Claims Clearinghouses SHOULD ignore claims that aren’t needed for their
         purposes.
 
 ### Support for User Interfaces
@@ -368,10 +370,11 @@ Fields within a RI Claim Object are:
     (i.e. any value will be accepted within that field).
 
 -   [Embedded Passport Tokens](#embedded-passport-tokens) (including those that
-    are nested within the limits and trust model set out elsewhere in this
-    specification) SHOULD be included as needed to satisfy a condition, but such
-    tokens that are not from trusted Identity Brokers or that do not have
-    relevant RI Claim Objects can be safely ignored.
+    are nested within the limits and trust model set out elsewhere in the
+    related specifications (i.e. this specification, the AAI specification, and
+    relevant OIDC specifications) SHOULD be included as needed to satisfy a
+    condition, but such tokens that are not from trusted Identity Brokers or
+    that do not have relevant RI Claim Objects can be safely ignored.
 
 -   Format:
 
@@ -400,7 +403,7 @@ Fields within a RI Claim Object are:
     -   For example, “claimNameA.sourceA” asserts that “sourceA” is the
         [Claim Authority](#claim-authority) of “claimNameA” whereas
         “claimNameA.condition.claimNameB.sourceB” expects that “claimNameB”
-        exists elsewhere in the passport and is provided by “sourceB”.
+        exists elsewhere in the Passport and is provided by “sourceB”.
 
 -   The Claim Clearinghouse MUST verify that for each condition claim and each
     condition field present, a single corresponding
@@ -636,7 +639,7 @@ Where:
     part of the response.
 
 -   When the "ga4gh_passports" scope is present, the Identity Broker MAY include
-    [Embedded Passport Tokens](embedded-passport-token) as a response to the
+    [Embedded Passport Tokens](#embedded-passport-token) as a response to the
     /userinfo endpoint and MAY include "ga4gh_passports" as a string entry in
     the "ga4gh_userinfo_claims" OIDC claim within the Access Token.
 
