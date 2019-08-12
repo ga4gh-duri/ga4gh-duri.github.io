@@ -20,8 +20,8 @@ Additionally, the specification provides guidance on encoding specific
 ### Table of Contents
 
 - [**Conventions and Terminology**](#conventions-and-terminology)
-  - [Researcher Identity Claim (“RI Claim”)](#researcher-identity-claim-ri-claim)
-  - [Researcher Identity Claim Object (“RI Claim Object”)](#researcher-identity-claim-object-ri-claim-object)
+  - [Researcher Identity Claim ("RI Claim")](#researcher-identity-claim-ri-claim)
+  - [Researcher Identity Claim Object ("RI Claim Object")](#researcher-identity-claim-object-ri-claim-object)
   - [Claim Authority](#claim-authority)
   - [Passport](#passport)
   - [Embedded Passport Token](#embedded-passport-token)
@@ -44,6 +44,7 @@ Additionally, the specification provides guidance on encoding specific
   - [ga4gh.AcceptedTermsAndPolicies](#ga4ghacceptedtermsandpolicies)
   - [ga4gh.ResearcherStatus](#ga4ghresearcherstatus)
   - [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants)
+- [**Custom Researcher Identity Claim Names**](#custom-researcher-identity-claim-names)
 - [**Embedded Passport Tokens**](#embedded-passport-tokens)
   - [Example with Embedded Tokens](#example-with-embedded-tokens)
 - [**Encoding Use Cases**](#encoding-use-cases)
@@ -67,9 +68,13 @@ Additonal terms on fields:
     [Claim Object](#claim-object-fields).
 -   **[optional on specific RI claims]** : A field that MAY be present only on
     claims when where the claim definition explicitly mentions that this field
-    MAY be specified. All other claims MUST NOT define this field.
+    MAY be specified. All other standard GA4GH RI claims MUST NOT define this
+    field. This field MAY be used on
+    [custom claims](#custom-researcher-identity-claim-names) and it is
+    RECOMMENDED for the page contents within the custom claim name URL to
+    define whether this field may be present or not.
 
-#### **Researcher Identity Claim (“RI Claim”)**
+#### **Researcher Identity Claim ("RI Claim")**
 
 -   A set of [RI Claim Objects](#researcher-identity-claim-object-ri-claim-object)
     provided by a common key value within the "ga4gh" OIDC claim. For example, the
@@ -117,26 +122,25 @@ Additonal terms on fields:
 -   The bundle of claims includes any indirect RI Claims that such a JWT token
     makes available to the caller of the corresponding /userinfo endpoint, as
     well as any RI Claims that may be collected either directly on JWTs provided
-    within the “ga4gh_passports” object or within responses to the /userinfo
-    endpoints for the “ga4gh_passports” tokens.
+    within the "ga4gh_passports" object or within responses to the /userinfo
+    endpoints for the "ga4gh_passports" tokens.
 
 -   The bundle of claims includes all RI Claims made available to recursive
     calls to /userinfo following other embedded Passport tokens that are present
     within its claims.
 
-
 #### **Embedded Passport Token**
 
--   A Passport token that is included as part of a “ga4gh_passports” claim
+-   A Passport token that is included as part of a "ga4gh_passports" claim
     within another Passport as an
     [Embedded Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token).
 
 -   For example, Passport Token 1’s /userinfo endpoint may return a
-    “ga4gh_passports” claim with a set of signed JWT token strings (token 2,
+    "ga4gh_passports" claim with a set of signed JWT token strings (token 2,
     token 3). In this case, Passport Token 2 and 3 are said to be Embedded
     Tokens within Passport Token 1 even though the embedded tokens are not
     directly encoded in the Passport Token 1’s Access Token payload itself
-    (i.e. a /userinfo call is required to fetch the “ga4gh_passports” claim).
+    (i.e. a /userinfo call is required to fetch the "ga4gh_passports" claim).
 
 -   See the [Embedded Passport Tokens](embedded-passport-tokens) section for
     more details.
@@ -171,7 +175,7 @@ Additonal terms on fields:
         ends up being revoked after 15 days for other reasons).
 
 4.  <a name="requirement-4"></a> RI Claim Objects MUST have an indication of which
-    organization asserted the claim (i.e. the “[source](#source-required)”
+    organization asserted the claim (i.e. the "[source](#source-required)"
     field), but RI Claim Objects do not indicate individual persons involved in making the
     assertion (i.e. who assigned/signed the claim) as it is not generally needed
     to make an access decision.
@@ -182,15 +186,15 @@ Additonal terms on fields:
     and must be handled via another means beyond the scope of this specification
     with sufficient authority to expose such information.
 
-6.  <a name="requirement-6"></a> All RI Claims within the “ga4gh” scope eligible
+6.  <a name="requirement-6"></a> All RI Claims within the "ga4gh" scope eligible
     for release to the requestor MUST be provided. Reasons for limiting exchange
     may include user approval, contractual limitations, regulatory restrictions,
     or filtering claims to only the subset needed for a particular purpose, etc.
 
 7.  <a name="requirement-7"></a> When an
     [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)
-    receives a request with the “ga4gh” scope, it MUST provide RI claims under
-    the “ga4gh” OIDC claim as follows:
+    receives a request with the "ga4gh" scope, it MUST provide RI claims under
+    the "ga4gh" OIDC claim as follows:
 
     1.  The Identity Broker collects the claims, potentially from multiple
         sources including any upstream Identity Brokers.
@@ -257,9 +261,9 @@ Additonal terms on fields:
 interface.)
 
 For example, a user interface mapping of
-“<https://doi.org/10.1038/s41431-018-0219-y>” to a human readable description
-such as “this person is a bona fide researcher as described by the Global
-Alliance for Genomics and Health”.
+"<https://doi.org/10.1038/s41431-018-0219-y>" to a human readable description
+such as "this person is a bona fide researcher as described by the 'Registered
+access: authorizing data access' publication".
 
 Support for User Interfaces is not part of this specification. It is a non-goal
 for this specification to consider the processes that would support user
@@ -279,13 +283,13 @@ interfaces, such as:
 
 Each [RI claim](#researcher-identity-claim-ri-claim) name maps to an array of
 claim JSON objects ([RI Claim Objects](#researcher-identity-claim-object-ri-claim-object))
-within a “ga4gh” root OIDC claim object (see [example](#example-ri-claims)).
+within a "ga4gh" root OIDC claim object (see [example](#example-ri-claims)).
 
 ## Claim Object Fields
 
 Fields within a RI Claim Object are:
 
-#### “**value**” [required]
+#### "**value**" [required]
 
 -   A string that represents the type, process and version of the claim. The
     format of the string can vary by the
@@ -295,15 +299,24 @@ Fields within a RI Claim Object are:
     "<https://doi.org/10.1038/s41431-018-0219-y>” represents the Registered
     Access Bona Fide researcher status.
 
--   A Claim Clearinghouse SHOULD match the full string value as part of
-    enforcing its policies for access.
+-   For the purposes of enforcing its policies for access, a Claim Clearinghouse
+    evaluating the "value" field MUST:
+    
+    -   Validate URL strings as per the RI URL Field requirements.
+    
+    -   Value field strings MUST be full string case-sensitive matches unless the
+        claim defines a safe and reliable format for partitioning into substrings
+        and matching on the various substrings. For example, the standard claim
+        [AffiliationAndRole claim](#ga4ghaffiliationandrole) can be reliably
+        partitioned by splitting the string at the first “@” sign if such exists,
+        or otherwise producing an error (denying permission).
 
-#### “**source**” [required]
+#### "**source**" [required]
 
 -   A [URL Claim Field](#url-claim-fields) that provides at a minimum the
     organization that has asserted the claim. If there is no organization
-    asserting a claim, the “source” MUST be set to
-    "https://ga4gh.org/duri/no_org”.
+    asserting a claim, the "source" MUST be set to
+    "https://no.organization".
 
 -   For complex organizations that may require more specific information
     regarding which part of the organization made the claim, this field MAY also
@@ -319,9 +332,9 @@ Fields within a RI Claim Object are:
         whenever possible and SHOULD generally avoid the use of query parameters
         and anchors to represent the sub-organization.
 
-#### “**asserted**” [required]
+#### "**asserted**" [required]
 
--   Shortened name for “asserted at”.
+-   Shortened name for "asserted at".
 
 -   Seconds since unix epoch of when the [Claim Authority](#claim-authority)
     that made the claim (i.e. the entity identified by the [source](#source-required)
@@ -331,7 +344,7 @@ Fields within a RI Claim Object are:
 -   Its use by a Claim Clearinghouse is described in the
     [Claim Expiry](#claim-expiry) section.
 
-#### “**expires**” [required]
+#### "**expires**" [required]
 
 -   Generally, it is seconds since unix epoch of when the
     [Claim Authority](#claim-authority) requires such a claim to be no longer
@@ -351,7 +364,7 @@ Fields within a RI Claim Object are:
     [Claim Expiry](#claim-expiry) section and
     [Token Revocation](#claim-and-token-revocation) section.
 
-#### “**condition**” [optional on specific RI claims]
+#### "**condition**" [optional on specific RI claims]
 
 -   A condition on an RI Claim Object indicates that the RI Claim Object is only
     valid if the contents of the condition are present elsewhere in the
@@ -364,6 +377,10 @@ Fields within a RI Claim Object are:
 -   A condition on an RI Claim Object indicates that the RI Claim Object is
     only valid if the contents of the condition are present elsewhere in the
     Passport.
+    
+-   A Claim Clearinghouse MUST always check for the presence of
+    the condition field and if present it MUST only accept the RI Claim Object
+    if it can confirm that the condition has been met.
 
 -   Fields that are not specified in the condition are not required to match
     (i.e. any value will be accepted within that field).
@@ -391,18 +408,18 @@ Fields within a RI Claim Object are:
 }
 ```
 
--   Condition fields are restricted to only “[value](#value-required)”,
-    “[source](#source-required)”, and “[by](#by-optional)” fields (i.e.
+-   Condition fields are restricted to only "[value](#value-required)",
+    "[source](#source-required)", and "[by](#by-optional)" fields (i.e.
     timestamp fields and conditions on conditions are not permitted).
 
-    -   Note that the “source” in the condition is the expected source of the
+    -   Note that the "source" in the condition is the expected source of the
         condition’s claim name and value, and is not the source of the claim to
         which the condition is attached.
 
-    -   For example, “claimNameA.sourceA” asserts that “sourceA” is the
-        [Claim Authority](#claim-authority) of “claimNameA” whereas
-        “claimNameA.condition.claimNameB.sourceB” expects that “claimNameB”
-        exists elsewhere in the Passport and is provided by “sourceB”.
+    -   For example, "claimNameA.sourceA" asserts that "sourceA" is the
+        [Claim Authority](#claim-authority) of "claimNameA" whereas
+        "claimNameA.condition.claimNameB.sourceB" expects that "claimNameB"
+        exists elsewhere in the Passport and is provided by "sourceB".
 
 -   The Claim Clearinghouse MUST verify that for each condition claim and each
     condition field present, a single corresponding
@@ -449,9 +466,9 @@ Fields within a RI Claim Object are:
     [claim’s definition](#ga4gh-researcher-identity-claim-definitions)
     explicitly indicates it is optional or required.
 
-#### “**by**” [optional]
+#### "**by**" [optional]
 
--   The level or type of authority within the “source” organization that is
+-   The level or type of authority within the "source" organization that is
     asserting the claim.
 
 -   A Claim Clearinghouse MAY use this field as part of an authorization
@@ -463,27 +480,27 @@ Fields within a RI Claim Object are:
         who made the claim is the same person.
 
     -   **peer**: A person, who has the same ResearcherStatus as this claim, has
-        made this assertion. The “source” field represents the peer’s
+        made this assertion. The "source" field represents the peer’s
         organization that is asserting the claim (which isn’t necessarily the
         same as the identity’s home organization).
 
     -   **system**: The person’s home organization’s information system has
         asserted the claim.
 
-    -   **so**: The person (also known as “signing official”) who authorized
-        this claim is within the “source” organization and at the time the claim
+    -   **so**: The person (also known as "signing official") who authorized
+        this claim is within the "source" organization and at the time the claim
         was issued possessed direct authority (as part of their formal duties)
         to bind the organization to their assertion that the identity has met
-        the policies indicated by this claim within the context of its “value”
+        the policies indicated by this claim within the context of its "value"
         field.
 
     -   **dac**: A Data Access Committee or other authority that is responsible
-        as a grantee decision-maker for the given “value” and “source” field
+        as a grantee decision-maker for the given "value" and "source" field
         pair.
 
 -   If this field is not provided, then none of the above values can be assumed
-    as the level or type of authority is “unknown”. Any policy expecting a
-    specific value as per the list above MUST fail to accept an “unknown” value.
+    as the level or type of authority is "unknown". Any policy expecting a
+    specific value as per the list above MUST fail to accept an "unknown" value.
 
 ### URL Claim Fields
 
@@ -497,12 +514,12 @@ format with the following limitations:
     Clearinghouses MUST match this identifier consistently using a
     case-sensitive full string comparison.
 
-    -   Note that these URLs SHOULD use “https” in a canonical identifier even
+    -   Note that these URLs SHOULD use "https" in a canonical identifier even
         if the human readable document will resolve using either scheme.
 
     -   Research institutions are encouraged to use a persistent URL pointing to
         established organizational ontology URL such as a
-        [GRID URL](https://grid.ac/institutes) as their canonical “source” URL.
+        [GRID URL](https://grid.ac/institutes) as their canonical "source" URL.
 
 3.  The URL SHOULD also be as short as reasonably possible while avoiding
     collisions, and MUST NOT exceed 255 characters.
@@ -565,25 +582,28 @@ Where:
         This term is defined by eduPerson by the affiliated organization
         (organization after the \@-sign).
 
-        -   Example: <faculty@cam.ac.uk>
+        -   Example: "faculty\@cam.ac.uk"
 
         -   Note: based on the eduPerson specification, it is possible that
             institutions use a different definition for the meaning of "faculty"
             ranging from "someone who does research", to "someone who teaches",
             to "someone in education that works with students".
 
-    -   A custom role that includes a namespace prefix followed by a dot (“.”)
-        where the implementers coordinate with the DURI committee to ensure that
-        the namespace does not conflict with other implementations and that the
-        vocabulary is not already defined by others.
+    -   A custom role that includes a namespace prefix followed by a dot (".")
+        where implementers introducing a new custom claim role MUST coordinate
+        with the DURI committee to align custom role use cases to maximize
+        interoperability and avoid fragmentation across implementations.
 
-        -   Example: “<nih.researcher@med.stanford.edu>” where “nih” is the
-            namespace and “researcher” is the custom role within that namespace.
+        -   Example: "nih.researcher\@med.stanford.edu" where "nih" is the
+            namespace and "researcher" is the custom role within that namespace.
 
 -   If there is no affiliated institution associated with a given claim, the
-    affiliation portion of AffliationAndRole MUST be set to “no_org.ga4gh.org”.
+    affiliation portion of AffliationAndRole MUST be set to "no.organization".
 
-    -   Example: “public.citizen-scientist\@no_org.ga4gh.org”
+    -   Example: "public.citizen-scientist\@no.organization"
+    
+-   AffiliationAndRole can be safely partitioned into a {role, affiliation} pair
+    by splitting the value string at the first "@" sign.
 
 ### ga4gh.AcceptedTermsAndPolicies
 
@@ -595,25 +615,25 @@ Where:
     terms and policies. The description MUST be readable within the environment
     where the claims are consumed.
 
--   Example value: “<https://doi.org/10.1038/s41431-018-0219-y>” acknowledges
+-   Example value: "<https://doi.org/10.1038/s41431-018-0219-y>" acknowledges
     the ethics terms as needed for
     [Registered Access](#registered-access) Bona Fide researcher
     status.
 
--   MUST include “[by](#by-optional)” field.
+-   MUST include "[by](#by-optional)" field.
 
 ### ga4gh.ResearcherStatus
 
 -   Unique identifiers in the form of URLs that indicate that the person has
     been acknowledged to be a researcher of a particular type or standard.
 
--   The “value” field of the claim indicates the minimum standard and/or type of
+-   The "value" field of the claim indicates the minimum standard and/or type of
     researcher that describes the person represented by the given identity.
 
 -   The URLs SHOULD resolve to a human readable web page that describes the
     process that has been followed and the qualifications this person has met.
 
--   Example value: “<https://doi.org/10.1038/s41431-018-0219-y>” acknowledges
+-   Example value: "<https://doi.org/10.1038/s41431-018-0219-y>" acknowledges
     the registration process as needed for
     [Registered Access](#registered-access) Bona Fide researcher
     status.
@@ -623,12 +643,32 @@ Where:
 -   A list of datasets or other objects for which controlled access has been
     granted to this researcher.
 
--   The “source” field contains the access grantee organization
+-   The "source" field contains the access grantee organization.
 
--   MUST include “[by](#by-optional)” field.
+-   MUST include "[by](#by-optional)" field.
 
 -   This claim MAY include a
-    “[condition](#condition-optional-on-specific-ri-claims)” field.
+    "[condition](#condition-optional-on-specific-ri-claims)" field.
+
+## Custom Researcher Identity Claim Names
+
+-   In addition to the
+    [standard GA4GH Researcher Identity Claim Definitions](#ga4gh-researcher-identity-claim-definitions),
+    authorization claims MAY be added using custom claim names so long as the
+    encoding of RI Claim Objects abides by the requirements described elsewhere
+    in this specification.
+
+-   The custom claim name MUST follow the format prescribed in the
+    [URL Claim Fields](#url-claim-fields) section of the specification.
+
+-   Implementers introducing a new custom claim name MUST coordinate with the
+    DURI committee to align custom claim use cases to maximize interoperability
+    and avoid fragmentation across implementations.
+
+-   Claim Clearinghouses MUST ignore custom claims that they do not support.
+
+-   Non-normative example custom claim name:
+    "https://dbgap.nih.gov/riClaims/researcherStudies".
 
 ## Embedded Passport Tokens
 
@@ -729,7 +769,7 @@ Use cases include, but are not limited to the following:
 ### Registered Access
 
 -   To meet the requirements of
-    [Registered Access](https://www.nature.com/articles/s41431-018-0219-y) to
+    [Registered Access](https://doi.org/10.1038/s41431-018-0219-y) to
     data, a user needs to have **all** of the following claims:
 
     -   Meeting the ethics requirements is represented by
@@ -786,7 +826,7 @@ Specification requirements in this regard.
 This non-normative example illustrates RI claims representing Registered Access
 bona fide researcher status along with RI claims for access to specific
 Controlled Access data. These RI Claims would form a Passport when included in a
-JWT that is signed by an Identity Broker:
+JWT that is signed by an Identity Broker. The claims for this example are:
 
 -   **AffiliationAndRole**: The person is a member of faculty at Stanford
     University as asserted by a Signing Official at Stanford.
@@ -796,7 +836,7 @@ JWT that is signed by an Identity Broker:
     a dataset from EGA.
 
     -   In this example, assume dataset 710 does not have a
-        “[condition](#condition-optional-on-specific-ri-claims)” based on the
+        "[condition](#condition-optional-on-specific-ri-claims)" based on the
         AffiliationAndRole because the system that is asserting the claim has an
         out of band process to check the researcher’s affiliation and role and
         withdraw the dataset 710 claim automatically, hence it does not need the
@@ -804,10 +844,10 @@ JWT that is signed by an Identity Broker:
 
     -   In this example, assume that dataset 432 does not use an out of band
         mechanism to check affiliation and role, so it makes use of the RI
-        “[condition](#condition-optional-on-specific-ri-claims)” mechanism to
+        "[condition](#condition-optional-on-specific-ri-claims)" mechanism to
         enforce the affiliation and role. The dataset 432 claim is only valid if
         accompanied with a valid AffiliationAndRole claim for
-        “faculty\@med.stanford.edu”.
+        "faculty\@med.stanford.edu".
 
 -   **AcceptedTermsAndPolicies**: The person has accepted the Ethics terms and
     conditions as defined by Registered Access. They took this action
@@ -815,6 +855,13 @@ JWT that is signed by an Identity Broker:
 
 -   **ResearcherStatus**: A Signing Official at Stanford Medicine has asserted
     that this person is a bona fide researcher as defined by Registered Access.
+
+Normally a Passport like this would be formed using
+[Embedded Passport Tokens](#embedded-passport-tokens) as per the
+[Example with Embedded Tokens](#example-with-embedded-tokens), but to show how
+claims carrying multiple RI Claim Objects can be encoded, this example will
+flatten them into one set and show the result returned from the corresponding
+/userinfo endpoint.
 
     ```
     "ga4gh": {
@@ -877,8 +924,9 @@ JWT that is signed by an Identity Broker:
 ## Specification Revision History
 
 | Version | Date       | Editor                             | Notes                                                         |
-|---------|------------|------------------------------------|------------------------------------------------------------------|
+|---------|------------|------------------------------------|---------------------------------------------------------------|
+| 0.9.4   | 2019-08-12 | Craig Voisin                       | Introduce custom claim names, changes for "no organization"    |
 | 0.9.3   | 2019-08-09 | Craig Voisin                       | Updates related to introducing Embedded Passport Tokens       |
 | 0.9.2   | 2019-07-09 | Craig Voisin                       | Introduce RI Claim Object definition and use it consistently  |
 | 0.9.1   | 2019-07-08 | Craig Voisin                       | Clarify use cases, rephrase multi-value, update links         |
-| 0.9.0   | 2017-      | Craig Voisin, Mikael Linden et al. | Initial working version                                    |
+| 0.9.0   | 2017-      | Craig Voisin, Mikael Linden et al. | Initial working version                                       |
