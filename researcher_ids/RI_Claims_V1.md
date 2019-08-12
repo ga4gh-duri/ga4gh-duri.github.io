@@ -44,7 +44,6 @@ Additionally, the specification provides guidance on encoding specific
   - [ga4gh.ResearcherStatus](#ga4ghresearcherstatus)
   - [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants)
 - [**Encoding Use Cases**](#encoding-use-cases)
-  - [Public Access](#public-access)
   - [Registered Access](#registered-access)
   - [Controlled Access](#controlled-access)
 - [**Claim and Token Revocation**](#claim-and-token-revocation)
