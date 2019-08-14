@@ -27,7 +27,7 @@ The DURI is split into 2 subgroups
 
 #### Leads:
 - [Melanie Courtot](http://purl.org/net/mcourtot)
-- [Moran Cabili](https://www.linkedin.com/in/moran-cabili-kalmar-4727303/)
+- [Jonathan Lawson](https://www.linkedin.com/in/jonathanmlawson/)
 
 ### GA4GH Researcher Identity
 #### Leads:

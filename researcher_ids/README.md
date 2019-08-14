@@ -26,6 +26,24 @@ Data access authorization information is transmitted according to RI Claims and 
 
 Organizations and individuals issuing and using RI Claims must adhere to corresponding data access and data protection policies and regulations, with respect to both the data to which RI Claims may be used to gain access, and to the personal data of the individual to which RI Claims apply.
 
+### Example: scientific use case of GA4GH RI Claims implementation in (e.g biobank) data discovery using ELIXIR and Beacon
+
+Biobank collections across the globe need a secure way to make data created from their samples discoverable. Beacon service supports this process, and makes simple searching like finding an existence (YES/NO) of a genomic variant publicly possible. However, after discovering datasets the next thing a user typically wants is to make a more detailed query. How many variants have been detected in total with the variant in question? Can I derive an allele frequency information across global collections? Is it possible to gain access to the original datasets where the anonymised statistical data has been derived from? 
+
+These questions means user needs to have a deeper data access "tier" to the datasets underlying the search. The data access committees responsible for each of the datasets need to consider that the users asking for deeper access are who they claim to be, which organisation they are affiliated to, and evaluate the purpose why data access is being requested before giving access. 
+
+GA4GH RI Claims has two major technical use cases, Registered Access and Controlled Access which both can be applied to the biobank data discovery use case. RI Claims implementation of Registered Access in the ELIXIR research infrastructure and Beacon services is activated when a deeper data access is requested. 
+
+The user first authenticates using their unique ELIXIR ID. Authentication information is passed from the user's home organisation via an identity federation to the Beacon service using ELIXIR infrastructure services. No usernames & password information are being passed, but Beacon receives a standard signal from ELIXIR that the user is authenticated to a certain level of assurance. 
+
+Identity federations provide limited information about a user. Information about the user can at this point be enriched with RI Claims like their status and role as the researcher. Claims could be requested and sent to the Beacon service relying on ELIXIR if they are needed to evaluate data access rights. An established status and affiliation as a researcher could alone allow deeper searching of the underlying data, depending on the data access policies guarding the terms why data was originally created. 
+
+(This is an example use case for of Registered access. Controlled access to data requires an active interaction with a Data Access Committee body. Instead of researcher status claims, access rights given to an authenticated user are stored on a data access grant claim that relying service may in a similar way request from trusted sources such as ELIXIR.)
+
+Foreseen impact:
+
+GA4GH RI Claims standard establishes a standard way how identity and access information can be communicated in a machine-readable way between services and decision makers to serve users with streamlined data access processes.
+
 ## Specification Overview
 
 The [GA4GH Researcher Identity & Access Claims (RI Claims) specification](http://bit.ly/ga4gh-ri-v1) defines a technical standard specifying a machine readable data format to attribute credentials to a person to validate their identity and verify that they are permitted to access data held by a third-party data custodian. The RI Claims specification further defines the mechanism by which such credentials are assigned and exchanged in a secure manner. By adopting the RI Claims specification a data custodian should have the ability to greatly speed-up the sharing of data with trusted persons such as researchers working on next generations health studies.
