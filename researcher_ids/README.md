@@ -68,10 +68,10 @@ underlying data, depending on the data access policies guarding the terms why
 data was originally created.
 
 This is an example use case for Registered access. Controlled access
-to published data typically requires an active interaction with a Data Access
-Committee (DAC) body. In the case of Controlled Access, rights given to an
-authenticated user are stored and may then be retrieved by a trusted service such
-as ELIXIR in the RI Claim specification format. After a user with RI claims has been
+to data typically requires an active interaction with a Data Access Committee
+(DAC) body. In the case of Controlled Access, rights given to an authenticated
+user are stored and may then be retrieved by a trusted service such as ELIXIR
+in the RI Claim specification format. After a user with RI claims has been
 authenticated and agrees to release such claims to the relying service, the claims
 can then be released to the relying service that has established a trusted
 relationship with ELIXIR and the DAC.
