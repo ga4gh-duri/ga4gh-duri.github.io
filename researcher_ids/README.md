@@ -122,10 +122,10 @@ Here is an example of the life of a claim:
         1. Protected access using a Beacon may require the Registered Access claims to be present.
         2. Access to some datasets may require a specific ControlledAccessGrants claim to be present.
     4. The claims are extracted from the Passport and the contents of the claims are compared to the required claims for the access policy. The Claim Clearinghouse will accept or reject claims and tries to find a set of acceptable claims that match the access policy.  
-        1. The "[expires](http://bit.ly/ga4gh-ri-v1#expires-required)" field is checked to make sure it hasn't expired, and may use [special expiry checking logic](http://bit.ly/ga4gh-ri-v1#claim-expiry) to make sure it isn't going to expire soon.
-        2. The "[source](http://bit.ly/ga4gh-ri-v1#source-required)" field is checked to see if it is from a trusted source from a trusted source whitelist.
-        3. The "[value](http://bit.ly/ga4gh-ri-v1#value-required)" field is checked to see if it meets the requirements of the access policy.
-        4. The "[asserted](http://bit.ly/ga4gh-ri-v1#asserted-required)" and "[by](http://bit.ly/ga4gh-ri-v1#by-optional)" fields may be checked as well, depending on the policy.
+        1. The "[exp](http://bit.ly/ga4gh-ri-v1#exp)" field is checked to make sure it hasn't expired, and may use [special expiry checking logic](http://bit.ly/ga4gh-ri-v1#claim-expiry) to make sure it isn't going to expire soon.
+        2. The "[source](http://bit.ly/ga4gh-ri-v1#source)" field is checked to see if it is from a trusted source from a trusted source whitelist.
+        3. The "[value](http://bit.ly/ga4gh-ri-v1#value)" field is checked to see if it meets the requirements of the access policy.
+        4. The "[iat](http://bit.ly/ga4gh-ri-v1#iat)" and "[by](http://bit.ly/ga4gh-ri-v1#by)" fields may be checked as well, depending on the policy.
 4. If the Claim Clearinghouse decides that the Passport meets the access policy for the data in question, the service proceeds to authorize the researcher's use of the data.
     1. Some Claim Clearinghouses will authorize use of the data by changing the researcher's permissions and issuing a cloud-specific access token to read the bytes using their own cloud-native tools and services.
     2. Other Claim Clearinghouses will read the bytes from another service using special access token that it holds which contains permission to do so, then return the bytes back to the researcher.
