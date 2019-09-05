@@ -29,6 +29,7 @@ Additionally, the specification provides guidance on encoding specific
   - [Passport](#passport)
   - [Passport Access Token](#passport-access-token)
   - [Claim Clearinghouse](#claim-clearinghouse)
+  - [RI Claim Object Identity](#ri-claim-object-identity)
 - [**Researcher Identity Claim Overview**](#researcher-identity-claim-overview)
   - [RI Claims Requirements](#ri-claims-requirements)
   - [Support for User Interfaces](#support-for-user-interfaces)
@@ -49,6 +50,7 @@ Additionally, the specification provides guidance on encoding specific
   - [ga4gh.AcceptedTermsAndPolicies](#ga4ghacceptedtermsandpolicies)
   - [ga4gh.ResearcherStatus](#ga4ghresearcherstatus)
   - [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants)
+  - [ga4gh.LinkedIdentities](#ga4ghlinkedidentities)
 - [**Custom Researcher Identity Claim Names**](#custom-researcher-identity-claim-names)
 - [**Encoding Use Cases**](#encoding-use-cases)
   - [Registered Access](#registered-access)
@@ -99,6 +101,13 @@ standard information about a claim that is not captured in the standard
 set of claims published by underlying OIDC specification.
 
 For field definitions, refer to [RI Claim Object Fields](#ri-claim-object-fields).
+
+#### **RI Claim Object Identity**
+
+-   The {"iss", "sub"} pair of OIDC standard claims that are included
+    within an [RI Claim Object](#researcher-identity-claim-object) that
+    represents a given user (such as a user account) within the "iss"
+    system.
 
 #### **Claim Authority**
 
@@ -220,7 +229,7 @@ For field definitions, refer to [RI Claim Object Fields](#ri-claim-object-fields
         ControlledAccessGrants in a RI Claim Embedded Token MAY be
         coupled to one of them using the Condition field.
 
-10. <a name="requirement-10"></a> Processing a Passport within a Claims
+10. <a name="requirement-10"></a> Processing a Passport within a Claim
     Clearinghouse is to abide by the following:
 
     1.  A Claim Clearinghouse MUST ignore all RI Claim Embedded Tokens
@@ -230,6 +239,13 @@ For field definitions, refer to [RI Claim Object Fields](#ri-claim-object-fields
 
     2.  Claim Clearinghouses SHOULD ignore claims that aren’t needed for their
         purposes.
+        
+    3.  When combining RI Claim Objects from multiple RI Claim Accounts for
+        the purposes of evaluating authorization, a Claim Clearinghouse MUST
+        check the [LinkedIdentities](#ga4ghlinkedidentities) claims by trusted
+        issuers to ensure that trusted sources have asserted that these
+        [RI Claim Object Identities](#ri-claim-object-identity) represent the
+        same end user.
 
 ### Support for User Interfaces
 
@@ -692,6 +708,96 @@ Where:
 
 -   This claim MAY include a
     "[condition](#condition)" field.
+
+### ga4gh.LinkedIdentities
+
+-   The identity as indicated by the {"iss", "sub"} pair (aka "[RI Claim
+    Object Identity](#ri-claim-object-identity)") of the RI Claim Object is
+    the same as the identities listed in the "[value](#value)" field.
+
+-   The "[value](#value)" field format is a comma-delimited list of
+    "<uri-encoded-sub>|<uri-encoded-iss>" entries with no added whitespace
+    between entries.
+  
+    -   The "iss" and "sub" that are used to encode the "value" field do
+        not need to conform to [URL Claim Field](#url-claim-fields)
+        requirements since they must match the corresponding RI Claim
+        Object "iss" and "sub" fields that may be issued.
+        
+    -   By URI encoding the "iss", special characters (such as "|" and ",")
+        are encoded within the URL without causing parsing conflicts.
+        
+    -   Example:
+        "sub1|https%3A%2F%2Fexample.org%2Fa%7Cb%2Cc,sub2|https%3A%2F%2Fexample2.org".
+
+-   The "[source](#source)" field refers to the Claim Authority that is
+    making the assertion, which is often the same organization as the
+    Identity Broker "iss" that signs the RI Claim Object but the "source"
+    MAY refer to another [Claim Authority](#claim-authority).
+
+-   For example, if a policy needs 3 claims and there are three matching RI
+    Claim Objects that meet the criteria on one Passport but they use 3
+    different "sub" values ("sub1", "sub2", "sub3"), then **any** of the
+    following, if from a trusted issuers and sources, may allow these
+    claims to be combined (here shown without the REQUIRED URI-encoding
+    in order to improve readability of the example).
+    
+    1. One RI Claim Object that links 3 RI Claim Object Identities
+       together.
+    
+       ```
+       {
+         "iss": "https://example1.org/oidc",
+         "sub": "sub1",
+         "ga4gh_rio": {
+           "value": "sub2|https://example2.org/oidc,sub3|https://example3.org/oidc",
+           "source": "example1-org-URL"
+           ...
+         }
+       }
+       ```
+    
+       or
+    
+    2. One RI Claim Object that links a superset of RI Claim Object
+       Identities together.
+    
+       ```
+       {
+         "iss": "https://example0.org/oidc",
+         "sub": "sub0",
+         "ga4gh_rio": {
+           "value":
+             "sub1|http://example1.org/oidc,sub2|http://example2.org/oidc,sub3|http://example3.org/oidc,sub4|http://example4.org/oidc"
+           "source": "example0-org-URL"
+           ...
+         }
+       }
+       ```
+    
+       or
+    
+    3. Multiple RI Claim Objects that chain together a set or superset
+       of RI Claim Object Identities.
+    
+       ```
+       {
+         "iss": "https://example1.org/oidc",
+         "sub": "sub1",
+         "ga4gh_rio": {
+           "value": "sub2|https://example2.org/oidc",
+           "source": "example1-org-URL"
+         }
+       },
+       {
+         "iss": "https://example2.org/oidc",
+         "sub": "sub2",
+         "ga4gh_rio": {
+           "value": "sub3|https://example3.org/oidc",
+           "source": "example1-org-URL"
+         }
+       }
+       ```
 
 ## Custom Researcher Identity Claim Names
 
