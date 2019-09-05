@@ -913,6 +913,12 @@ JWT that is signed by an Identity Broker. The claims for this example are:
 -   **ResearcherStatus**: A Signing Official at Stanford Medicine has asserted
     that this person is a bona fide researcher as defined by Registered Access.
 
+-   **LinkedIdentities**: An Identity Broker at example3.org has provided
+    software functionality to allow a user to link their own accounts together.
+    After the user has successfully logged into the two accounts and passed any
+    auth challenges, the broker added the **LinkedIdentities** claim for those
+    two accounts: (1) "10001" from example1.org, and (2) "abcd" from example2.org.
+
 Normally a Passport like this would include
 [RI Claim Embedded Token Format](#ri-claim-embedded-token-format)
 as a base64 string, but to show how claims carrying multiple RI Claim Embedded Tokens
@@ -922,74 +928,92 @@ Embedded Tokens as JSON.
 
 ```
 "ga4gh": {
-    "AffiliationAndRole": [
-      {
-        "iat": 1549680000,
-        "exp": 1581208000,
-        ...
-        "ga4gh_rio": {
-          "value": "faculty@med.stanford.edu",
-          "source": "https://grid.ac/institutes/grid.240952.8",
-          "by": "so"
-        }
+  "AffiliationAndRole": [
+    {
+      "iat": 1549680000,
+      "exp": 1581208000,
+      ...
+      "ga4gh_rio": {
+        "value": "faculty@med.stanford.edu",
+        "source": "https://grid.ac/institutes/grid.240952.8",
+        "by": "so"
       }
-    ],
-    "ControlledAccessGrants": [
-      {
-        "iat": 1549632872,
-        "exp": 1581168872,
-        ...
-        "ga4gh_rio": {
-          "value": "https://nih.gov/dbgap/phs000710",
-          "source": "https://grid.ac/institutes/grid.48336.3a",
-          "by": "dac"
-        }
-      },
-      {
-        "iat": 1549640000,
-        "exp": 1581168000,
-        ...
-        "ga4gh_rio": {
-          "value": "https://ega-archive.org/datasets/00000432",
-          "source": "https://grid.ac/institutes/grid.225360.0",
-          "condition": {
-            "ga4gh.AffiliationAndRole" : {
-               "value": ["faculty@med.stanford.edu"],
-               "source": ["https://grid.ac/institutes/grid.240952.8"],
-               "by": [
-                 "so",
-                 "system"
-               ]
-            }
-          },
-          "by": "dac"
-        }
+    }
+  ],
+  "ControlledAccessGrants": [
+    {
+      "iat": 1549632872,
+      "exp": 1581168872,
+      ...
+      "ga4gh_rio": {
+        "value": "https://nih.gov/dbgap/phs000710",
+        "source": "https://grid.ac/institutes/grid.48336.3a",
+        "by": "dac"
       }
-    ],
-    "AcceptedTermsAndPolicies": [
-      {
-        "iat": 1549680000,
-        "exp": 1581208000,
-        ...
-        "ga4gh_rio": {
-          "value": "https://doi.org/10.1038/s41431-018-0219-y",
-          "source": "https://grid.ac/institutes/grid.240952.8",
-          "by": "self"
-        }
+    },
+    {
+      "iat": 1549640000,
+      "exp": 1581168000,
+      ...
+      "ga4gh_rio": {
+        "value": "https://ega-archive.org/datasets/00000432",
+        "source": "https://grid.ac/institutes/grid.225360.0",
+        "condition": {
+          "ga4gh.AffiliationAndRole" : {
+             "value": ["faculty@med.stanford.edu"],
+             "source": ["https://grid.ac/institutes/grid.240952.8"],
+             "by": [
+               "so",
+               "system"
+             ]
+          }
+        },
+        "by": "dac"
       }
-    ],
-    "ResearcherStatus": [
-      {
-        "iat": 1549680000,
-        "exp": 1581208000,
-        ...
-        "ga4gh_rio": {
-          "value": "https://doi.org/10.1038/s41431-018-0219-y",
-          "source": "https://grid.ac/institutes/grid.240952.8",
-          "by": "so"
-        }
+    }
+  ],
+  "AcceptedTermsAndPolicies": [
+    {
+      "iss": "https://issuer.example1.org/oidc",
+      "sub": "10001",
+      "iat": 1549680000,
+      "exp": 1581208000,
+      ...
+      "ga4gh_rio": {
+        "value": "https://doi.org/10.1038/s41431-018-0219-y",
+        "source": "https://grid.ac/institutes/grid.240952.8",
+        "by": "self"
       }
-    ]
+    }
+  ],
+  "ResearcherStatus": [
+    {
+      "iss": "https://other.example2.org/oidc",
+      "sub": "abcd",
+      "iat": 1549680000,
+      "exp": 1581208000,
+      ...
+      "ga4gh_rio": {
+        "value": "https://doi.org/10.1038/s41431-018-0219-y",
+        "source": "https://grid.ac/institutes/grid.240952.8",
+        "by": "so"
+      }
+    }
+  ],
+  "LinkedIdentities": [
+    {
+      "iss": "https://broker.example3.org/oidc",
+      "sub": "999999",
+      "iat": 1549680000,
+      "exp": 1581208000,
+      ...
+      "ga4gh_rio": {
+        "value": "10001|https://issuer.example1.org/oidc,abcd|https://other.example2.org/oidc",
+        "source": "https://broker.example3.org/oidc",
+        "by": "system"
+      }
+    }
+  ]
 }
 ```
 
@@ -997,7 +1021,7 @@ Embedded Tokens as JSON.
 
 | Version | Date       | Editor                             | Notes                                                         |
 |---------|------------|------------------------------------|---------------------------------------------------------------|
-| 0.9.5   | 2019-08-26 | Craig Voisin                       | Embedded tokens for signed RI Claim Embedded Tokens           |
+| 0.9.5   | 2019-08-26 | Craig Voisin                       | RI Claim Embedded Tokens and LinkedIdentities claim           |
 | 0.9.4   | 2019-08-12 | Craig Voisin                       | Introduce custom claim names, changes for "no organization"   |
 | 0.9.3   | 2019-08-09 | Craig Voisin                       | Updates related to introducing Embedded Passport Tokens       |
 | 0.9.2   | 2019-07-09 | Craig Voisin                       | Introduce RI Claim Object definition and use it consistently  |
