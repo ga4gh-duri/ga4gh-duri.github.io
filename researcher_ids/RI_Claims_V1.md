@@ -686,7 +686,7 @@ Where:
 
 -   The set of unique identifiers in the form of URLs that indicate that a
     researcher or their organization has acknowledged the specific terms and
-    conditions indicated by the URL.
+    policies indicated by the URL.
 
 -   The URLs SHOULD resolve to a human readable web page that describes the
     terms and policies. The description MUST be readable within the environment
