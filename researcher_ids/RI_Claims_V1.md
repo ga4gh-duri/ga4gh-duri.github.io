@@ -367,18 +367,6 @@ the outer JWT itself.
 One of `scope` or `jku` MUST be present as described in
 [RI Claim Embedded Token Requirements](#ri-claim-embedded-token-requirements).
 
-#### "**iat**"
-
--   Shortened name for "issued at".
-
--   REQUIRED. Seconds since unix epoch of when the [Claim Source](#claim-source)
-    that made the claim (i.e. the entity identified by the [source](#source)
-    field and potentially more specific using the optional [by](#by)
-    field, if present).
-
--   Its use by a Claim Clearinghouse is described in the
-    [Claim Expiry](#claim-expiry) section.
-
 #### "**exp**"
 
 -   REQUIRED. Generally, it is seconds since unix epoch of when the
@@ -389,13 +377,10 @@ One of `scope` or `jku` MUST be present as described in
     MAY choose an earlier timestamp if it wishes to limit the claim’s
     duration of use within downstream Claim Clearinghouses.
 
--   Represents the expiry of the individual claim itself, not the token that
-    carries it.
-
--   Access is NOT necessarily removed by the "exp" timestamp. Instead, this
-    timestamp may be viewed as a cut-off after which no new access will be
-    granted and action to remove any existing access may commence anytime
-    shortly after this cut-off period.
+-   Access is NOT necessarily removed by the `exp` timestamp. Instead,
+    this timestamp may be viewed as a cut-off after which no new access
+    will be granted and action to remove any existing access may
+    commence anytime shortly after this cut-off period.
 
 -   Its use by a Claim Clearinghouse is described in the
     [Claim Expiry](#claim-expiry) section and
@@ -404,6 +389,24 @@ One of `scope` or `jku` MUST be present as described in
 ## RI Claim Object Fields
 
 Fields within a [RI Claim Object](#ri-claim-object) are:
+
+#### "**asserted**"
+
+-   REQUIRED. Seconds since unix epoch that represents when the [Claim
+    Source](#claim-source) made the claim.
+
+-   Its use by a Claim Clearinghouse is described in the
+    [Claim Expiry](#claim-expiry) section.
+
+-   If a [Claim
+    Repository](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-respository)
+    does not include enough information to construct an `iat` timestamp, an
+    Embedded Token Signatory MAY use a recent timestamp (for example, the
+    `iat` timestamp) if the Claim Repository is kept up to date such that
+    the Embedded Token Signatory can ensure that the claim is valid at or
+    near the time of minting the Embedded Token. However, generally it is
+    RECOMMENDED to have the Claim Repository provide more accurate `iat`
+    information.
 
 #### "**value**"
 
@@ -488,7 +491,8 @@ Fields within a [RI Claim Object](#ri-claim-object) are:
 
 -   Condition fields are restricted to only RI Claim Object Field names
     (e.g. "value", "source", etc.), except that it MUST NOT include "condition"
-    (i.e. a condition cannot be placed on another condition).
+    (i.e. a condition cannot be placed on another condition) and MUST NOT
+    contain a timestamp field such as "asserted".
 
     -   Note that the "source" in the condition is the expected source of the
         condition’s claim name and value, and is not the source of the claim to
@@ -617,7 +621,7 @@ following algorithm options to ensure that claim expiry is accounted for:
 valid for the entire duration of the requested duration:
 
 ```
-now()+requestedTTL < min("claim.exp", "claim.iat"+maxAuthzTTL)
+now()+requestedTTL < min("token.exp", "token.ga4gh_rio.asserted"+maxAuthzTTL)
 ```
 
 Where:
@@ -629,15 +633,15 @@ Where:
 -   `maxAuthzTTL` represents any additional expiry policy that the Claim
     Clearinghouse may choose to enforce. If this is not needed, it can
     effectively ignored by using a large number of years or otherwise have
-    "claim.iat"+maxAuthzTTL removed and simplify the right hand side
-    expression accordingly.
+    "token.ga4gh_rio.asserted"+maxAuthzTTL removed and simplify the right hand
+    side expression accordingly.
 
-**Option B**: if tokens are sufficiently short lived and the authorization
+**Option B**: if tokens are sufficiently short lived and/or the authorization
 system has an advanced revocation scheme that does not need to specify a
 maxAuthzTTL as per Option A, then the check can be simplified:
 
 ```
-now()+accessTokenTTL < claim.exp
+now()+accessTokenTTL < token.exp
 ```
 
 Where:
