@@ -174,6 +174,12 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     Repository](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-repository)
     service for the data related to a [Passport Visa](#passport-visa).
 
+-   Passport Visas are not typically stored here as signed tokens.
+    Generally a [Passport Visa Signatory](#passport-visa-signatory)
+    recieves data from the Passport Visa Source Repository and uses that
+    data to mint Passport Visas, then transports newly minted Passport
+    Visas to a [Passport Broker](#passport-broker).
+
 #### Passport Visa Signatory
 
 -   A compliant [AAI Embedded Token
@@ -223,6 +229,12 @@ MUST conform with the [GA4GH Authentication and Authorization Infrastructure
 ("GA4GH AAI Specification"). Other services, such as the Passport Visa
 Signatory also has conformance obligations to this same specification.
 
+The [Passport Visa Source Repository](#passport-visa-source-repository) is
+the repository for the Passport Visa Source and typically does not store
+Passport Visas as signed tokens. Generally, Passport Visa Signatories use
+the repository content to mint Passport Visas on demand. Implementations MAY
+vary in this regard.
+
 <a href="diagram-2"></a>
 ![Passport Composition](/assets/img/passport_composition.svg)
 
@@ -232,9 +244,9 @@ In Diagram 2, the objects and tokens that make up a [Passport](#passport)
 come together. The colors of the data map to the colors of the services from
 Diagram 1 to give a sense of which services contributed its contents.
 However, various elements within the [Passport Visa](#passport-visa) can be
-collected into standard form by either the [Passport Visa Source
-Repository](#passport-visa-source-repository) or the Passport Visa Signatory
-depending on the protocols and procedures employed between these components.
+collected into standard form by either the Passport Visa Source Repository
+or the Passport Visa Signatory depending on the protocols and procedures
+employed between these components.
 
 Note that the [Passport JWT Claim](#passport-jwt-claim) is not encoded
 within the GA4GH access token. The contents of this claim are fetched
