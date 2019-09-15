@@ -18,6 +18,8 @@ specific [use cases](#encoding-use-cases), including [Passport
 Visas](#passport-visa) for [Registered Access](#registered-access) as
 described in the "[Registered access: authorizing data
 access](https://www.nature.com/articles/s41431-018-0219-y) publication."
+**Refer to the [Overview](#overview) for an introduction to how data
+objects and services defined in this specification fit together.**
 
 **Co-Chairs of Product Subgroup**: Stephanie Dyke (McGill) & Craig Voisin
 (Google)
@@ -198,16 +200,60 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 ## Overview
 
+<a href="diagram-1"></a>
+![Basic Passport Flow of Data](/assets/img/passport_flow_of_data_basic.svg)
+
+**Diagram 1: basic flow of data from Passport Visa Source to Passport Clearinghouse.**
+
+In Diagram 1, the general flow of Passport-related data from [Passport Visa
+Source](#passport-visa-source) to [Passport
+Clearinghouse](#passport-clearinghouse) is shown at a high level.
+Implementations introduce clients, services, and procedures -- not shown in
+Diagram 1 -- to provide the mechanisms to move the data between Passport
+Visa Source to the [Passport Broker](#passport-broker). This MAY be
+proprietary and is beyond the scope of this specification. For example,
+some implementations MAY deploy one service that handles the responsiblities
+of both the [Passport Visa Signatory](#passport-visa-signatory) and the
+Passport Broker.
+
+However, the data protocols, procedures, and service functionality between
+the Passport Broker and the [Passport Clearinghouse](#passport-clearinghouse)
+MUST conform with the [GA4GH Authentication and Authorization Infrastructure
+(AAI) OpenID Connect Profile Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
+("GA4GH AAI Specification"). Other services, such as the Passport Visa
+Signatory also has conformance obligations to this same specification.
+
+<a href="diagram-2"></a>
+![Passport Composition](/assets/img/passport_composition.svg)
+
+**Diagram 2: The composition of objects and tokens within a Passport.**
+
+In Diagram 2, the objects and tokens that make up a [Passport](#passport)
+come together. The colors of the data map to the colors of the services from
+Diagram 1 to give a sense of which services contributed its contents.
+However, various elements within the [Passport Visa](#passport-visa) can be
+collected into standard form by either the [Passport Visa Source
+Repository](#passport-visa-source-repository) or the Passport Visa Signatory
+depending on the protocols and procedures employed between these components.
+
+Note that the [Passport JWT Claim](#passport-jwt-claim) is not encoded
+within the GA4GH access token. The contents of this claim are fetched
+separately from the Passport Broker by sending the access token to the
+appropriate OIDC endpoint as outlined in the GA4GH AAI Specification.
+
 ### General Requirements
 
 1.  <a name="requirement-1"></a>
     Use of the [Passport JWT Claim](#passport-jwt-claim) MUST conform the
     the [GA4GH AAI
-    Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
-    ("AAI Specification").
+    Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+    The services described in this specification MUST also conform to the
+    GA4GH AAI Specification.
 
 2.  <a name="requirement-2"></a> A Passport JWT Claim consists of a list of
-    [Passport Visas](#passport-visa).
+    [Passport Visas](#passport-visa). These Passport Visas MUST conform to
+    [Embedded Tokens](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
+    as outlined by the GA4GH AAI Specification.
 
 3.  <a name="requirement-3"></a> Each Passport Visa may
     have a different expiry.
