@@ -11,10 +11,10 @@
 **Product Description:** This document provides the GA4GH technical
 specification for the
 [JWT Passport Claim](#jwt-passport-claim) to be
-consumed by [Claim Clearinghouses](#claim-clearinghouse) in a standardized
-approach to determine whether or not data access should be granted.
-Additionally, the specification provides guidance on encoding specific
-[use cases](#encoding-use-cases), including [Passport
+consumed by [Passport Clearinghouses](#passport-clearinghouse) in a
+standardized approach to determine whether or not data access should be
+granted. Additionally, the specification provides guidance on encoding
+specific [use cases](#encoding-use-cases), including [Passport
 Visas](#passport-visa) for [Registered Access](#registered-access) as
 described in the "[Registered access: authorizing data
 access](https://www.nature.com/articles/s41431-018-0219-y) publication."
@@ -31,7 +31,7 @@ access](https://www.nature.com/articles/s41431-018-0219-y) publication."
   - [Passport Visa Object](#passport-visa-object)
   - [Passport Visa Source](#passport-visa-source)
   - [Passport](#passport)
-  - [Claim Clearinghouse](#claim-clearinghouse)
+  - [Passport Clearinghouse](#passport-clearinghouse)
   - [Passport Visa Identity](#passport-visa-identity)
 - [**Overview**](#overview)
   - [General Requirements](#general-requirements)
@@ -75,6 +75,10 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     that is encoded as a list of [Passport Visas](#passport-visa)
     provided by a common key value within the `ga4gh_passport_v1` JWT claim.
     
+-   Passport Visas from multiple [Embedded Token
+    Signatories](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
+    can be bundled together in the same `ga4gh_passport_v1` JWT claim.
+
 -   For example, the following structure encodes a JWT Passport Claim:
 
     ```
@@ -134,9 +138,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 -   The {"iss", "sub"} pair of JWT standard claims ([RFC7519 section
     4.1.1](https://tools.ietf.org/html/rfc7519#section-4.1.1)) that are
-    included within an [Passport Visa Object](#passport-visa-object)
-    that represents a given user (such as a user account) within the "iss"
-    system.
+    included within an [Passport Visa](#passport-visa) that represents a
+    given user (such as a user account) within the "iss" system.
 
 #### **Passport Visa Source**
 
@@ -148,23 +151,19 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### **Passport**
 
--   The [JWT Passport Claim](#jwt-passport-claim) that is returned from a
+-   A GA4GH-compatible access token, as per the [GA4GH AAI
+    specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md),
+    along with the [JWT Passport Claim](#jwt-passport-claim) that is
+    returned from
     [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#broker)
-    containing a bundle of [Passport Visas](#passport-visa) along with
-    other JWT claims including those on the access token and those available
-    from Broker endpoints using the access token.
-    See the [Conformance for Brokers section of the GA4GH AAI
-    specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-brokers).
-    
--   Passport Visas from multiple [Embedded Token
-    Signatories](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
-    can be bundled together in a Passport.
+    endpoints using such an access token.
 
-#### **Claim Clearinghouse**
+#### **Passport Clearinghouse**
 
--   The service consuming claims via a [Passport](#passport) as defined by
-    the
-    [Claim Clearinghouses section of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-claim-clearinghouses-consuming-access-tokens-to-give-access-to-data).
+-   A service consuming [Passports](#passport) and conforming
+    to the requirements of a [Claim
+    Clearinghouse](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-clearinghouse)
+    outlined in the [Claim Clearinghouses section of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-claim-clearinghouses-consuming-access-tokens-to-give-access-to-data).
 
 ## Overview
 
@@ -186,12 +185,12 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
         minutes).
 
     -   The same document can encode Passport Visas for any
-        [Claim Clearinghouse](#claim-clearinghouse) to evaluate when requesting
-        pre-authorization for a longer duration (e.g. a request can establish
-        intent to access a resource over the next 60 days, even if this access
-        ends up being revoked after 15 days for other reasons) without the
-        creator of the document requiring knowledge of the policies of the
-        Claim Clearinghouse that inspects the Passport Visas.
+        [Passport Clearinghouse](#passport-clearinghouse) to evaluate when
+        requesting pre-authorization for a longer duration (e.g. a request can
+        establish intent to access a resource over the next 60 days, even if
+        this access ends up being revoked after 15 days for other reasons)
+        without the creator of the document requiring knowledge of the policies
+        of the Passport Clearinghouse that inspects the Passport Visas.
 
 4.  <a name="requirement-4"></a> Passport Visas MUST have an indication of
     which organization asserted the claim (i.e. the "[source](#source)" field),
@@ -219,8 +218,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-broker)
     and other conditions are met as outlined within this specification.
 
-    If the Broker is the [Embedded Claim
-    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md@term-embedded-claim-signatory),
+    If the Broker is the [Embedded Token
+    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md@term-embedded-token-signatory),
     it MUST set the "iss" to itself and sign such Embedded Tokens with its own
     private key as described in the
     [AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
@@ -238,20 +237,23 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
         "ControlledAccessGrants" in a Passport Visa MAY be coupled to one
         of them using the Condition field.
 
-10. <a name="requirement-10"></a> Processing a Passport within a Claim
+10. <a name="requirement-10"></a> Processing a Passport within a Passport
     Clearinghouse is to abide by the following:
 
-    1.  A Claim Clearinghouse MUST ignore all Passport Visas is does not
-        need to process a particular request and MUST ignore all Passport
-        Visas unless it explicitly has a sufficient trust relationship
-        with the "[source](#source)" of the Passport Visa.
+    1.  A Passport Clearinghouse MUST ignore all Passport Visas is does not
+        need to process a particular request.
 
-    2.  Claim Clearinghouses SHOULD ignore claims that aren’t needed for their
-        purposes.
-        
+    2.  Passport Clearinghouses MUST ignore Passport Visas unless:
+    
+        1.  The Passport Clearinghouse has a sufficient trust relationship
+            with the [Passport Visa Source](#passport-visa-source); or
+
+        2.  The Passport Clearinghouse can rely on a trusted service that
+            provides trust of the Passport Visa Source.
+
     3.  When combining Passport Visas from multiple [Passport Visa
         Identities](#passport-visa-identity) for the purposes of evaluating
-        authorization, a Claim Clearinghouse MUST check the
+        authorization, a Passport Clearinghouse MUST check the
         [LinkedIdentities](#linkedidentities) claims by trusted issuers
         to ensure that trusted sources have asserted that these Passport Visa
         Identities represent the same end user.
@@ -309,8 +311,8 @@ a more reader-friendly form is also available.
     as JWS Compact Serialization string as defined by [RFC7515 section
     7.1](https://tools.ietf.org/html/rfc7515#section-7.1).
 
--   Embedded Claim Signatories, Brokers, Claim Clearinghouses, and their
-    Clients MUST conform to the
+-   Embedded Token Signatories, Brokers, Passport Clearinghouses, and
+    their Clients MUST conform to the
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
     requirements for Embedded Tokens in their use of Passport Visas.
 
@@ -319,6 +321,9 @@ a more reader-friendly form is also available.
     used for identity or authorization.
 
 ### Passport Visa Format
+
+Passport Visas are JWS Compact Serialization strings of the following
+form when represented in JSON:
 
 ```
 {
@@ -339,9 +344,9 @@ a more reader-friendly form is also available.
     "value": "<value-string>",
     "source": "<source-URL>",
     ["condition": {...},]
-    ["by": "\<By identifier\>"]
+    ["by": "<by-identifier>"]
   }
-}.\<Signature\>
+}.<signature>
 ```
 
 Where fields within the `ga4gh_visa_v1` object are as described in the
@@ -359,23 +364,26 @@ within the [AAI specification](https://github.com/ga4gh/data-security/blob/maste
     [Passport Visa Source](#passport-visa-source) requires such a
     claim to be no longer valid. A Passport Visa Source MAY choose
     to make a claim very long lived. However, an
-    [Embedded Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
+    [Embedded Token Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
     MAY choose an earlier timestamp if it wishes to limit the claim’s
-    duration of use within downstream Claim Clearinghouses.
+    duration of use within downstream Passport Clearinghouses.
 
 -   Access is NOT necessarily removed by the `exp` timestamp. Instead,
     this timestamp may be viewed as a cut-off after which no new access
     will be granted and action to remove any existing access may
     commence anytime shortly after this cut-off period.
 
--   Its use by a Claim Clearinghouse is described in the
+-   Its use by a Passport Clearinghouse is described in the
     [Passport Visa Expiry](#passport-visa-expiry) section and
     [Token Revocation](#token-revocation) section.
 
 ## Passport Visa Fields
 
-Fields within a [Passport Visa Object](#passport-visa-object)
-are:
+Although standard fields within a [Passport Visa Object](#passport-visa-object)
+are defined in this section, other fields MAY exist within the object
+and should be ignored by any Passport Clearinghouse that is not familiar
+with the use of such fields. Field names are reserved for definition by
+the GA4GH DURI committee.
 
 #### "**type**"
 
@@ -389,7 +397,7 @@ are:
 -   REQUIRED. Seconds since unix epoch that represents when the [Passport
     Visa Source](#passport-visa-source) made the claim.
 
--   Its use by a Claim Clearinghouse is described in the
+-   Its use by a Passport Clearinghouse is described in the
     [Passport Visa Expiry](#passport-visa-expiry) section.
 
 -   If a [Claim
@@ -413,7 +421,7 @@ are:
     "ResearcherStatus" represents the Registered Access Bona Fide researcher
     status.
 
--   For the purposes of enforcing its policies for access, a Claim
+-   For the purposes of enforcing its policies for access, a Passport
     Clearinghouse evaluating the `value` field MUST:
     
     -   Validate URL strings as per the [URL Field](#url-fields)
@@ -441,7 +449,7 @@ are:
 
     -   The additional substructure MUST only encode the sub-organization or
         department but no other details or variables that would make it
-        difficult to enumerate the full set of possible values or cause Claim
+        difficult to enumerate the full set of possible values or cause Passport
         Clearinghouses confusion about which URLs to whitelist.
 
     -   The additional information SHOULD be encoded into the subdomain or path
@@ -455,15 +463,15 @@ are:
     only valid if the contents of the condition are present elsewhere in the
     [Passport](#passport) and such content is both valid
     (e.g. hasn’t expired; signature of embedded token has been verified against
-    the public key; etc.) and such content is accepted by the Claim
+    the public key; etc.) and if such content is accepted by the Passport
     Clearinghouse (e.g. the issuer is trusted; the source field meets any policy
     criteria that has been established, etc.).
 
--   A Claim Clearinghouse MUST always check for the presence of
+-   A Passport Clearinghouse MUST always check for the presence of
     the condition field and if present it MUST only accept the Passport Visa
-    Object if it can confirm that the condition has been met.
+    if it can confirm that the condition has been met.
 
--   In the process of finding a matching condition, a Claim Clearinghouse
+-   In the process of finding a matching condition, a Passport Clearinghouse
     SHOULD ignore Passport Visa Objects that also have a condition, or
     otherwise MUST avoid deep nesting of condition evaluation (i.e. avoid
     condition loops, stack overflows, etc).
@@ -502,7 +510,7 @@ are:
         "claimNameA.condition.claimNameB.sourceB" expects that "claimNameB"
         exists elsewhere in the Passport and is provided by "sourceB".
 
--   The Claim Clearinghouse MUST verify that for each condition claim and each
+-   The Passport Clearinghouse MUST verify that for each condition claim and each
     condition field present, a single corresponding [Passport Visa
     Object](#passport-visa-object) and its corresponding
     [fields](#passport-visa-fields) match as per the matching algorithms
@@ -551,7 +559,7 @@ are:
 -   OPTIONAL. The level or type of authority within the "source" organization
     that is asserting the claim.
 
--   A Claim Clearinghouse MAY use this field as part of an authorization
+-   A Passport Clearinghouse MAY use this field as part of an authorization
     decision based on the policies that it enforces.
 
 -   Fixed vocabulary values for this field are:
@@ -590,7 +598,7 @@ of URL format with the following limitations:
 1.  For the purposes of evaluating access, the URL MUST be treated as a simple
     unique persistent string identifier.
 
-2.  The URL is a canonical identifier and as such it is important that Claim
+2.  The URL is a canonical identifier and as such it is important that Passport
     Clearinghouses MUST match this identifier consistently using a
     case-sensitive full string comparison.
 
@@ -720,8 +728,8 @@ Types](#custom-passport-visa-types) and still be compliant.
 
 -   The "[source](#source)" field refers to the [Passport Visa
     Source](#passport-visa-source) that is making the assertion. This is
-    typically the same organization as the [Embedded Claim
-    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
+    typically the same organization as the [Embedded Token
+    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
     "iss" that signs the Passport Visa, but the "source" MAY also refer
     to another Passport Visa Source depending on how the information was
     collected.
@@ -813,8 +821,8 @@ Types](#custom-passport-visa-types) and still be compliant.
     DURI committee to align custom `type` use cases to maximize interoperability
     and avoid unnecessary fragmentation across implementations.
 
--   Claim Clearinghouses MUST ignore any custom `type` name that they do not
-    support.
+-   Passport Clearinghouses MUST ignore all Passport Visas containing a custom
+    `type` name that they do not support.
 
 -   Non-normative example custom `type` name:
     "https://dbgap.nih.gov/passportVisaTypes/researcherStudies".
@@ -841,16 +849,17 @@ Use cases include, but are not limited to the following:
         
         -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
 
--   The [Claim Clearinghouse](#claim-clearinghouse) (e.g. to authorize a
-    registered access beacon) needs to evaluate the multiple Passport
-    Visas listed above to ensure their values match before granting
-    access.
+-   The [Passport Clearinghouse](#passport-clearinghouse) (e.g. to
+    authorize a registered access beacon) needs to evaluate the
+    multiple Passport Visas listed above to ensure their values match
+    before granting access.
     
     -   If combining Passport Visas from multiple [Passport Visa
-        Identities](#passport-visa-identity), the Claim Clearinghouse
-        MUST also check the [LinkedIdentities](#ga4ghlinkedidentities)
-        Passport Visas to determine if combining these identities came
-        from a trusted Embedded Token Signatory.
+        Identities](#passport-visa-identity), the Passport
+        Clearinghouse MUST also check the
+        [LinkedIdentities](#ga4ghlinkedidentities) Passport Visas to
+        determine if combining these identities came from a trusted
+        Embedded Token Signatory.
 
 ### Controlled Access
 
@@ -874,10 +883,11 @@ Use cases include, but are not limited to the following:
 
 ## Passport Visa Expiry
 
-In addition to any other policy restrictions that a Claim Clearinghouse may
-enforce, Claim Clearinghouses that provide access for a given duration provided
-by the user (excluding any revocation policies) MUST enforce one of the
-following algorithm options to ensure that claim expiry is accounted for:
+In addition to any other policy restrictions that a Passport Clearinghouse
+may enforce, Passport Clearinghouses that provide access for a given
+duration provided by the user (excluding any revocation policies) MUST
+enforce one of the following algorithm options to ensure that claim expiry
+is accounted for:
 
 **Option A**: use the following algorithm to determine if the Passport Visa
 is valid for the entire duration of the requested duration:
@@ -892,7 +902,7 @@ Where:
     Alternatively a solution may choose to have a stronger revocation policy
     instead of requiring such a duration.
 
--   `maxAuthzTTL` represents any additional expiry policy that the Claim
+-   `maxAuthzTTL` represents any additional expiry policy that the Passport
     Clearinghouse may choose to enforce. If this is not needed, it can
     effectively ignored by using a large number of years or otherwise have
     `token.ga4gh_visa_v1.asserted+maxAuthzTTL` removed and simplify the right
@@ -923,10 +933,10 @@ the following mechanisms are available within Passport Visa:
     downstream policies to limit the life, if needed, of how long assertions
     will be accepted for use with access and refresh tokens.
 
-2.  Passport Visas have an "[exp](#exp)" field to allow Claim
+2.  Passport Visas have an "[exp](#exp)" field to allow Passport
     Clearinghouses to limit the life of access and refresh tokens.
 
-At a minimum, these Passport Visa Fields MUST be checked by all Claim
+At a minimum, these Passport Visa Fields MUST be checked by all Passport
 Clearinghouses and systems MUST be in place to take action to remove access by
 the expiry timestamp or shortly thereafter. Propagation of these permission
 changes may also require some reasonable delay.
@@ -977,8 +987,8 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
     challenges, the broker added the **LinkedIdentities** claim for those two
     accounts: (1) "10001" from example1.org, and (2) "abcd" from example2.org.
     Since the Broker is signing the `LinkedIdentities`
-    [Passport Visa](#passport-visa), it is acting as the
-    [Embedded Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory).
+    [Passport Visa](#passport-visa), it is acting as the [Embedded Token
+    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory).
 
 Normally a Passport like this would include [Passport Visa
 Format](#passport-visa-format) entries as JWS Compact Serialization strings,
