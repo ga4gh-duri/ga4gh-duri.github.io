@@ -148,7 +148,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     involved in the authoring or handling the assertion how to interpret
     other [Passport Visa Fields](#passport-visa-fields).
     
--   For example, an Passport Visa Type of "AffiliationAndRole" per the
+-   For example, a Passport Visa Type of "AffiliationAndRole" per the
     [GA4GH Standard Passport Visa Definitions](#ga4gh-standard-passport-visa-definitions)
     specifies the semantics of the Passport Visa as well as the
     expected encoding of the "[value](#value)" field for this purpose. 
@@ -182,7 +182,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     to the Passport Assertion Repository can use these assertions to mint
     [Passport Visas](#passport-visa).
 
--   Passport Visas are not typically stored in the respository as signed
+-   Passport Visas are not typically stored in the repository as signed
     tokens. Often minting of Passport Visas is done on demand from the
     assertion data.
 
@@ -192,7 +192,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
     service that signs a [Passport Visa](#passport-visa).
 
--   See [Comformance for Embedded Token Signatories section of the GA4GH
+-   See [Conformance for Embedded Token Signatories section of the GA4GH
     AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-signatories).
 
 #### Passport Broker
@@ -247,12 +247,12 @@ vary in this regard.
 **Diagram 2: The composition of objects and tokens within a Passport.**
 
 In Diagram 2, the objects and tokens that make up a [Passport](#passport)
-come together. The colors of the data map to the colors of the services from
-Diagram 1 to give a sense of which services contributed its contents.
-However, various elements within the [Passport Visa](#passport-visa) can be
-collected into standard form by either the Passport Assertion Repository
-or the Passport Visa Signatory depending on the protocols and procedures
-employed between these components.
+come together. The colors used in Diagram 2 correspond to the colors of the
+services from Diagram 1 to give a sense of which services contributed the
+data. However, various elements within the [Passport Visa](#passport-visa)
+can be collected into standard form by either the Passport Assertion
+Repository or the Passport Visa Signatory depending on the protocols and
+procedures employed between these components.
 
 Note that the [Passport JWT Claim](#passport-jwt-claim) is not encoded
 within the GA4GH access token. The contents of this claim are fetched
@@ -831,7 +831,7 @@ Types](#custom-passport-visa-types) and still be compliant.
     typically the same organization as the [Passport Visa
     Signatory](#passport-visa-signatory) "iss" that signs the Passport
     Visa, but the "source" MAY also refer to another Passport Assertion
-    Source depending on which organizatation collected the information.
+    Source depending on which organization collected the information.
 
 -   As a non-normative example, if a policy needs 3 Passport Visas and
     there are three Passport Visas that meet the criteria on one Passport
@@ -911,7 +911,7 @@ Types](#custom-passport-visa-types) and still be compliant.
     elsewhere in this specification.
 
 -   Custom Passport Visa Types MUST limit personally identifiable information
-    to only that which is neccessary to provide authorization.
+    to only that which is necessary to provide authorization.
 
 -   The custom `type` name MUST follow the format prescribed in the
     [URL Fields](#url-fields) section of the specification.
@@ -1192,7 +1192,7 @@ unencoded into JSON to be more reader-friendly.
 
 | Version | Date       | Editor                             | Notes                                                         |
 |---------|------------|------------------------------------|---------------------------------------------------------------|
-| 0.9.5   | 2019-08-26 | Craig Voisin                       | RI Claim Embedded Tokens and LinkedIdentities claim           |
+| 0.9.5   | 2019-08-26 | Craig Voisin                       | Embedded Tokens, LinkedIdentities, overview, new definitions  |
 | 0.9.4   | 2019-08-12 | Craig Voisin                       | Introduce custom claim names, changes for "no organization"   |
 | 0.9.3   | 2019-08-09 | Craig Voisin                       | Updates related to introducing Embedded Passport Tokens       |
 | 0.9.2   | 2019-07-09 | Craig Voisin                       | Introduce RI Claim Object definition and use it consistently  |
