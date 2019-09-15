@@ -622,8 +622,10 @@ the GA4GH DURI committee.
 
 ### URL Fields
 
-An [Passport Visa Field](#passport-visa-fields) that is defined as being
-of URL format with the following limitations:
+A [Passport Visa Field](#passport-visa-fields) that is defined as being of URL
+format (see [RFC3986 section
+1.1.3](https://tools.ietf.org/html/rfc3986?#section-1.1.3)) with the following
+limitations:
 
 1.  For the purposes of evaluating access, the URL MUST be treated as a simple
     unique persistent string identifier.
@@ -632,17 +634,20 @@ of URL format with the following limitations:
     Clearinghouses MUST match this identifier consistently using a
     case-sensitive full string comparison.
 
-    -   Note that these URLs SHOULD use "https" in a canonical identifier even
-        if the human readable document will resolve using either scheme.
+    -   If TLS is available on the resource, then its persistent identifier URL
+        SHOULD use the "https" scheme even if the resource will also resolve using
+        the "http" scheme.
 
-    -   Research institutions are encouraged to use a persistent URL pointing to
-        established organizational ontology URL such as a
-        [GRID URL](https://grid.ac/institutes) as their canonical "source" URL.
+    -   Research institutions are RECOMMENDED to use a persistent URL pointing to
+        established organizational ontology identifier -- whether managed directly
+        or by a third-party service such as a [GRID](https://grid.ac/institutes)
+        -- as their canonical "source" URL.
 
 3.  The URL SHOULD also be as short as reasonably possible while avoiding
     collisions, and MUST NOT exceed 255 characters.
 
-4.  The URL MUST NOT be fetched by the algorithm making an access decision.
+4.  The URL MUST NOT be fetched as part of policy evaluation when making an
+    access decision. For policy evaluation, it is considered an opaque string.
 
 5.  URLs SHOULD resolve to a human readable document for a policy maker to
     reason about.
