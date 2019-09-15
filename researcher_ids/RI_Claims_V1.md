@@ -48,11 +48,11 @@ access](https://www.nature.com/articles/s41431-018-0219-y) publication."
     - [by](#by)
   - [URL Claim Fields](#url-claim-fields)
 - [**GA4GH Standard Passport Visa Definitions**](#ga4gh-standard-passport-visa-definitions)
-  - [ga4gh.AffiliationAndRole](#ga4ghaffiliationandrole)
-  - [ga4gh.AcceptedTermsAndPolicies](#ga4ghacceptedtermsandpolicies)
-  - [ga4gh.ResearcherStatus](#ga4ghresearcherstatus)
-  - [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants)
-  - [ga4gh.LinkedIdentities](#ga4ghlinkedidentities)
+  - [AffiliationAndRole](#affiliationandrole)
+  - [AcceptedTermsAndPolicies](#acceptedtermsandpolicies)
+  - [ResearcherStatus](#researcherstatus)
+  - [ControlledAccessGrants](#controlledaccessgrants)
+  - [LinkedIdentities](#linkedidentities)
 - [**Custom Passport Visa Types**](#custom-passport-visa-types)
 - [**Encoding Use Cases**](#encoding-use-cases)
   - [Registered Access](#registered-access)
@@ -73,18 +73,16 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   A [GA4GH
     Claim](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-ga4gh-claim)
     that is encoded as a list of [Passport Visas](#passport-visa)
-    provided by a common key value within the "ga4gh" JWT claim.
+    provided by a common key value within the `ga4gh_passport_v1` JWT claim.
     
 -   For example, the following structure encodes a JWT Passport Claim:
 
     ```
-    "ga4gh" : {
-      "ControlledAccessGrants": [
+    "ga4gh_passport_v1" : [
         <Passport Visa>,
         <Passport Visa (if more than one)>,
         ...
-      ]
-    }
+    ]
     ```
 
 #### **Passport Visa**
@@ -126,8 +124,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 #### **Passport Visa Object**
 
 -   A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim named
-    "ga4gh_aa" in the form of a JSON object that provides fields that
-    describe a [Passport Visa](#passport-visa).
+    `ga4gh_visa_v1` in the form of a JSON object that provides fields
+    that describe a [Passport Visa](#passport-visa).
 
 -   For field definitions, refer to [Passport Visa
     Fields](#passport-visa-fields).
@@ -209,14 +207,15 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     should they be needed for entities and systems with sufficient authority to
     process such information.
 
-6.  <a name="requirement-6"></a> All Passport Visas within the "ga4gh" scope
-    eligible for release to the requestor MUST be provided. Reasons for limiting
-    exchange may include user approval, contractual limitations, regulatory
-    restrictions, or filtering claims to only the subset needed for a particular
-    purpose, etc.
+6.  <a name="requirement-6"></a> All Passport Visas within the
+    `ga4gh_passport_v1` scope eligible for release to the requestor MUST be
+    consistently provided. Reasons for limiting exchange may include user
+    approval, contractual limitations, regulatory restrictions, or filtering
+    claims to only the subset needed for a particular purpose, etc.
 
 7.  <a name="requirement-7"></a> The [JWT Passport Claim](#jwt-passport-claim)
-    is only included in the Passport if the "ga4gh" scope is requested from the
+    is only included in the Passport if the `ga4gh_passport_v1` scope is
+    requested from the
     [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-broker)
     and other conditions are met as outlined within this specification.
 
@@ -253,7 +252,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     3.  When combining Passport Visas from multiple [Passport Visa
         Identities](#passport-visa-identity) for the purposes of evaluating
         authorization, a Claim Clearinghouse MUST check the
-        [LinkedIdentities](#ga4ghlinkedidentities) claims by trusted issuers
+        [LinkedIdentities](#linkedidentities) claims by trusted issuers
         to ensure that trusted sources have asserted that these Passport Visa
         Identities represent the same end user.
 
@@ -286,19 +285,17 @@ interfaces, such as:
 The [JWT Passport Claim](#jwt-passport-claim) name maps to an array of
 [Passport Visas](#passport-visa) which are encoded as
 [Embedded Tokens](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
-within a "ga4gh" root JWT claim object.
+within a [JWT Passport Claim](#jwt-passport-claim).
 
 Non-normative example of a set of Passport Visas, encoded as Embedded
-Token strings, with an Passport Visa Type of "ResearcherStatus":
+Token JWS Compact Serialization strings:
 
 ```
 {
-  "ga4gh": {
-    "ResearcherStatus": [
-      "<eyJhbGciOiJI...aaa>",
-      "<eyJhbGciOiJI...bbb>"
-    ]
-  }
+  "ga4gh_passport_v1": [
+    "<eyJhbGciOiJI...aaa>",
+    "<eyJhbGciOiJI...bbb>"
+  ]
 }
 ```
 
@@ -337,7 +334,7 @@ a more reader-friendly form is also available.
   "jti": "<token-identifier>",
   "iat": <seconds-since-epoch>,
   "exp": <seconds-since-epoch>,
-  "ga4gh_rio": {
+  "ga4gh_visa_v1": {
     "asserted": <seconds-since-epoch>,
     "value": "<value-string>",
     "source": "<source-URL>",
@@ -347,10 +344,10 @@ a more reader-friendly form is also available.
 }.\<Signature\>
 ```
 
-Where fields within the `ga4gh_rio` object are as described in the
+Where fields within the `ga4gh_visa_v1` object are as described in the
 [Passport Visa Fields](#passport-visa-fields) section of this
 specification except for "exp" which is a direct JWT claim and not
-stored within the `ga4gh_rio` object.
+stored within the `ga4gh_visa_v1` object.
 
 One of `scope` or `jku` MUST be present as described in
 [Conformance for Embedded Token Signatories](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-signatories)
@@ -411,12 +408,13 @@ are:
     claim. The format of the string can vary by the [Passport Visa
     Type](#passport-visa-type).
 
--   For example, ga4gh.ResearcherStatus.value =
-    "<https://doi.org/10.1038/s41431-018-0219-y>” represents the Registered
-    Access Bona Fide researcher status.
+-   For example, `value` =
+    "<https://doi.org/10.1038/s41431-018-0219-y>" when `type` =
+    "ResearcherStatus" represents the Registered Access Bona Fide researcher
+    status.
 
 -   For the purposes of enforcing its policies for access, a Claim
-    Clearinghouse evaluating the "value" field MUST:
+    Clearinghouse evaluating the `value` field MUST:
     
     -   Validate URL strings as per the [URL Claim Field](#url-claim-field)
         requirements.
@@ -425,7 +423,7 @@ are:
         unless the claim defines a safe and reliable format for
         partitioning into substrings and matching on the various substrings.
         For example, the standard [AffiliationAndRole
-        visa](#ga4ghaffiliationandrole) can be reliably
+        visa](#affiliationandrole) can be reliably
         partitioned by splitting the string at the first “@” sign if such exists,
         or otherwise producing an error (denying permission).
 
@@ -538,15 +536,15 @@ are:
     ```
 
     Would match a corresponding AffiliationAndRole claim within the same
-    Passport Visa Object that has any of the following:
+    Passport Visa Object that has **any** of the following:
 
-    -   value = "faculty\@uni-heidelberg.de" AND by = "so"
+    -   `value` = "faculty\@uni-heidelberg.de" AND `by` = "so"
 
-    -   value = "faculty\@uni-heidelberg.de" AND by = "system"
+    -   `value` = "faculty\@uni-heidelberg.de" AND `by` = "system"
 
-    -   value = "student\@uni-heidelberg.de" AND by = "so"
+    -   `value` = "student\@uni-heidelberg.de" AND `by` = "so"
 
-    -   value = "student\@uni-heidelberg.de" AND by = "system"
+    -   `value` = "student\@uni-heidelberg.de" AND `by` = "system"
 
 #### "**by**"
 
@@ -617,7 +615,7 @@ Note: in addition to these GA4GH standard Passport Visa Types, there is also
 the ability to for an Embedded Token Signatory to encode [Custom Passport Visa
 Types](#custom-passport-visa-types) and still be compliant.
 
-### ga4gh.AffiliationAndRole
+### AffiliationAndRole
 
 -   The Identity’s role within the identity’s affiliated institution as
     specified by one of the following:
@@ -650,7 +648,7 @@ Types](#custom-passport-visa-types) and still be compliant.
 -   AffiliationAndRole can be safely partitioned into a {role, affiliation} pair
     by splitting the value string at the first "@" sign.
 
-### ga4gh.AcceptedTermsAndPolicies
+### AcceptedTermsAndPolicies
 
 -   The set of unique identifiers in the form of URLs that indicate that a
     researcher or their organization has acknowledged the specific terms and
@@ -666,7 +664,7 @@ Types](#custom-passport-visa-types) and still be compliant.
 
 -   MUST include "[by](#by)" field.
 
-### ga4gh.ResearcherStatus
+### ResearcherStatus
 
 -   Unique identifiers in the form of URLs that indicate that the person has
     been acknowledged to be a researcher of a particular type or standard.
@@ -682,7 +680,7 @@ Types](#custom-passport-visa-types) and still be compliant.
     [Registered Access](#registered-access) Bona Fide researcher
     status.
 
-### ga4gh.ControlledAccessGrants
+### ControlledAccessGrants
 
 -   A list of datasets or other objects for which controlled access has been
     granted to this researcher.
@@ -694,7 +692,7 @@ Types](#custom-passport-visa-types) and still be compliant.
 -   This claim MAY include a
     "[condition](#condition)" field.
 
-### ga4gh.LinkedIdentities
+### LinkedIdentities
 
 -   The identity as indicated by the {"iss", "sub"} pair (aka "[Passport Visa
     Identity](#passport-visa-identity)") of the [Passport
@@ -737,7 +735,8 @@ Types](#custom-passport-visa-types) and still be compliant.
        {
          "iss": "https://example1.org/oidc",
          "sub": "sub1",
-         "ga4gh_rio": {
+         "ga4gh_visa_v1": {
+           "type": "LinkedIdentities",
            "value": "sub2|https://example2.org/oidc,sub3|https://example3.org/oidc",
            "source": "https://example1.org/oidc"
            ...
@@ -754,7 +753,8 @@ Types](#custom-passport-visa-types) and still be compliant.
        {
          "iss": "https://example0.org/oidc",
          "sub": "sub0",
-         "ga4gh_rio": {
+         "ga4gh_visa_v1": {
+           "type": "LinkedIdentities",
            "value":
              "sub1|http://example1.org/oidc,sub2|http://example2.org/oidc,sub3|http://example3.org/oidc,sub4|http://example4.org/oidc"
            "source": "https://example0.org/oidc"
@@ -772,7 +772,8 @@ Types](#custom-passport-visa-types) and still be compliant.
        {
          "iss": "https://example1.org/oidc",
          "sub": "sub1",
-         "ga4gh_rio": {
+         "ga4gh_visa_v1": {
+           "type": "LinkedIdentities",
            "value": "sub2|https://example2.org/oidc",
            "source": "https://example1.org/oidc"
            ...
@@ -781,7 +782,8 @@ Types](#custom-passport-visa-types) and still be compliant.
        {
          "iss": "https://example2.org/oidc",
          "sub": "sub2",
-         "ga4gh_rio": {
+         "ga4gh_visa_v1": {
+           "type": "LinkedIdentities",
            "value": "sub3|https://example3.org/oidc",
            "source": "https://example2.org/oidc"
            ...
@@ -823,13 +825,17 @@ Use cases include, but are not limited to the following:
     [Registered Access](https://doi.org/10.1038/s41431-018-0219-y) to
     data, a user needs to have **all** of the following Passport Visas:
 
-    -   Meeting the ethics requirements is represented by
-        ga4gh.AcceptedTermsAndPolicies.value= \
-        "<https://doi.org/10.1038/s41431-018-0219-y>"
+    -   Meeting the ethics requirements is represented by:
+    
+        -   `type` = "AcceptedTermsAndPolicies"; and
+        
+        -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
 
-    -   Meeting the bona fide status is represented by
-        ga4gh.ResearcherStatus.value= \
-        "<https://doi.org/10.1038/s41431-018-0219-y>"
+    -   Meeting the bona fide status is represented by:
+    
+        -   `type` = "ResearcherStatus"; and
+        
+        -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
 
 -   The [Claim Clearinghouse](#claim-clearinghouse) (e.g. to authorize a
     registered access beacon) needs to evaluate the multiple Passport
@@ -844,19 +850,23 @@ Use cases include, but are not limited to the following:
 
 ### Controlled Access
 
--   Controlled Access to data MAY make use of any of the following [Passport
-    Visa Types](#passport-visa-type):
+-   Controlled Access to data utilizes the following [Passport Visa
+    Types](#passport-visa-type):
 
-    -   [ga4gh.ControlledAccessGrants](#ga4ghcontrolledaccessgrants) for
+    -   MUST utilize one or more
+        [ControlledAccessGrants](#controlledaccessgrants) for
         permissions associated with specific data or datasets.
         
-    -   [ga4gh.AffiliationAndRole](#ga4ghaffiliationandrole) to associate a user
-        with a role within a specific organization. Additionally the
-        ga4gh.ControlledAccessGrants MAY make use of the role and affiliation
-        through a [condition](#condition) field.
-        
-    -   Any other Passport Visa Type that may be required to meet controlled
-        access policies.
+    -   MAY utilize the [condition](#condition) field on
+        "ControlledAccessGrants" to cause such a grant to require
+        a Passport Visa from a trusted Passport Visa Source to
+        assert that the identity has a role within a specific organization.
+        This can be achieved by using the
+        [AffiliationAndRole](#affiliationandrole) Passport Visa Type on
+        the `condition`.
+
+    -   MAY utilize any other valid Passport Visa Type or `condition` fields
+        that may be required to meet controlled access policies.
 
 ## Passport Visa Expiry
 
@@ -869,7 +879,7 @@ following algorithm options to ensure that claim expiry is accounted for:
 is valid for the entire duration of the requested duration:
 
 ```
-now()+requestedTTL < min("token.exp", "token.ga4gh_rio.asserted"+maxAuthzTTL)
+now()+requestedTTL < min(token.exp, token.ga4gh_visa_v1.asserted+maxAuthzTTL)
 ```
 
 Where:
@@ -881,8 +891,8 @@ Where:
 -   `maxAuthzTTL` represents any additional expiry policy that the Claim
     Clearinghouse may choose to enforce. If this is not needed, it can
     effectively ignored by using a large number of years or otherwise have
-    "token.ga4gh_rio.asserted"+maxAuthzTTL removed and simplify the right hand
-    side expression accordingly.
+    `token.ga4gh_visa_v1.asserted+maxAuthzTTL` removed and simplify the right
+    hand side expression accordingly.
 
 **Option B**: if tokens are sufficiently short lived and/or the authorization
 system has an advanced revocation scheme that does not need to specify a
@@ -972,100 +982,96 @@ however this example shows the result after the Embedded Tokens have been
 unencoded into JSON to be more reader-friendly.
 
 ```
-"ga4gh": {
-  "AffiliationAndRole": [
+"ga4gh_passport_v1": [
     {
-      "iat": 1580000000,
-      "exp": 1581208000,
-      ...
-      "ga4gh_rio": {
-        "asserted": 1549680000,
-        "value": "faculty@med.stanford.edu",
-        "source": "https://grid.ac/institutes/grid.240952.8",
-        "by": "so"
-      }
-    }
-  ],
-  "ControlledAccessGrants": [
-    {
-      "iat": 1580000100,
-      "exp": 1581168872,
-      ...
-      "ga4gh_rio": {
-        "asserted": 1549632872,
-        "value": "https://nih.gov/dbgap/phs000710",
-        "source": "https://grid.ac/institutes/grid.48336.3a",
-        "by": "dac"
-      }
+        "iat": 1580000000,
+        "exp": 1581208000,
+        ...
+        "ga4gh_visa_v1": {
+            "type": "AffiliationAndRole",
+            "asserted": 1549680000,
+            "value": "faculty@med.stanford.edu",
+            "source": "https://grid.ac/institutes/grid.240952.8",
+            "by": "so"
+        }
     },
     {
-      "iat": 1580000200,
-      "exp": 1581168000,
-      ...
-      "ga4gh_rio": {
-        "asserted": 1549640000,
-        "value": "https://ega-archive.org/datasets/00000432",
-        "source": "https://grid.ac/institutes/grid.225360.0",
-        "condition": {
-          "AffiliationAndRole" : {
-             "value": ["faculty@med.stanford.edu"],
-             "source": ["https://grid.ac/institutes/grid.240952.8"],
-             "by": [
-               "so",
-               "system"
-             ]
-          }
-        },
-        "by": "dac"
-      }
-    }
-  ],
-  "AcceptedTermsAndPolicies": [
+        "iat": 1580000100,
+        "exp": 1581168872,
+        ...
+        "ga4gh_visa_v1": {
+            "type": "ControlledAccessGrants",
+            "asserted": 1549632872,
+            "value": "https://nih.gov/dbgap/phs000710",
+            "source": "https://grid.ac/institutes/grid.48336.3a",
+            "by": "dac"
+        }
+    },
     {
-      "iss": "https://issuer.example1.org/oidc",
-      "sub": "10001",
-      "iat": 1580000300,
-      "exp": 1581208000,
-      ...
-      "ga4gh_rio": {
-        "asserted": 1549680000,
-        "value": "https://doi.org/10.1038/s41431-018-0219-y",
-        "source": "https://grid.ac/institutes/grid.240952.8",
-        "by": "self"
-      }
-    }
-  ],
-  "ResearcherStatus": [
+        "iat": 1580000200,
+        "exp": 1581168000,
+        ...
+        "ga4gh_visa_v1": {
+            "type": "ControlledAccessGrants",
+            "asserted": 1549640000,
+            "value": "https://ega-archive.org/datasets/00000432",
+            "source": "https://grid.ac/institutes/grid.225360.0",
+            "by": "dac"
+            "condition": {
+                "AffiliationAndRole" : {
+                    "value": ["faculty@med.stanford.edu"],
+                    "source": ["https://grid.ac/institutes/grid.240952.8"],
+                    "by": [
+                        "so",
+                        "system"
+                    ]
+                }
+            },
+        }
+    },
     {
-      "iss": "https://other.example2.org/oidc",
-      "sub": "abcd",
-      "iat": 1580000400,
-      "exp": 1581208000,
-      ...
-      "ga4gh_rio": {
-        "asserted": 1549680000,
-        "value": "https://doi.org/10.1038/s41431-018-0219-y",
-        "source": "https://grid.ac/institutes/grid.240952.8",
-        "by": "so"
-      }
-    }
-  ],
-  "LinkedIdentities": [
+        "iss": "https://issuer.example1.org/oidc",
+        "sub": "10001",
+        "iat": 1580000300,
+        "exp": 1581208000,
+        ...
+        "ga4gh_visa_v1": {
+            "type": "AcceptedTermsAndPolicies",
+            "asserted": 1549680000,
+            "value": "https://doi.org/10.1038/s41431-018-0219-y",
+            "source": "https://grid.ac/institutes/grid.240952.8",
+            "by": "self"
+        }
+    },
     {
-      "iss": "https://broker.example3.org/oidc",
-      "sub": "999999",
-      "iat": 1580000500,
-      "exp": 1581208000,
-      ...
-      "ga4gh_rio": {
-        "asserted": 1549680000,
-        "value": "10001|https://issuer.example1.org/oidc,abcd|https://other.example2.org/oidc",
-        "source": "https://broker.example3.org/oidc",
-        "by": "system"
-      }
+        "iss": "https://other.example2.org/oidc",
+        "sub": "abcd",
+        "iat": 1580000400,
+        "exp": 1581208000,
+        ...
+        "ga4gh_visa_v1": {
+            "type": "ResearcherStatus",
+            "asserted": 1549680000,
+            "value": "https://doi.org/10.1038/s41431-018-0219-y",
+            "source": "https://grid.ac/institutes/grid.240952.8",
+            "by": "so"
+        }
+    },
+    {
+        "iss": "https://broker.example3.org/oidc",
+        "sub": "999999",
+        "iat": 1580000500,
+        "exp": 1581208000,
+        ...
+        "ga4gh_visa_v1": {
+            "type": "LinkedIdentities",
+            "asserted": 1549680000,
+            "value": "10001|https://issuer.example1.org/oidc,abcd|https://other.example2.org/oidc",
+            "source": "https://broker.example3.org/oidc",
+            "by": "system"
+        }
     }
-  ]
-}
+]
 ```
 
 ## Specification Revision History
