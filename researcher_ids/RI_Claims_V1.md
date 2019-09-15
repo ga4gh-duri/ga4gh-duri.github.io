@@ -25,12 +25,15 @@ access](https://www.nature.com/articles/s41431-018-0219-y) publication."
 ### Table of Contents
 
 - [**Conventions and Terminology**](#conventions-and-terminology)
+  - [Passport](#passport)
   - [JWT Passport Claim](#jwt-passport-claim)
   - [Passport Visa](#passport-visa)
-  - [Passport Visa Type](#passport-visa-type)
   - [Passport Visa Object](#passport-visa-object)
+  - [Passport Visa Type](#passport-visa-type)
   - [Passport Visa Source](#passport-visa-source)
-  - [Passport](#passport)
+  - [Passport Visa Source Repository](#passport-visa-source-repository)
+  - [Passport Visa Signatory](#passport-visa-signatory)
+  - [Passport Broker](#passport-broker)
   - [Passport Clearinghouse](#passport-clearinghouse)
   - [Passport Visa Identity](#passport-visa-identity)
 - [**Overview**](#overview)
@@ -41,6 +44,7 @@ access](https://www.nature.com/articles/s41431-018-0219-y) publication."
   - [Passport Visa Format](#passport-visa-format)
     - [exp](#exp)
   - [Passport Visa Fields](#passport-visa-fields)
+    - [type](#type)
     - [asserted](#asserted)
     - [value](#value)
     - [source](#source)
@@ -68,6 +72,14 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
+#### **Passport**
+
+-   A GA4GH-compatible access token, as per the [GA4GH AAI
+    specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md),
+    along with the [JWT Passport Claim](#jwt-passport-claim) that is
+    returned from [Passport Broker](#passport-broker) endpoints using such an
+    access token.
+
 #### **JWT Passport Claim**
 
 -   A [GA4GH
@@ -93,9 +105,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 -   An attestation or access assertion from a [Passport Visa
     Source](#passport-visa-source) that is bound to a researcher identity and
-    signed by an [Embedded Token
-    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
-    as per the "iss" field.
+    signed by a [Passport Visa Signatory](#passport-visa-signatory) per the
+    "iss" field and the signature is verifiable via its public key.
 
 -   Encoded as an
     [Embedded Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
@@ -107,6 +118,15 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     Claim](#jwt-passport-claim). See the [JWT Passport Claim
     Format](#jwt-passport-claim-format) section of this specification for
     more details.
+
+#### **Passport Visa Object**
+
+-   A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim named
+    `ga4gh_visa_v1` in the form of a JSON object that provides fields
+    that describe a [Passport Visa](#passport-visa).
+
+-   For field definitions, refer to [Passport Visa
+    Fields](#passport-visa-fields).
 
 #### **Passport Visa Type**
 
@@ -125,15 +145,6 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     be Passport Visas with [Custom Passport Visa
     Types](#custom-passport-visa-types).
 
-#### **Passport Visa Object**
-
--   A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim named
-    `ga4gh_visa_v1` in the form of a JSON object that provides fields
-    that describe a [Passport Visa](#passport-visa).
-
--   For field definitions, refer to [Passport Visa
-    Fields](#passport-visa-fields).
-
 #### **Passport Visa Identity**
 
 -   The {"iss", "sub"} pair of JWT standard claims ([RFC7519 section
@@ -149,14 +160,28 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     the "[source](#source)" field of a [Passport Visa
     Object](#passport-visa-object).
 
-#### **Passport**
+#### **Passport Visa Source Repository**
 
--   A GA4GH-compatible access token, as per the [GA4GH AAI
-    specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md),
-    along with the [JWT Passport Claim](#jwt-passport-claim) that is
-    returned from
-    [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#broker)
-    endpoints using such an access token.
+-   The [AAI Claim
+    Repository](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-repository)
+    for the data related to a [Passport Visa](#passport-visa).
+
+#### **Passport Visa Signatory**
+
+-   A compliant [AAI Embedded Token
+    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
+    that signs a [Passport Visa](#passport-visa).
+
+-   See [Comformance for Embedded Token Signatories section of the GA4GH
+    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-signatories).
+
+#### **Passport Broker**
+
+-   A service handling Passport Visas and assembling Passports while
+    conforming as a
+    [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-broker)
+    with conformance outlined in the [Conformance for Brokers section
+    of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-brokers).
 
 #### **Passport Clearinghouse**
 
@@ -214,14 +239,12 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 7.  <a name="requirement-7"></a> The [JWT Passport Claim](#jwt-passport-claim)
     is only included in the Passport if the `ga4gh_passport_v1` scope is
-    requested from the
-    [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-broker)
-    and other conditions are met as outlined within this specification.
+    requested from the [Passport Broker](#passport-broker) and other conditions
+    are met as outlined within this specification.
 
-    If the Broker is the [Embedded Token
-    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md@term-embedded-token-signatory),
-    it MUST set the "iss" to itself and sign such Embedded Tokens with its own
-    private key as described in the
+    If the Passport Broker is the [Passport Visa
+    Signatory](#passport-visa-signatory), it MUST set the "iss" to itself and
+    sign such Embedded Tokens with its own private key as described in the
     [AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 8.  <a name="requirement-8"></a> Passport Visas are designed for machine
@@ -311,7 +334,7 @@ a more reader-friendly form is also available.
     as JWS Compact Serialization string as defined by [RFC7515 section
     7.1](https://tools.ietf.org/html/rfc7515#section-7.1).
 
--   Embedded Token Signatories, Brokers, Passport Clearinghouses, and
+-   Embedded Token Signatories, Passport Brokers, Passport Clearinghouses, and
     their Clients MUST conform to the
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
     requirements for Embedded Tokens in their use of Passport Visas.
@@ -340,6 +363,7 @@ form when represented in JSON:
   "iat": <seconds-since-epoch>,
   "exp": <seconds-since-epoch>,
   "ga4gh_visa_v1": {
+    "type": "<passport-visa-type>",
     "asserted": <seconds-since-epoch>,
     "value": "<value-string>",
     "source": "<source-URL>",
@@ -363,10 +387,10 @@ within the [AAI specification](https://github.com/ga4gh/data-security/blob/maste
 -   REQUIRED. Generally, it is seconds since unix epoch of when the
     [Passport Visa Source](#passport-visa-source) requires such a
     claim to be no longer valid. A Passport Visa Source MAY choose
-    to make a claim very long lived. However, an
-    [Embedded Token Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
-    MAY choose an earlier timestamp if it wishes to limit the claim’s
-    duration of use within downstream Passport Clearinghouses.
+    to make a claim very long lived. However, a [Passport Visa
+    Signatory](#passport-visa-signatory) MAY choose an earlier timestamp
+    in order to limit the claim’s duration within downstream Passport
+    Clearinghouses.
 
 -   Access is NOT necessarily removed by the `exp` timestamp. Instead,
     this timestamp may be viewed as a cut-off after which no new access
@@ -400,15 +424,15 @@ the GA4GH DURI committee.
 -   Its use by a Passport Clearinghouse is described in the
     [Passport Visa Expiry](#passport-visa-expiry) section.
 
--   If a [Claim
+-   If a [Passport Visa Source
     Repository](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-respository)
-    does not include enough information to construct an `iat` timestamp, an
-    Embedded Token Signatory MAY use a recent timestamp (for example, the
-    `iat` timestamp) if the Claim Repository is kept up to date such that
-    the Embedded Token Signatory can ensure that the claim is valid at or
-    near the time of minting the Embedded Token. However, generally it is
-    RECOMMENDED to have the Claim Repository provide more accurate `iat`
-    information.
+    does not include enough information to construct an `iat` timestamp, a
+    [Passport Visa Signatory](#passport-visa-signatory) MAY use a recent
+    timestamp (for example, the `iat` timestamp) if the Passport Visa Source
+    Repository is kept up to date such that the Passport Visa Signatory can
+    ensure that the claim is valid at or near the time of minting the Passport
+    Visa Embedded Token. However, generally it is RECOMMENDED to have the
+    Passport Visa Source Repository provide more accurate `iat` information.
 
 #### "**value**"
 
@@ -620,7 +644,7 @@ of URL format with the following limitations:
 ## GA4GH Standard Passport Visa Definitions
 
 Note: in addition to these GA4GH standard Passport Visa Types, there is also
-the ability to for an Embedded Token Signatory to encode [Custom Passport Visa
+the ability to for a Passport Visa Signatory to encode [Custom Passport Visa
 Types](#custom-passport-visa-types) and still be compliant.
 
 ### AffiliationAndRole
@@ -728,11 +752,10 @@ Types](#custom-passport-visa-types) and still be compliant.
 
 -   The "[source](#source)" field refers to the [Passport Visa
     Source](#passport-visa-source) that is making the assertion. This is
-    typically the same organization as the [Embedded Token
-    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
-    "iss" that signs the Passport Visa, but the "source" MAY also refer
-    to another Passport Visa Source depending on how the information was
-    collected.
+    typically the same organization as the [Passport Visa
+    Signatory](#passport-visa-signatory) "iss" that signs the Passport
+    Visa, but the "source" MAY also refer to another Passport Visa Source
+    depending on how the information was collected.
 
 -   As a non-normative example, if a policy needs 3 Passport Visas and
     there are three Passport Visas that meet the criteria on one Passport
@@ -859,7 +882,7 @@ Use cases include, but are not limited to the following:
         Clearinghouse MUST also check the
         [LinkedIdentities](#ga4ghlinkedidentities) Passport Visas to
         determine if combining these identities came from a trusted
-        Embedded Token Signatory.
+        [Passport Visa Signatory](#passport-visa-signatory).
 
 ### Controlled Access
 
@@ -981,14 +1004,15 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
 -   **ResearcherStatus**: A Signing Official at Stanford Medicine has asserted
     that this person is a bona fide researcher as defined by Registered Access.
 
--   **LinkedIdentities**: An Broker at example3.org has provided software
-    functionality to allow a user to link their own accounts together. After the
-    user has successfully logged into the two accounts and passed any auth
-    challenges, the broker added the **LinkedIdentities** claim for those two
-    accounts: (1) "10001" from example1.org, and (2) "abcd" from example2.org.
-    Since the Broker is signing the `LinkedIdentities`
-    [Passport Visa](#passport-visa), it is acting as the [Embedded Token
-    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory).
+-   **LinkedIdentities**: A Passport Broker at example3.org has provided
+    software functionality to allow a user to link their own accounts together.
+    After the user has successfully logged into the two accounts and passed any
+    auth challenges, the Passport Broker added the
+    [LinkedIdentities](#linkedidentities) Passport Visa for those two accounts:
+    (1) "10001" from example1.org, and (2) "abcd" from example2.org.
+    Since the Passport Broker is signing the "LinkedIdentities"
+    [Passport Visa](#passport-visa), it is acting as the [Passport Visa
+    Signatory](#passport-visa-signatory).
 
 Normally a Passport like this would include [Passport Visa
 Format](#passport-visa-format) entries as JWS Compact Serialization strings,
