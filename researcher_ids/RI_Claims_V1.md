@@ -46,7 +46,7 @@ access](https://www.nature.com/articles/s41431-018-0219-y) publication."
     - [source](#source)
     - [condition](#condition)
     - [by](#by)
-  - [URL Claim Fields](#url-claim-fields)
+  - [URL Fields](#url-fields)
 - [**GA4GH Standard Passport Visa Definitions**](#ga4gh-standard-passport-visa-definitions)
   - [AffiliationAndRole](#affiliationandrole)
   - [AcceptedTermsAndPolicies](#acceptedtermsandpolicies)
@@ -370,7 +370,7 @@ within the [AAI specification](https://github.com/ga4gh/data-security/blob/maste
 
 -   Its use by a Claim Clearinghouse is described in the
     [Passport Visa Expiry](#passport-visa-expiry) section and
-    [Token Revocation](#claim-and-token-revocation) section.
+    [Token Revocation](#token-revocation) section.
 
 ## Passport Visa Fields
 
@@ -416,7 +416,7 @@ are:
 -   For the purposes of enforcing its policies for access, a Claim
     Clearinghouse evaluating the `value` field MUST:
     
-    -   Validate URL strings as per the [URL Claim Field](#url-claim-field)
+    -   Validate URL strings as per the [URL Field](#url-fields)
         requirements.
     
     -   Value field strings MUST be full string case-sensitive matches
@@ -429,7 +429,7 @@ are:
 
 #### "**source**"
 
--   REQUIRED. A [URL Claim Field](#url-claim-fields) that provides at a minimum the
+-   REQUIRED. A [URL Field](#url-fields) that provides at a minimum the
     organization that has asserted the claim. If there is no organization
     asserting a claim, the "source" MUST be set to
     "https://no.organization".
@@ -582,7 +582,7 @@ are:
     as the level or type of authority is "unknown". Any policy expecting a
     specific value as per the list above MUST fail to accept an "unknown" value.
 
-### URL Claim Fields
+### URL Fields
 
 An [Passport Visa Field](#passport-visa-fields) that is defined as being
 of URL format with the following limitations:
@@ -653,12 +653,14 @@ Types](#custom-passport-visa-types) and still be compliant.
 -   The set of unique identifiers in the form of URLs that indicate that a
     researcher or their organization has acknowledged the specific terms and
     policies indicated by the URL.
+    
+-   The `value` field conforms to [URL Field](#url-fields) format.
 
 -   The URLs SHOULD resolve to a public-facing, human readable web page that
     describes the terms and policies.
 
--   Example value: "<https://doi.org/10.1038/s41431-018-0219-y>" acknowledges
-    the ethics terms as needed for
+-   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
+    acknowledges the ethics terms as needed for
     [Registered Access](#registered-access) Bona Fide researcher
     status.
 
@@ -669,14 +671,15 @@ Types](#custom-passport-visa-types) and still be compliant.
 -   Unique identifiers in the form of URLs that indicate that the person has
     been acknowledged to be a researcher of a particular type or standard.
 
--   The "value" field of the claim indicates the minimum standard and/or type of
-    researcher that describes the person represented by the given identity.
+-   The `value` field conforms to [URL Field](#url-fields) format, and it
+    indicates the minimum standard and/or type of researcher that describes
+    the person represented by the given identity.
 
 -   The URLs SHOULD resolve to a human readable web page that describes the
     process that has been followed and the qualifications this person has met.
 
--   Example value: "<https://doi.org/10.1038/s41431-018-0219-y>" acknowledges
-    the registration process as needed for
+-   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
+    acknowledges the registration process as needed for
     [Registered Access](#registered-access) Bona Fide researcher
     status.
 
@@ -684,13 +687,14 @@ Types](#custom-passport-visa-types) and still be compliant.
 
 -   A list of datasets or other objects for which controlled access has been
     granted to this researcher.
+    
+-   The `value` field conforms to [URL Field](#url-fields) format.
 
--   The "source" field contains the access grantee organization.
+-   The `source` field contains the access grantee organization.
 
 -   MUST include "[by](#by)" field.
 
--   This claim MAY include a
-    "[condition](#condition)" field.
+-   This claim MAY include a "[condition](#condition)" field.
 
 ### LinkedIdentities
 
@@ -704,7 +708,7 @@ Types](#custom-passport-visa-types) and still be compliant.
     between entries.
   
     -   The "iss" and "sub" that are used to encode the "value" field do
-        not need to conform to [URL Claim Field](#url-claim-fields)
+        not need to conform to [URL Field](#url-fields)
         requirements since they must match the corresponding Passport Visa
         "iss" and "sub" fields that may be issued.
         
@@ -803,7 +807,7 @@ Types](#custom-passport-visa-types) and still be compliant.
     to only that which is neccessary to provide authorization.
 
 -   The custom `type` name MUST follow the format prescribed in the
-    [URL Claim Fields](#url-claim-fields) section of the specification.
+    [URL Fields](#url-fields) section of the specification.
 
 -   Implementers introducing a new custom `type` name MUST coordinate with the
     DURI committee to align custom `type` use cases to maximize interoperability
