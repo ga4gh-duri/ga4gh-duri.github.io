@@ -10,7 +10,7 @@
 
 **Product Description:** This document provides the GA4GH technical
 specification for the
-[JWT Passport Claim](#jwt-passport-claim) to be
+[Passport JWT Claim](#passport-jwt-claim) to be
 consumed by [Passport Clearinghouses](#passport-clearinghouse) in a
 standardized approach to determine whether or not data access should be
 granted. Additionally, the specification provides guidance on encoding
@@ -25,21 +25,23 @@ access](https://www.nature.com/articles/s41431-018-0219-y) publication."
 ### Table of Contents
 
 - [**Conventions and Terminology**](#conventions-and-terminology)
-  - [Passport](#passport)
-  - [JWT Passport Claim](#jwt-passport-claim)
-  - [Passport Visa](#passport-visa)
-  - [Passport Visa Object](#passport-visa-object)
-  - [Passport Visa Type](#passport-visa-type)
-  - [Passport Visa Source](#passport-visa-source)
-  - [Passport Visa Source Repository](#passport-visa-source-repository)
-  - [Passport Visa Signatory](#passport-visa-signatory)
-  - [Passport Broker](#passport-broker)
-  - [Passport Clearinghouse](#passport-clearinghouse)
-  - [Passport Visa Identity](#passport-visa-identity)
+  - [Objects and Tokens](#objects-and-tokens)
+    - [Passport](#passport)
+    - [Passport JWT Claim](#passport-jwt-claim)
+    - [Passport Visa](#passport-visa)
+    - [Passport Visa Identity](#passport-visa-identity)
+    - [Passport Visa Object](#passport-visa-object)
+    - [Passport Visa Type](#passport-visa-type)
+  - [Actors and Services](#actors-and-services)
+    - [Passport Visa Source](#passport-visa-source)
+    - [Passport Visa Source Repository](#passport-visa-source-repository)
+    - [Passport Visa Signatory](#passport-visa-signatory)
+    - [Passport Broker](#passport-broker)
+    - [Passport Clearinghouse](#passport-clearinghouse)
 - [**Overview**](#overview)
   - [General Requirements](#general-requirements)
   - [Support for User Interfaces](#support-for-user-interfaces)
-- [**JWT Passport Claim Format**](#jwt-passport-claim-format)
+- [**Passport JWT Claim Format**](#passport-jwt-claim-format)
   - [Passport Visa Requirements](#passport-visa-requirements)
   - [Passport Visa Format](#passport-visa-format)
     - [exp](#exp)
@@ -63,7 +65,7 @@ access](https://www.nature.com/articles/s41431-018-0219-y) publication."
   - [Controlled Access](#controlled-access)
 - [**Passport Visa Expiry**](#passport-visa-expiry)
 - [**Token Revocation**](#token-revocation)
-- [**Example JWT Passport Claim**](#example-jwt-passport-claim)
+- [**Example Passport JWT Claim**](#example-passport-jwt-claim)
 - [**Specification Revision History**](#specification-revision-history)
 
 ## Conventions and Terminology
@@ -72,15 +74,17 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
-#### **Passport**
+### **Objects and Tokens**
+
+#### Passport
 
 -   A GA4GH-compatible access token, as per the [GA4GH AAI
     specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md),
-    along with the [JWT Passport Claim](#jwt-passport-claim) that is
+    along with the [Passport JWT Claim](#passport-jwt-claim) that is
     returned from [Passport Broker](#passport-broker) endpoints using such an
     access token.
 
-#### **JWT Passport Claim**
+#### Passport JWT Claim
 
 -   A [GA4GH
     Claim](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-ga4gh-claim)
@@ -91,7 +95,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     Signatories](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
     can be bundled together in the same `ga4gh_passport_v1` JWT claim.
 
--   For example, the following structure encodes a JWT Passport Claim:
+-   For example, the following structure encodes a Passport JWT Claim:
 
     ```
     "ga4gh_passport_v1" : [
@@ -101,7 +105,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     ]
     ```
 
-#### **Passport Visa**
+#### Passport Visa
 
 -   An attestation or access assertion from a [Passport Visa
     Source](#passport-visa-source) that is bound to a researcher identity and
@@ -114,12 +118,19 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     ([Passport Visa Fields](#passport-visa-fields)) that describe
     the assertion and limitations thereof.
     
--   Passport Visas are included in the [JWT Passport
-    Claim](#jwt-passport-claim). See the [JWT Passport Claim
-    Format](#jwt-passport-claim-format) section of this specification for
+-   Passport Visas are included in the [Passport JWT
+    Claim](#passport-jwt-claim). See the [Passport JWT Claim
+    Format](#passport-jwt-claim-format) section of this specification for
     more details.
 
-#### **Passport Visa Object**
+#### Passport Visa Identity
+
+-   The {"iss", "sub"} pair of JWT standard claims ([RFC7519 section
+    4.1.1](https://tools.ietf.org/html/rfc7519#section-4.1.1)) that are
+    included within an [Passport Visa](#passport-visa) that represents a
+    given user (such as a user account) within the "iss" system.
+
+#### Passport Visa Object
 
 -   A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim named
     `ga4gh_visa_v1` in the form of a JSON object that provides fields
@@ -128,7 +139,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   For field definitions, refer to [Passport Visa
     Fields](#passport-visa-fields).
 
-#### **Passport Visa Type**
+#### Passport Visa Type
 
 -   The "[type](#type)" field of an [Passport Visa](#passport-visa)
     that represents the semantics of the assertion and informs all parties
@@ -145,14 +156,9 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     be Passport Visas with [Custom Passport Visa
     Types](#custom-passport-visa-types).
 
-#### **Passport Visa Identity**
+### **Actors and Services**
 
--   The {"iss", "sub"} pair of JWT standard claims ([RFC7519 section
-    4.1.1](https://tools.ietf.org/html/rfc7519#section-4.1.1)) that are
-    included within an [Passport Visa](#passport-visa) that represents a
-    given user (such as a user account) within the "iss" system.
-
-#### **Passport Visa Source**
+#### Passport Visa Source
 
 -   The
     [AAI Claim Source](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-source)
@@ -160,13 +166,13 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     the "[source](#source)" field of a [Passport Visa
     Object](#passport-visa-object).
 
-#### **Passport Visa Source Repository**
+#### Passport Visa Source Repository
 
 -   The [AAI Claim
     Repository](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-repository)
     for the data related to a [Passport Visa](#passport-visa).
 
-#### **Passport Visa Signatory**
+#### Passport Visa Signatory
 
 -   A compliant [AAI Embedded Token
     Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
@@ -175,7 +181,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   See [Comformance for Embedded Token Signatories section of the GA4GH
     AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-signatories).
 
-#### **Passport Broker**
+#### Passport Broker
 
 -   A service handling Passport Visas and assembling Passports while
     conforming as a
@@ -183,7 +189,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     with conformance outlined in the [Conformance for Brokers section
     of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-brokers).
 
-#### **Passport Clearinghouse**
+#### Passport Clearinghouse
 
 -   A service consuming [Passports](#passport) and conforming
     to the requirements of a [Claim
@@ -195,12 +201,12 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 ### General Requirements
 
 1.  <a name="requirement-1"></a>
-    The [JWT Passport Claim](#jwt-passport-claim) and tokens that contain
-    the JWT Passport Claim MUST conform the the
-    [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
+    Use of the [Passport JWT Claim](#passport-jwt-claim) MUST conform the
+    the [GA4GH AAI
+    Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
     ("AAI Specification").
 
-2.  <a name="requirement-2"></a> A JWT Passport Claim consists of a list of
+2.  <a name="requirement-2"></a> A Passport JWT Claim consists of a list of
     [Passport Visas](#passport-visa).
 
 3.  <a name="requirement-3"></a> Each Passport Visa may
@@ -237,7 +243,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     approval, contractual limitations, regulatory restrictions, or filtering
     claims to only the subset needed for a particular purpose, etc.
 
-7.  <a name="requirement-7"></a> The [JWT Passport Claim](#jwt-passport-claim)
+7.  <a name="requirement-7"></a> The [Passport JWT Claim](#passport-jwt-claim)
     is only included in the Passport if the `ga4gh_passport_v1` scope is
     requested from the [Passport Broker](#passport-broker) and other conditions
     are met as outlined within this specification.
@@ -305,12 +311,12 @@ interfaces, such as:
 -   May provide a rich set of internationalization/localization features for
     clients to consume.
 
-## JWT Passport Claim Format
+## Passport JWT Claim Format
 
-The [JWT Passport Claim](#jwt-passport-claim) name maps to an array of
+The [Passport JWT Claim](#passport-jwt-claim) name maps to an array of
 [Passport Visas](#passport-visa) which are encoded as
 [Embedded Tokens](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
-within a [JWT Passport Claim](#jwt-passport-claim).
+within a Passport JWT Claim.
 
 Non-normative example of a set of Passport Visas, encoded as Embedded
 Token JWS Compact Serialization strings:
@@ -324,8 +330,8 @@ Token JWS Compact Serialization strings:
 }
 ```
 
-An [example](#example-jwt-passport-claim) of encoding the JWT Passport Claim in
-a more reader-friendly form is also available.
+For a more reader-friendly example, see the [Example Passport JWT
+Claim](#example-passport-jwt-claim) section of the specification.
 
 ### Passport Visa Requirements
 
@@ -969,9 +975,9 @@ GA4GH AAI Specification. Systems employing Passport Visas MUST provide mechanism
 limit the life of access, and specifically MUST conform to the GA4GH AAI
 Specification requirements in this regard.
 
-## Example JWT Passport Claim
+## Example Passport JWT Claim
 
-This non-normative example illustrates a [JWT Passport Claim](#jwt-passport-claim)
+This non-normative example illustrates a [Passport JWT Claim](#passport-jwt-claim)
 that has Passport Visas representing Registered Access bona fide researcher
 status along with other Passport Visas for access to specific Controlled Access
 data. The [Passport Visa Types](#passport-visa-type) for this example are:
