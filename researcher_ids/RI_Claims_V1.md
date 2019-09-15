@@ -27,7 +27,6 @@ Additionally, the specification provides guidance on encoding specific
   - [Researcher Identity Claim Object ("RI Claim Object")](#researcher-identity-claim-object-ri-claim-object)
   - [Claim Source](#claim-source)
   - [Passport](#passport)
-  - [Passport Access Token](#passport-access-token)
   - [Claim Clearinghouse](#claim-clearinghouse)
   - [RI Claim Object Identity](#ri-claim-object-identity)
 - [**Researcher Identity Claim Overview**](#researcher-identity-claim-overview)
@@ -124,24 +123,10 @@ Fields](#ri-claim-object-fields).
 
 #### **Passport**
 
--   A collection of RI Claims that are returned from the /userinfo
-    endpoint when given a [Passport Access Token](#passport-access-token).
-
-#### **Passport Access Token**
-
--   A
-    [specialized JWT access token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#ga4gh-jwt-format)
-    that is signed by an
-    [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)
-    as per the
-    [GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
-    for the purpose of encoding identity and evaluating authorization.
-    
--   A Passport Access Token does not contain any
-    [RI Claims](#researcher-identity-claim-ri-claim) within the JWT
-    access token itself, but it does offer the cabability to release
-    RI Claims via the /userinfo endpoint as described elsewhere in
-    this specification.
+-   A collection of [RI Claims](#researcher-identity-claim-ri-claim) that
+    are returned from a
+    [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#broker).
+    See the [Conformance for Brokers section of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-brokers).
 
 #### **Claim Clearinghouse**
 
@@ -192,37 +177,15 @@ Fields](#ri-claim-object-fields).
     may include user approval, contractual limitations, regulatory restrictions,
     or filtering claims to only the subset needed for a particular purpose, etc.
 
-7.  <a name="requirement-7"></a> When an
-    [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)
-    receives a request with the "ga4gh" scope, it provides RI claims under
-    the "ga4gh" JWT claim as follows:
+7.  <a name="requirement-7"></a> RI Claims are only included in the Passport if
+    the "ga4gh" scope is requested from the
+    [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-broker)
+    and other conditions are met as outlined within this specification.
 
-    1.  The Identity Broker collects the claims, potentially from multiple
-        sources including any upstream Identity Brokers.
-
-    2.  The Identity Broker populates the JWT claims as per the [GA4GH Access
-        Token format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#access-token-issued-by-broker),
-        and MUST NOT include the "ga4gh" claims within the Passport Access
-        Token. The RI Claims are only available at the /userinfo endpoint
-        based on the "scope" claim as outlined elsewhere within this
-        specification.
-
-    3.  The Identity Broker signs the JWT access token, making it a Passport
-        Access Token.
-
-    4.  The Identity Broker introduces new RI Claim Embedded Tokens from an
-        [Enbedded Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
-        by including them within the "ga4gh" JWT claim (available
-        via /userinfo). If the Broker is the Embedded Claim Signatory, it
-        MUST set the "iss" to itself and sign such Embedded Tokens with its
-        own private key as described in the
-        [AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
-
-    5.  The Identity Broker propagates RI Claims that it received
-        from upstream Brokers by copying each RI Claim Embedded Token
-        string into the coorsponding RI Claim within the outer "ga4gh"
-        JWT claim. These strings are provided unmodified, however they
-        MAY be filtered as described elsewhere in this specification.
+    If the Broker is the Embedded Claim Signatory, it MUST set the "iss" to
+    itself and sign such Embedded Tokens with its own private key as described
+    in the
+    [AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 8.  <a name="requirement-8"></a> RI Claims are designed for machine
     interpretation only to make an access decision and is a non-goal to support
@@ -312,8 +275,8 @@ reader-friendly form is also available.
     as JWS Compact Serialization string as defined by [RFC7515 section
     7.1](https://tools.ietf.org/html/rfc7515#section-7.1).
 
--   Claim Signatories, Identity Brokers, Claim Clearinghouses, and their
-    Clients MUST conform to the
+-   Claim Signatories, Brokers, Claim Clearinghouses, and their Clients MUST
+    conform to the
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
     requirements for Embedded Tokens in their use of RI Claim Embedded Tokens.
 
@@ -361,8 +324,8 @@ within the [AAI specification](https://github.com/ga4gh/data-security/blob/maste
 -   REQUIRED. Generally, it is seconds since unix epoch of when the
     [Claim Source](#claim-source) requires such a claim to be no longer
     valid. A Claim Source MAY choose to make a claim very long lived.
-    However, a
-    [Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
+    However, an
+    [Embedded Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
     MAY choose an earlier timestamp if it wishes to limit the claim’s
     duration of use within downstream Claim Clearinghouses.
 
@@ -702,7 +665,7 @@ format with the following limitations:
 
 -   The "[source](#source)" field refers to the [Claim Source](#claim-source)
     that is making the assertion, which is often the same organization as the
-    [Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
+    [Embedded Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
     "iss" that signs the RI Claim Object but the "source" MAY refer to another
     Claim Source.
 
@@ -896,9 +859,7 @@ Specification requirements in this regard.
 
 This non-normative example illustrates RI claims representing Registered Access
 bona fide researcher status along with RI claims for access to specific
-Controlled Access data. These RI Claims would form a Passport when an Identity
-Broker signs a Passport Access Token and makes these claims available via the
-/userinfo endpoint. The claims for this example are:
+Controlled Access data. The claims for this example are:
 
 -   **AffiliationAndRole**: The person is a member of faculty at Stanford
     University as asserted by a Signing Official at Stanford.
@@ -928,22 +889,22 @@ Broker signs a Passport Access Token and makes these claims available via the
 -   **ResearcherStatus**: A Signing Official at Stanford Medicine has asserted
     that this person is a bona fide researcher as defined by Registered Access.
 
--   **LinkedIdentities**: An Identity Broker at example3.org has provided
-    software functionality to allow a user to link their own accounts together.
-    After the user has successfully logged into the two accounts and passed any
-    auth challenges, the broker added the **LinkedIdentities** claim for those
-    two accounts: (1) "10001" from example1.org, and (2) "abcd" from example2.org.
-    Since the Identity Broker is signing this LinkedIdentities
+-   **LinkedIdentities**: An Broker at example3.org has provided software
+    functionality to allow a user to link their own accounts together. After the
+    user has successfully logged into the two accounts and passed any auth
+    challenges, the broker added the **LinkedIdentities** claim for those two
+    accounts: (1) "10001" from example1.org, and (2) "abcd" from example2.org.
+    Since the Broker is signing this LinkedIdentities
     [RI Claim Embedded Token](#researcher-identity-claim-embedded-token-ri-claim-embedded-token),
     it is acting as the
-    [Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory).
+    [Embedded Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory).
 
 Normally a Passport like this would include
 [RI Claim Embedded Token Format](#ri-claim-embedded-token-format) entries
-as base64 strings, but to show how claims carrying multiple RI Claim Embedded Tokens
-can be encoded in a reader-friendly way, this example show the result
-after the Embedded Tokens from the /userinfo endpoint has been unencoded into
-JSON.
+as JWS Compact Serialization strings, but to show how claims carrying multiple
+RI Claim Embedded Tokens can be encoded in a reader-friendly way, this example
+show the result after the Embedded Tokens from the /userinfo endpoint has been
+unencoded into JSON.
 
 ```
 "ga4gh": {
