@@ -33,18 +33,17 @@ Additionally, the specification provides guidance on encoding specific
 - [**Researcher Identity Claim Overview**](#researcher-identity-claim-overview)
   - [RI Claims Requirements](#ri-claims-requirements)
   - [Support for User Interfaces](#support-for-user-interfaces)
-- [**RI Claim Embedded Token**](#ri-claim-embedded-token)
+- [**RI Claim Format**](#ri-claim-format)
   - [RI Claim Embedded Token Requirements](#ri-claim-embedded-token-requirements)
   - [RI Claim Embedded Token Format](#ri-claim-embedded-token-format)
-    - [iat](#iat)
     - [exp](#exp)
   - [RI Claim Object Fields](#ri-claim-object-fields)
+    - [asserted](#asserted)
     - [value](#value)
     - [source](#source)
     - [condition](#condition)
     - [by](#by)
   - [URL Claim Fields](#url-claim-fields)
-  - [Claim Expiry](#claim-expiry)
 - [**GA4GH Researcher Identity Claim Definitions**](#ga4gh-researcher-identity-claim-definitions)
   - [ga4gh.AffiliationAndRole](#ga4ghaffiliationandrole)
   - [ga4gh.AcceptedTermsAndPolicies](#ga4ghacceptedtermsandpolicies)
@@ -55,6 +54,7 @@ Additionally, the specification provides guidance on encoding specific
 - [**Encoding Use Cases**](#encoding-use-cases)
   - [Registered Access](#registered-access)
   - [Controlled Access](#controlled-access)
+- [**Claim Expiry**](#claim-expiry)
 - [**Claim and Token Revocation**](#claim-and-token-revocation)
 - [**Example RI Claims**](#example-ri-claims)
 - [**Specification Revision History**](#specification-revision-history)
@@ -68,8 +68,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 #### **Researcher Identity Claim ("RI Claim")**
 
 -   A set of [RI Claim Embedded Tokens](#researcher-identity-claim-embedded-token-ri-claim-embedded-token)
-    provided by a common key value within the "ga4gh" OIDC claim. For example, the
-    following structure encodes a "ga4gh.ControlledAccessGrants" RI Claim:
+    provided by a common key value within the "ga4gh" JWT claim. For example,
+    the following structure encodes a "ControlledAccessGrants" RI Claim:
 
     ```
     "ga4gh" : {
@@ -93,27 +93,27 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   Encoded as an
     [Embedded Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
     that contains various properties
-    ([RI Claim Object Fields](#ri-claim-object-fields)) that describe the assertion and
-    limitations thereof.
+    ([RI Claim Object Fields](#ri-claim-object-fields)) that describe the
+    assertion and limitations thereof.
     
 -   RI Claim Embedded Tokens are encoded as strings and included as a list of
-    strings returned within a [RI Claim](#researcher-identity-claim-ri-claim). See
-    the [RI Claim Embedded Token](#ri-claim-embedded-token) section of this
-    specification for more details.
+    strings returned within a [RI Claim](#researcher-identity-claim-ri-claim).
+    See the [RI Claim Format](#ri-claim-format) section of this specification
+    for more details.
 
 #### **Researcher Identity Claim Object ("RI Claim Object")**
 
-An OIDC claim "ga4gh_rio" that contains fields that provide GA4GH
-standard information about a claim that is not captured in the standard
-set of claims published by underlying OIDC specification.
-
-For field definitions, refer to [RI Claim Object Fields](#ri-claim-object-fields).
+A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim named
+"ga4gh_rio" that contains fields that provide GA4GH RI Claim Object fields.
+For field definitions, refer to [RI Claim Object
+Fields](#ri-claim-object-fields).
 
 #### **RI Claim Object Identity**
 
--   The {"iss", "sub"} pair of OIDC standard claims that are included
-    within an [RI Claim Object](#researcher-identity-claim-object) that
-    represents a given user (such as a user account) within the "iss"
+-   The {"iss", "sub"} pair of JWT standard claims ([RFC7519 section
+    4.1.1](https://tools.ietf.org/html/rfc7519#section-4.1.1)) that are
+    included within an [RI Claim Object](#researcher-identity-claim-object)
+    that represents a given user (such as a user account) within the "iss"
     system.
 
 #### **Claim Source**
@@ -124,10 +124,8 @@ For field definitions, refer to [RI Claim Object Fields](#ri-claim-object-fields
 
 #### **Passport**
 
--   A logical collection of RI Claims that includes claims on the
-    [Passport Access Token](#passport-access-token) as well as any
-    indirect RI Claims that such a JWT token makes available to the
-    caller of the corresponding /userinfo endpoint.
+-   A collection of RI Claims that are returned from the /userinfo
+    endpoint when given a [Passport Access Token](#passport-access-token).
 
 #### **Passport Access Token**
 
@@ -162,7 +160,7 @@ For field definitions, refer to [RI Claim Object Fields](#ri-claim-object-fields
     ("AAI Specification").
 
 2.  <a name="requirement-2"></a> Each RI Claim consists of a list of
-    [RI Claim Embedded Tokens](#ri-claim-embedded-token).
+    [RI Claim Embedded Tokens](#researcher-identity-claim-embedded-token-ri-claim-embedded-token).
 
 3.  <a name="requirement-3"></a> Each RI Claim Embedded Token may
     have a different expiry.
@@ -196,40 +194,35 @@ For field definitions, refer to [RI Claim Object Fields](#ri-claim-object-fields
 
 7.  <a name="requirement-7"></a> When an
     [Identity Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-identity-broker)
-    receives a request with the "ga4gh" scope, it MUST provide RI claims under
-    the "ga4gh" OIDC claim as follows:
+    receives a request with the "ga4gh" scope, it provides RI claims under
+    the "ga4gh" JWT claim as follows:
 
     1.  The Identity Broker collects the claims, potentially from multiple
         sources including any upstream Identity Brokers.
 
-    2.  The Identity Broker populates the "ga4gh_userinfo_claims" OIDC claim
-        on the token as well as other claims as per the
-        [GA4GH Access Token format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#access-token-issued-by-broker),
+    2.  The Identity Broker populates the JWT claims as per the [GA4GH Access
+        Token format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#access-token-issued-by-broker),
         and MUST NOT include the "ga4gh" claims within the Passport Access
         Token. The RI Claims are only available at the /userinfo endpoint
         based on the "scope" claim as outlined elsewhere within this
         specification.
 
-    3.  The Identity Broker introduces new RI Claim Embedded Tokens from a
-        [Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
-        by encoding RI Claim Objects within the "ga4gh" OIDC claim (available
-        via /userinfo). If the Broker is the Claim Signatory, it MUST set
-        the "iss" to itself and sign such Embedded Tokens with its own
-        private key as described in the
+    3.  The Identity Broker signs the JWT access token, making it a Passport
+        Access Token.
+
+    4.  The Identity Broker introduces new RI Claim Embedded Tokens from an
+        [Enbedded Claim Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-claim-signatory)
+        by including them within the "ga4gh" JWT claim (available
+        via /userinfo). If the Broker is the Embedded Claim Signatory, it
+        MUST set the "iss" to itself and sign such Embedded Tokens with its
+        own private key as described in the
         [AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
-    4.  The Identity Broker propagates RI Claims that it received
-        from upstream Brokers by copying each RI Claim Object Embedded
-        Token string into the coorsponding RI Claim within the outer "ga4gh"
-        OIDC claim. These strings are provided unmodified, however they
+    5.  The Identity Broker propagates RI Claims that it received
+        from upstream Brokers by copying each RI Claim Embedded Token
+        string into the coorsponding RI Claim within the outer "ga4gh"
+        JWT claim. These strings are provided unmodified, however they
         MAY be filtered as described elsewhere in this specification.
-
-    5.  The Identity Broker signs the JWT, making it a Passport Access
-        Token.
-
-    6.  The Passport for the /userinfo request MUST contain "ga4gh" as a
-        space-separated sub-string within the "scope" claim in order to
-        include the "ga4gh" OIDC claim as part of the response.
 
 8.  <a name="requirement-8"></a> RI Claims are designed for machine
     interpretation only to make an access decision and is a non-goal to support
@@ -250,17 +243,18 @@ For field definitions, refer to [RI Claim Object Fields](#ri-claim-object-fields
     1.  A Claim Clearinghouse MUST ignore all RI Claim Embedded Tokens
         is does not need to process a particular request and MUST ignore all
         RI Claim Embedded Tokens unless it explicitly has a sufficient trust
-        relationship with the "[source](#source)" of the RI Claim Embedded Token.
+        relationship with the "[source](#source)" of the RI Claim Embedded
+        Token.
 
     2.  Claim Clearinghouses SHOULD ignore claims that aren’t needed for their
         purposes.
         
-    3.  When combining RI Claim Objects from multiple RI Claim Accounts for
-        the purposes of evaluating authorization, a Claim Clearinghouse MUST
-        check the [LinkedIdentities](#ga4ghlinkedidentities) claims by trusted
-        issuers to ensure that trusted sources have asserted that these
-        [RI Claim Object Identities](#ri-claim-object-identity) represent the
-        same end user.
+    3.  When combining RI Claim Embedded Tokens from multiple [RI Claim Object
+        Identities](#ri-claim-object-identity) for the purposes of evaluating
+        authorization, a Claim Clearinghouse MUST check the
+        [LinkedIdentities](#ga4ghlinkedidentities) claims by trusted issuers
+        to ensure that trusted sources have asserted that these RI Claim Object
+        Identities represent the same end user.
 
 ### Support for User Interfaces
 
@@ -286,13 +280,13 @@ interfaces, such as:
 -   May provide a rich set of internationalization/localization features for
     clients to consume.
 
-## RI Claim Embedded Token
+## RI Claim Format
 
 Each [RI claim](#researcher-identity-claim-ri-claim) name maps to an array of
 ([RI Claim Embedded Tokens](#researcher-identity-claim-embedded-token-ri-claim-embedded-token))
 which are encoded as
 [Embedded Tokens](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
-within a "ga4gh" root OIDC claim object.
+within a "ga4gh" root JWT claim object.
 
 Non-normative example of a set of RI Claim Embedded Tokens, encoded as Embedded
 Token strings, with a RI Claim named "ResearcherStatus":
@@ -313,9 +307,10 @@ reader-friendly form is also available.
 
 ### RI Claim Embedded Token Requirements
 
--   RI Claim Embedded Tokens MUST conform to the
-    [GA4GH AAI Specification Embedded Token format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#embedded-token-issued-by-broker)
-    as a base64 string.
+-   RI Claim Embedded Tokens MUST conform to one of the
+    [GA4GH AAI Specification Embedded Token formats](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#embedded-token-issued-by-embedded-token-signatories)
+    as JWS Compact Serialization string as defined by [RFC7515 section
+    7.1](https://tools.ietf.org/html/rfc7515#section-7.1).
 
 -   Claim Signatories, Identity Brokers, Claim Clearinghouses, and their
     Clients MUST conform to the
@@ -326,33 +321,26 @@ reader-friendly form is also available.
     GA4GH AAI Specification, MUST be performed before RI Claim
     Embedded Tokens are used for identity or authorization.
 
--   The "jti" is REQUIRED.
-
--   If the OIDC Access Token format is used (i.e. the "scope" claim
-    contains the "openid" scope) as per the GA4GH AAI Specification's
-    Embedded Token encoding options, then the /userinfo endpoint is unused
-    but the /introspect endpoint MUST be available for
-    [claim polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#claim-polling).
-
 ### RI Claim Embedded Token Format
 
 ```
 {
   "typ": "JWT",
   "alg": "RS256",
-  ["jku": "\<JKS URL\>",]
-  "kid": "\<Key Identifier\>"
+  ["jku": "<JKS-URL>",]
+  "kid": "<key-identifier>"
 }.
 {
-  "iss": "\<Issuer URL\>",
-  "sub": "\<Subject\>",
+  "iss": "<issuer-URL>",
+  "sub": "<subject-identifier>",
   ["scope": "openid ...",]
-  "jti": "\<JTI Token Identifier\>",
-  "iat": \<Seconds since epoch\>,
-  "exp": \<Seconds since epoch\>,
+  "jti": "<token-identifier>",
+  "iat": <seconds-since-epoch>,
+  "exp": <seconds-since-epoch>,
   "ga4gh_rio": {
-    "value": "\<Value String\>",
-    "source": "\<Source URL\>",
+    "asserted": <seconds-since-epoch>,
+    "value": "<value-string>",
+    "source": "<source-URL>",
     ["condition": {...},]
     ["by": "\<By identifier\>"]
   }
@@ -361,11 +349,12 @@ reader-friendly form is also available.
 
 Where fields within the `ga4gh_rio` object are as described in the
 [RI Claim Object Fields](#ri-claim-object-fields) section of this
-specification except for "iat" and "exp" which are direct claims on
-the outer JWT itself.
+specification except for "exp" which is a direct JWT claim and not
+stored within the `ga4gh_rio` object.
 
 One of `scope` or `jku` MUST be present as described in
-[RI Claim Embedded Token Requirements](#ri-claim-embedded-token-requirements).
+[Conformance for Embedded Token Signatories](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-signatories)
+within the [AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 #### "**exp**"
 
@@ -477,15 +466,15 @@ Fields within a [RI Claim Object](#ri-claim-object) are:
 
 ```
 "condition": {
-  "\<ClaimName1\>" : {
-    "\<FieldName1\>": [
-      "\<Value1a\>",
-      "\<Value1b\>"
+  "<ClaimName1>" : {
+    "<FieldName1>": [
+      "<Value1a>",
+      "<Value1b>"
     ],
-    "\<FieldName2\>": ["\<Value2\>"],
+    "<FieldName2>": ["<Value2>"],
     ...
   },
-  "\<ClaimName2\>" : { ... }
+  "<ClaimName2>" : { ... }
 }
 ```
 
@@ -519,33 +508,33 @@ Fields within a [RI Claim Object](#ri-claim-object) are:
     -   All condition fields that are specified MUST match the same RI Claim Object
         in the Passport.
 
-    -   For example:
+-   Non-normative example:
 
-```
-"condition": {
-  "AffiliationAndRole": {
-    "value": [
-      "faculty@uni-heidelberg.de",
-      "student@uni-heidelberg.de"
-    ],
-    "by": [
-      "so",
-      "system"
-    ]
-  }
-}
-```
+    ```
+    "condition": {
+      "AffiliationAndRole": {
+        "value": [
+          "faculty@uni-heidelberg.de",
+          "student@uni-heidelberg.de"
+        ],
+        "by": [
+          "so",
+          "system"
+        ]
+      }
+    }
+    ```
 
-Would match a corresponding AffiliationAndRole claim within the same
-RI Claim Object that has any of the following:
+    Would match a corresponding AffiliationAndRole claim within the same
+    RI Claim Object that has any of the following:
 
--   value = "faculty\@uni-heidelberg.de" AND by = "so"
+    -   value = "faculty\@uni-heidelberg.de" AND by = "so"
 
--   value = "faculty\@uni-heidelberg.de" AND by = "system"
+    -   value = "faculty\@uni-heidelberg.de" AND by = "system"
 
--   value = "student\@uni-heidelberg.de" AND by = "so"
+    -   value = "student\@uni-heidelberg.de" AND by = "so"
 
--   value = "student\@uni-heidelberg.de" AND by = "system"
+    -   value = "student\@uni-heidelberg.de" AND by = "system"
 
 #### "**by**"
 
@@ -609,47 +598,6 @@ format with the following limitations:
 
 5.  URLs SHOULD resolve to a human readable document for a policy maker to
     reason about.
-
-### Claim Expiry
-
-In addition to any other policy restrictions that a Claim Clearinghouse may
-enforce, Claim Clearinghouses that provide access for a given duration provided
-by the user (excluding any revocation policies) MUST enforce one of the
-following algorithm options to ensure that claim expiry is accounted for:
-
-**Option A**: use the following algorithm to determine if the RI Claim Embedded Token is
-valid for the entire duration of the requested duration:
-
-```
-now()+requestedTTL < min("token.exp", "token.ga4gh_rio.asserted"+maxAuthzTTL)
-```
-
-Where:
-
--   `requestedTTL` represents the duration for which access is being requested.
-    Alternatively a solution may choose to have a stronger revocation policy
-    instead of requiring such a duration.
-
--   `maxAuthzTTL` represents any additional expiry policy that the Claim
-    Clearinghouse may choose to enforce. If this is not needed, it can
-    effectively ignored by using a large number of years or otherwise have
-    "token.ga4gh_rio.asserted"+maxAuthzTTL removed and simplify the right hand
-    side expression accordingly.
-
-**Option B**: if tokens are sufficiently short lived and/or the authorization
-system has an advanced revocation scheme that does not need to specify a
-maxAuthzTTL as per Option A, then the check can be simplified:
-
-```
-now()+accessTokenTTL < token.exp
-```
-
-Where:
-
--   `accessTokenTTL` represents the duration for which an access token will be
-    accepted and is bounded by the next refresh token cycle and/or any larger
-    propagation delay before access is revoked, which needs to be assessed based
-    on the revocation model.
 
 ## GA4GH Researcher Identity Claim Definitions
 
@@ -810,6 +758,7 @@ Where:
          "ga4gh_rio": {
            "value": "sub2|https://example2.org/oidc",
            "source": "https://example1.org/oidc"
+           ...
          }
        },
        {
@@ -818,6 +767,7 @@ Where:
          "ga4gh_rio": {
            "value": "sub3|https://example3.org/oidc",
            "source": "https://example2.org/oidc"
+           ...
          }
        }
        ```
@@ -878,13 +828,54 @@ Use cases include, but are not limited to the following:
         
     -   Any other RI claim that may be required to meet controlled access policies.
 
+## Claim Expiry
+
+In addition to any other policy restrictions that a Claim Clearinghouse may
+enforce, Claim Clearinghouses that provide access for a given duration provided
+by the user (excluding any revocation policies) MUST enforce one of the
+following algorithm options to ensure that claim expiry is accounted for:
+
+**Option A**: use the following algorithm to determine if the RI Claim Embedded Token is
+valid for the entire duration of the requested duration:
+
+```
+now()+requestedTTL < min("token.exp", "token.ga4gh_rio.asserted"+maxAuthzTTL)
+```
+
+Where:
+
+-   `requestedTTL` represents the duration for which access is being requested.
+    Alternatively a solution may choose to have a stronger revocation policy
+    instead of requiring such a duration.
+
+-   `maxAuthzTTL` represents any additional expiry policy that the Claim
+    Clearinghouse may choose to enforce. If this is not needed, it can
+    effectively ignored by using a large number of years or otherwise have
+    "token.ga4gh_rio.asserted"+maxAuthzTTL removed and simplify the right hand
+    side expression accordingly.
+
+**Option B**: if tokens are sufficiently short lived and/or the authorization
+system has an advanced revocation scheme that does not need to specify a
+maxAuthzTTL as per Option A, then the check can be simplified:
+
+```
+now()+accessTokenTTL < token.exp
+```
+
+Where:
+
+-   `accessTokenTTL` represents the duration for which an access token will be
+    accepted and is bounded by the next refresh token cycle and/or any larger
+    propagation delay before access is revoked, which needs to be assessed based
+    on the revocation model.
+
 ## Claim and Token Revocation
 
 As per the
 [GA4GH AAI Specification on Token Revocation](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#token-revocation),
 the following mechanisms are available within RI Claim Embedded Tokens:
 
-1.  RI Claim Embedded Tokens have an "[iat](#iat)" field to allow downstream
+1.  RI Claim Embedded Tokens have an "[asserted](#asserted)" field to allow downstream
     policies to limit the life, if needed, of how long assertions will be
     accepted for use with access and refresh tokens.
 
@@ -958,10 +949,11 @@ JSON.
 "ga4gh": {
   "AffiliationAndRole": [
     {
-      "iat": 1549680000,
+      "iat": 1580000000,
       "exp": 1581208000,
       ...
       "ga4gh_rio": {
+        "asserted": 1549680000,
         "value": "faculty@med.stanford.edu",
         "source": "https://grid.ac/institutes/grid.240952.8",
         "by": "so"
@@ -970,24 +962,26 @@ JSON.
   ],
   "ControlledAccessGrants": [
     {
-      "iat": 1549632872,
+      "iat": 1580000100,
       "exp": 1581168872,
       ...
       "ga4gh_rio": {
+        "asserted": 1549632872,
         "value": "https://nih.gov/dbgap/phs000710",
         "source": "https://grid.ac/institutes/grid.48336.3a",
         "by": "dac"
       }
     },
     {
-      "iat": 1549640000,
+      "iat": 1580000200,
       "exp": 1581168000,
       ...
       "ga4gh_rio": {
+        "asserted": 1549640000,
         "value": "https://ega-archive.org/datasets/00000432",
         "source": "https://grid.ac/institutes/grid.225360.0",
         "condition": {
-          "ga4gh.AffiliationAndRole" : {
+          "AffiliationAndRole" : {
              "value": ["faculty@med.stanford.edu"],
              "source": ["https://grid.ac/institutes/grid.240952.8"],
              "by": [
@@ -1004,10 +998,11 @@ JSON.
     {
       "iss": "https://issuer.example1.org/oidc",
       "sub": "10001",
-      "iat": 1549680000,
+      "iat": 1580000300,
       "exp": 1581208000,
       ...
       "ga4gh_rio": {
+        "asserted": 1549680000,
         "value": "https://doi.org/10.1038/s41431-018-0219-y",
         "source": "https://grid.ac/institutes/grid.240952.8",
         "by": "self"
@@ -1018,10 +1013,11 @@ JSON.
     {
       "iss": "https://other.example2.org/oidc",
       "sub": "abcd",
-      "iat": 1549680000,
+      "iat": 1580000400,
       "exp": 1581208000,
       ...
       "ga4gh_rio": {
+        "asserted": 1549680000,
         "value": "https://doi.org/10.1038/s41431-018-0219-y",
         "source": "https://grid.ac/institutes/grid.240952.8",
         "by": "so"
@@ -1032,10 +1028,11 @@ JSON.
     {
       "iss": "https://broker.example3.org/oidc",
       "sub": "999999",
-      "iat": 1549680000,
+      "iat": 1580000500,
       "exp": 1581208000,
       ...
       "ga4gh_rio": {
+        "asserted": 1549680000,
         "value": "10001|https://issuer.example1.org/oidc,abcd|https://other.example2.org/oidc",
         "source": "https://broker.example3.org/oidc",
         "by": "system"
