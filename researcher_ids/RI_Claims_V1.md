@@ -133,8 +133,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 #### Passport Visa Object
 
 -   A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim named
-    `ga4gh_visa_v1` in the form of a JSON object that provides fields
-    that describe a [Passport Visa](#passport-visa).
+    `ga4gh_visa_v1` with a JWT claim value in the form of a JSON object
+    that provides fields that describe a [Passport Visa](#passport-visa).
 
 -   For field definitions, refer to [Passport Visa
     Fields](#passport-visa-fields).
@@ -162,21 +162,21 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 -   The
     [AAI Claim Source](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-source)
-    of a [Passport Visa](#passport-visa) Embedded Token as encoded by
-    the "[source](#source)" field of a [Passport Visa
+    organization of a [Passport Visa](#passport-visa) Embedded Token as
+    encoded by the "[source](#source)" field of a [Passport Visa
     Object](#passport-visa-object).
 
 #### Passport Visa Source Repository
 
 -   The [AAI Claim
     Repository](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-repository)
-    for the data related to a [Passport Visa](#passport-visa).
+    service for the data related to a [Passport Visa](#passport-visa).
 
 #### Passport Visa Signatory
 
 -   A compliant [AAI Embedded Token
     Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
-    that signs a [Passport Visa](#passport-visa).
+    service that signs a [Passport Visa](#passport-visa).
 
 -   See [Comformance for Embedded Token Signatories section of the GA4GH
     AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-signatories).
@@ -186,7 +186,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   A service handling Passport Visas and assembling Passports while
     conforming as a
     [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-broker)
-    with conformance outlined in the [Conformance for Brokers section
+    service with conformance outlined in the [Conformance for Brokers section
     of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-brokers).
 
 #### Passport Clearinghouse
