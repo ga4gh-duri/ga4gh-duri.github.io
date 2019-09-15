@@ -837,8 +837,9 @@ Types](#custom-passport-visa-types) and still be compliant.
     there are three Passport Visas that meet the criteria on one Passport
     but they use 3 different "sub" values ("sub1", "sub2", "sub3"), then
     **any** of the following, if from a trusted issuers and sources, may
-    allow these Passport Visas to be combined (here shown without the
-    REQUIRED URI-encoding in order to improve readability of the example).
+    allow these Passport Visas to be combined (shown with JSON payload only
+    and without the REQUIRED URI-encoding in order to improve readability of
+    the example).
     
     1. One Passport Visa that links 3 Passport Visa Identities together.
     
@@ -1093,7 +1094,8 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
 Normally a Passport like this would include [Passport Visa
 Format](#passport-visa-format) entries as JWS Compact Serialization strings,
 however this example shows the result after the Embedded Tokens have been
-unencoded into JSON to be more reader-friendly.
+unencoded into JSON (and reduced to include only the payload) to be more
+reader-friendly.
 
 ```
 "ga4gh_passport_v1": [
