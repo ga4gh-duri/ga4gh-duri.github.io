@@ -340,7 +340,7 @@ appropriate OIDC endpoint as outlined in the GA4GH AAI Specification.
 10. <a name="requirement-10"></a> Processing a Passport within a Passport
     Clearinghouse is to abide by the following:
     
-    1.  Claim Clearinghouses MUST reject all requests that provide Passports
+    1.  Passport Clearinghouses MUST reject all requests that provide Passports
         that fail the neccessary checks of the access token as described in
         the [GA4GH AAI
         Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
