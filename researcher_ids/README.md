@@ -119,7 +119,7 @@ Here is an example of the life of a claim:
     3. The Passport Broker packages up all the Passport Visas the researcher wishes to release and mints an OIDC access token, and signs the token with the Identity Broker's private key. This signature will be used by downstream systems to verify the authenticity of the Passport and maintain its integrity (i.e. prevents any party from tampering with the contents).
 3. The researcher's application either is using a Passport Clearinghouse directly or passes the access token along to a Passport Clearinghouse when it attempts to get access to data.
     1. The Passport Clearinghouse looks at the issuer of the Passport and determines if it trusts the issuer based on a whitelist. If not trusted, the request is denied.
-    2. The Passport Clearinghouse fetches the Passport Broker's public key and verifies the signature of the Passport. Other OIDC token checks are performed, such as checking the token's overall expiry timestamp ("exp" claim). Any problem with the token results in a request denied.
+    2. The Passport Clearinghouse fetches the Passport Broker's public key and verifies the signature of the Passport. Other access token checks are performed, such as checking the token's overall expiry timestamp ("exp" claim). Any problem with the token results in a request denied.
     3. The Passport Clearinghouse makes a /userinfo call back to the Passport Broker to fetch the Passport in the form of a JWT Claim.
     4. Passport Visas within the Passport are compared to access policies that have been configured for the data being requested and the access level being requested.
         1. Protected access using a Beacon may require the Registered Access claims to be present.
@@ -144,7 +144,7 @@ Here is an example of the life of a claim:
 
 ## Why so many expiry timestamps?
 
-OIDC tokens have an "exp" standard claim to represent when the token expires. The Passport in an OIDC token and has an "exp" claim to indicate when it expires. This is separate from the expiry time of Passport Visas themselves, which each have an "exp" claim for when that Passport Visa expires. These different types of expiry timestamps serve different purposes:
+Access tokens have an "exp" standard claim to represent when the token expires. The Passport in an access token and has an "exp" claim to indicate when it expires. This is separate from the expiry time of Passport Visas themselves, which each have an "exp" claim for when that Passport Visa expires. These different types of expiry timestamps serve different purposes:
 
 - The Passport "exp" timestamp is the overall Passport token's lifetime. Passport Clearinghouses should reject such tokens outright and not look at any other contents once a token has expired.
 - The Passport Visa "exp" timestamp allows each claim to represent when the Passport Assertion Source needs a Passport Clearinghouse to no longer permit access.
