@@ -91,13 +91,13 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   A [GA4GH
     Claim](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-ga4gh-claim)
     that is encoded as a list of [Passport Visas](#passport-visa)
-    provided by a common key value within the `ga4gh_passport_v1` JWT claim.
+    within the `ga4gh_passport_v1` JWT claim.
     
 -   Passport Visas from multiple [Embedded Token
     Signatories](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
     can be bundled together in the same `ga4gh_passport_v1` JWT claim.
 
--   For example, the following structure encodes a Passport JWT Claim:
+-   For example, the following structure encodes a Passport JWT claim:
 
     ```
     "ga4gh_passport_v1" : [
@@ -116,7 +116,10 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 -   Encoded as an
     [Embedded Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
-    that contains various properties
+    JWS Compact Serialization string with decoded payload containing a
+    `ga4gh_visa_v1` JWT claim.
+    
+-   The `ga4gh_visa_v1` JWT claim contains various properties
     ([Passport Visa Fields](#passport-visa-fields)) that describe
     the assertion and limitations thereof.
     
@@ -332,25 +335,35 @@ appropriate OIDC endpoint as outlined in the GA4GH AAI Specification.
 
 10. <a name="requirement-10"></a> Processing a Passport within a Passport
     Clearinghouse is to abide by the following:
+    
+    1.  Claim Clearinghouses MUST reject all requests that provide Passports
+        that fail the neccessary checks of the access token as described in
+        the [GA4GH AAI
+        Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
-    1.  A Passport Clearinghouse MUST ignore all Passport Visas is does not
+    2.  A Passport Clearinghouse MUST ignore all Passport Visas is does not
         need to process a particular request.
 
-    2.  Passport Clearinghouses MUST ignore Passport Visas unless:
+    3.  Passport Clearinghouses MUST ignore Passports and Passport Visas
+        unless:
     
-        1.  The Passport Clearinghouse has a sufficient trust relationship
-            with the [Passport Assertion Source](#passport-assertion-source);
-            or
+        1.  The Passport Clearinghouse has a sufficient trust relationships
+            with all of: the [Passport Broker](#passport-broker), [Passport
+            Assertion Source](#passport-assertion-source),
+            [Passport Visa Signatory](#passport-visa-signatory); or
 
         2.  The Passport Clearinghouse can rely on a trusted service that
-            provides trust of the Passport Assertion Source.
+            provides trust sufficient trust of any of the Passport Broker,
+            Passport Assertion Source and/or Passport Visa Signatory such
+            that the Passport Clearinghouse can establish trust of all three
+            such parties.
 
-    3.  When combining Passport Visas from multiple [Passport Visa
+    4.  When combining Passport Visas from multiple [Passport Visa
         Identities](#passport-visa-identity) for the purposes of evaluating
         authorization, a Passport Clearinghouse MUST check the
         [LinkedIdentities](#linkedidentities) claims by trusted issuers
-        to ensure that trusted sources have asserted that these Passport Visa
-        Identities represent the same end user.
+        and ensure that trusted sources have asserted that these Passport
+        Visa Identities represent the same end user.
 
 ### Support for User Interfaces
 
