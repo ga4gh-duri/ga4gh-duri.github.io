@@ -83,21 +83,21 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   A GA4GH-compatible access token, as per the [GA4GH AAI
     specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md),
     along with the [Passport JWT Claim](#passport-jwt-claim) that is
-    returned from [Passport Broker](#passport-broker) endpoints using such an
-    access token.
+    returned from [Passport Broker](#passport-broker) service endpoints
+    using such an access token.
 
 #### Passport JWT Claim
 
--   A [GA4GH
+-   The `ga4gh_passport_v1` JWT claim. It is a [GA4GH
     Claim](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-ga4gh-claim)
-    that is encoded as a list of [Passport Visas](#passport-visa)
-    within the `ga4gh_passport_v1` JWT claim.
+    with a claim value being a list of [Passport Visas](#passport-visa).
     
 -   Passport Visas from multiple [Embedded Token
-    Signatories](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
-    can be bundled together in the same `ga4gh_passport_v1` JWT claim.
+    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
+    services can be bundled together in the same `ga4gh_passport_v1` JWT
+    claim.
 
--   For example, the following structure encodes a Passport JWT claim:
+-   For example, the following structure encodes a Passport JWT Claim:
 
     ```
     "ga4gh_passport_v1" : [
@@ -110,14 +110,15 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 #### Passport Visa
 
 -   An attestation or access assertion from a [Passport Assertion
-    Source](#passport-assertion-source) that is bound to a researcher identity
-    and signed by a [Passport Visa Signatory](#passport-visa-signatory) per
-    the "iss" field and the signature is verifiable via its public key.
+    Source](#passport-assertion-source) organization that is bound to a
+    [Passport Visa Identity](#passport-visa-identity) and signed by a
+    [Passport Visa Signatory](#passport-visa-signatory) service whose
+    signature is verifiable via its public key.
 
 -   Encoded as an
     [Embedded Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
-    JWS Compact Serialization string with decoded payload containing a
-    `ga4gh_visa_v1` JWT claim.
+    JWS Compact Serialization string with its decoded payload containing
+    a `ga4gh_visa_v1` JWT claim.
     
 -   The `ga4gh_visa_v1` JWT claim contains various properties
     ([Passport Visa Fields](#passport-visa-fields)) that describe
@@ -137,16 +138,16 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport Visa Object
 
--   A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim named
-    `ga4gh_visa_v1` with a JWT claim value in the form of a JSON object
+-   A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim value for
+    the `ga4gh_visa_v1` JWT claim name. The claim value is a JSON object
     that provides fields that describe a [Passport Visa](#passport-visa).
 
--   For field definitions, refer to [Passport Visa
-    Fields](#passport-visa-fields).
+-   For field definitions, refer to the [Passport Visa
+    Fields](#passport-visa-fields) section of this specification.
 
 #### Passport Visa Type
 
--   The "[type](#type)" field of an [Passport Visa](#passport-visa)
+-   The "[type](#type)" field of a [Passport Visa](#passport-visa)
     that represents the semantics of the assertion and informs all parties
     involved in the authoring or handling the assertion how to interpret
     other [Passport Visa Fields](#passport-visa-fields).
@@ -167,7 +168,9 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 -   The
     [AAI Claim Source](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-source)
-    organization of assertions that can store assertions in a [Passport
+    organization of an assertion.
+    
+-   The Passport Assertion Source can store assertions in a [Passport
     Assertion Repository](#passport-assertion-repository).
     
 -   Passport Visas encode this organization's identifier in the
@@ -179,15 +182,15 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   The [AAI Claim
     Repository](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-repository)
     service for the assertions made by a [Passport Assertion
-    Source](#passport-assertion-source).
+    Source](#passport-assertion-source) organization.
 
--   A [Passport Visa Signatory](#passport-visa-signatory) that has access
-    to the Passport Assertion Repository can use these assertions to mint
-    [Passport Visas](#passport-visa).
+-   A [Passport Visa Signatory](#passport-visa-signatory) service that has
+    access to the Passport Assertion Repository can use these assertions to
+    mint [Passport Visas](#passport-visa).
 
 -   Passport Visas are not typically stored in the repository as signed
     tokens. Often minting of Passport Visas is done on demand from the
-    assertion data.
+    raw assertion data stored in the repository.
 
 #### Passport Visa Signatory
 
@@ -211,7 +214,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   A service consuming [Passports](#passport) and conforming
     to the requirements of a [Claim
     Clearinghouse](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-clearinghouse)
-    outlined in the [Claim Clearinghouses section of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-claim-clearinghouses-consuming-access-tokens-to-give-access-to-data).
+    service outlined in the [Claim Clearinghouses section of the
+    GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-claim-clearinghouses-consuming-access-tokens-to-give-access-to-data).
 
 ## Overview
 
@@ -771,9 +775,10 @@ Types](#custom-passport-visa-types) and still be compliant.
 
 ### AcceptedTermsAndPolicies
 
--   The set of unique identifiers in the form of URLs that indicate that a
-    researcher or their organization has acknowledged the specific terms and
-    policies indicated by the URL.
+-   The set of unique identifiers in the form of URLs to indicate that the
+    [Passport Visa Identity](#passport-visa-identity) or the
+    "[source](#source)" organization have acknowledged the specific terms,
+    policies, and conditions indicated by the URL.
     
 -   The `value` field conforms to [URL Field](#url-fields) format.
 
@@ -785,7 +790,7 @@ Types](#custom-passport-visa-types) and still be compliant.
     [Registered Access](#registered-access) Bona Fide researcher
     status.
 
--   MUST include "[by](#by)" field.
+-   MUST include the "[by](#by)" field.
 
 ### ResearcherStatus
 
@@ -807,7 +812,7 @@ Types](#custom-passport-visa-types) and still be compliant.
 ### ControlledAccessGrants
 
 -   A list of datasets or other objects for which controlled access has been
-    granted to this researcher.
+    granted to this [Passport Visa Identity](#passport-visa-identity).
     
 -   The `value` field conforms to [URL Field](#url-fields) format.
 
@@ -1092,7 +1097,8 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
     themselves.
 
 -   **ResearcherStatus**: A Signing Official at Stanford Medicine has asserted
-    that this person is a bona fide researcher as defined by Registered Access.
+    that this person is a bona fide researcher as defined by the [Registered
+    Access](#registered-access) model.
 
 -   **LinkedIdentities**: A Passport Broker at example3.org has provided
     software functionality to allow a user to link their own accounts together.
