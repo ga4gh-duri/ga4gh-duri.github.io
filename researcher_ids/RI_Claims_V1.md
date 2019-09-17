@@ -1,12 +1,12 @@
 --------------------------------------------------------------------------------
 
-# GA4GH Researcher Identity & Access Claims
+# GA4GH Passports
 
 **Version**: 0.9.5 (FROZEN RFC)
 
 **Work Stream Name**: Data Use and Researcher Identity
 
-**Product Name**: GA4GH Researcher Identity & Access Claims (a.k.a. "RI Claims")
+**Product Name**: GA4GH Passports
 
 **Product Description:** This document provides the GA4GH technical
 specification for the
@@ -35,8 +35,8 @@ objects and services defined in this specification fit together.**
     - [Passport Visa Object](#passport-visa-object)
     - [Passport Visa Type](#passport-visa-type)
   - [Actors and Services](#actors-and-services)
-    - [Passport Assertion Source](#passport-assertion-source)
-    - [Passport Assertion Repository](#passport-assertion-repository)
+    - [Passport Visa Assertion Source](#passport-visa-assertion-source)
+    - [Passport Visa Assertion Repository](#passport-visa-assertion-repository)
     - [Passport Visa Signatory](#passport-visa-signatory)
     - [Passport Broker](#passport-broker)
     - [Passport Clearinghouse](#passport-clearinghouse)
@@ -109,9 +109,9 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport Visa
 
--   An attestation or access assertion from a [Passport Assertion
-    Source](#passport-assertion-source) organization that is bound to a
-    [Passport Visa Identity](#passport-visa-identity) and signed by a
+-   An attestation or access assertion from a [Passport Visa Assertion
+    Source](#passport-visa-assertion-source) organization that is bound to
+    a [Passport Visa Identity](#passport-visa-identity) and signed by a
     [Passport Visa Signatory](#passport-visa-signatory) service whose
     signature is verifiable via its public key.
 
@@ -164,35 +164,35 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 ### **Actors and Services**
 
-#### Passport Assertion Source
+#### Passport Visa Assertion Source
 
 -   The
     [AAI Claim Source](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-source)
     organization of an assertion.
     
--   The Passport Assertion Source can store assertions in a [Passport
-    Assertion Repository](#passport-assertion-repository).
+-   The Passport Visa Assertion Source can store assertions in a
+    [Passport Visa Assertion Repository](#passport-visa-assertion-repository).
     
 -   Passport Visas encode this organization's identifier in the
     "[source](#source)" field of a [Passport Visa 
     Object](#passport-visa-object) for the assertions that it makes.
 
-#### Passport Assertion Repository
+#### Passport Visa Assertion Repository
 
 -   The [AAI Claim
     Repository](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-repository)
-    service for the assertions made by a [Passport Assertion
-    Source](#passport-assertion-source) organization.
+    service for the assertions made by a [Passport Visa Assertion
+    Source](#passport-visa-assertion-source) organization.
 
 -   A [Passport Visa Signatory](#passport-visa-signatory) service that has
-    access to the Passport Assertion Repository can use these assertions to
-    mint [Passport Visas](#passport-visa).
+    access to the Passport Visa Assertion Repository can use these assertions
+    to mint [Passport Visas](#passport-visa).
 
 -   Passport Visas are not typically stored in the repository as signed
     tokens. Often minting of Passport Visas is done on demand from the
     raw assertion data stored in the repository.
 
-#### Passport Visa Signatory
+#### Passport Visa Issuer
 
 -   A compliant [AAI Embedded Token
     Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
@@ -220,20 +220,40 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 ## Overview
 
 <a href="diagram-1"></a>
+![Passport Composition](/assets/img/passport_composition.svg)
+
+**Diagram 1: The composition of objects and tokens within a Passport.**
+
+In Diagram 1, the objects and tokens that make up a [Passport](#passport)
+come together. Note that the [Passport JWT Claim](#passport-jwt-claim) is not
+encoded within the GA4GH access token. The contents of this claim are fetched
+separately from the Passport Broker by sending the access token to the
+appropriate Passport Broker service endpoint (see the [GA4GH AAI
+Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
+for more details).
+
+<a href="diagram-2"></a>
 ![Basic Passport Flow of Data](/assets/img/passport_flow_of_data_basic.svg)
 
-**Diagram 1: basic flow of data from Passport Assertion Source to Passport Clearinghouse.**
+**Diagram 2: basic flow of data from Passport Visa Assertion Source to Passport Clearinghouse.**
 
-In Diagram 1, the general flow of Passport-related data from [Passport Assertion
-Source](#passport-assertion-source) to [Passport
-Clearinghouse](#passport-clearinghouse) is shown at a high level.
+In Diagram 1, the general flow of Passport-related data from [Passport
+Visa Assertion Source](#passport-visa-assertion-source) organization to [Passport
+Clearinghouse](#passport-clearinghouse) service is shown at a high level. The
+colors used in Diagram 2 correspond to the colors of the data from Diagram 1 to
+give a sense of which services contributed the data. However, various elements
+within the [Passport Visa](#passport-visa) can be collected into standard form
+by either the [Passport Visa Assertion
+Repository](#passport-visa-assertion-repository) service or the
+[Passport Visa Signatory](#passport-visa-signatory) service depending on the
+protocols and procedures employed between these components.
+
 Implementations introduce clients, services, and procedures -- not shown in
-Diagram 1 -- to provide the mechanisms to move the data between Passport
-Assertion Source to the [Passport Broker](#passport-broker). This MAY be
+Diagram 2 -- to provide the mechanisms to move the data between the Passport
+Visa Assertion Source and the [Passport Broker](#passport-broker). This MAY be
 proprietary and is beyond the scope of this specification. For example,
 some implementations MAY deploy one service that handles the responsiblities
-of both the [Passport Visa Signatory](#passport-visa-signatory) and the
-Passport Broker.
+of both the Passport Visa Signatory and the Passport Broker.
 
 However, the data protocols, procedures, and service functionality between
 the Passport Broker and the [Passport Clearinghouse](#passport-clearinghouse)
@@ -242,29 +262,10 @@ MUST conform with the [GA4GH Authentication and Authorization Infrastructure
 ("GA4GH AAI Specification"). Other services, such as the Passport Visa
 Signatory also has conformance obligations to this same specification.
 
-The [Passport Assertion Repository](#passport-assertion-repository) is
-the repository for the Passport Assertion Source and typically does not store
-Passport Visas as signed tokens. Generally, Passport Visa Signatories use
-the repository content to mint Passport Visas on demand. Implementations MAY
-vary in this regard.
-
-<a href="diagram-2"></a>
-![Passport Composition](/assets/img/passport_composition.svg)
-
-**Diagram 2: The composition of objects and tokens within a Passport.**
-
-In Diagram 2, the objects and tokens that make up a [Passport](#passport)
-come together. The colors used in Diagram 2 correspond to the colors of the
-services from Diagram 1 to give a sense of which services contributed the
-data. However, various elements within the [Passport Visa](#passport-visa)
-can be collected into standard form by either the Passport Assertion
-Repository or the Passport Visa Signatory depending on the protocols and
-procedures employed between these components.
-
-Note that the [Passport JWT Claim](#passport-jwt-claim) is not encoded
-within the GA4GH access token. The contents of this claim are fetched
-separately from the Passport Broker by sending the access token to the
-appropriate OIDC endpoint as outlined in the GA4GH AAI Specification.
+The Passport Visa Assertion Repository is the repository for the Passport Visa
+Assertion Source and typically does not store Passport Visas as signed tokens.
+Generally, Passport Visa Signatories use the repository content to mint Passport
+Visas on demand. Implementations MAY vary in this regard.
 
 ### General Requirements
 
@@ -353,14 +354,14 @@ appropriate OIDC endpoint as outlined in the GA4GH AAI Specification.
     
         1.  The Passport Clearinghouse has a sufficient trust relationships
             with all of: the [Passport Broker](#passport-broker), [Passport
-            Assertion Source](#passport-assertion-source),
+            Visa Assertion Source](#passport-visa-assertion-source),
             [Passport Visa Signatory](#passport-visa-signatory); or
 
         2.  The Passport Clearinghouse can rely on a trusted service that
             provides sufficient trust of any of the Passport Broker,
-            Passport Assertion Source and/or Passport Visa Signatory such
-            that the Passport Clearinghouse can establish trust of all three
-            such parties.
+            Passport Visa Assertion Source and/or Passport Visa Signatory
+            such that the Passport Clearinghouse can establish trust of all
+            three such parties.
 
     4.  When combining Passport Visas from multiple [Passport Visa
         Identities](#passport-visa-identity) for the purposes of evaluating
@@ -478,12 +479,12 @@ within the [AAI specification](https://github.com/ga4gh/data-security/blob/maste
 #### "**exp**"
 
 -   REQUIRED. Generally, it is seconds since unix epoch of when the
-    [Passport Assertion Source](#passport-assertion-source) requires such a
-    claim to be no longer valid. A Passport Assertion Source MAY choose
-    to make a claim very long lived. However, a [Passport Visa
-    Signatory](#passport-visa-signatory) MAY choose an earlier timestamp
-    in order to limit the claim’s duration within downstream Passport
-    Clearinghouses.
+    [Passport Visa Assertion Source](#passport-visa-assertion-source)
+    requires such a claim to be no longer valid. A Passport Visa
+    Assertion Source MAY choose to make a claim very long lived.
+    However, a [Passport Visa Signatory](#passport-visa-signatory) MAY
+    choose an earlier timestamp in order to limit the claim’s duration
+    within downstream Passport Clearinghouses.
 
 -   Access is NOT necessarily removed by the `exp` timestamp. Instead,
     this timestamp may be viewed as a cut-off after which no new access
@@ -512,24 +513,24 @@ the GA4GH DURI committee.
 #### "**asserted**"
 
 -   REQUIRED. Seconds since unix epoch that represents when the [Passport
-    Assertion Source](#passport-assertion-source) made the claim.
+    Visa Assertion Source](#passport-visa-assertion-source) made the claim.
     
 -   Note that the `iat` JWT claim on the Passport Visa reflects the timestamp
     of when the Passport Visa was minted whereas the `asserted` field 
     reflects when the assertion source data was last added or updated in the
-    [Passport Assertion Repository](#passport-assertion-repository).
+    [Passport Visa Assertion Repository](#passport-visa-assertion-repository).
 
 -   `asserted` is used by a Passport Clearinghouse is described in the
     [Passport Visa Expiry](#passport-visa-expiry) section.
 
--   If a Passport Assertion Repository does not include enough information to
-    construct an `asserted` timestamp, a [Passport Visa
+-   If a Passport Visa Assertion Repository does not include enough
+    information to construct an `asserted` timestamp, a [Passport Visa
     Signatory](#passport-visa-signatory) MAY use a recent timestamp (for
-    example, the current timestamp) if the Passport Assertion Repository is
-    kept up to date such that the Passport Visa Signatory can ensure that the
-    claim is valid at or near the time of minting the Passport Visa as an
+    example, the current timestamp) if the Passport Visa Assertion Repository
+    is kept up to date such that the Passport Visa Signatory can ensure that
+    the claim is valid at or near the time of minting the Passport Visa as an
     Embedded Token. However, generally it is RECOMMENDED to have the Passport
-    Assertion Repository provide more accurate `asserted` information.
+    Visa Assertion Repository provide more accurate `asserted` information.
 
 #### "**value**"
 
@@ -627,9 +628,9 @@ the GA4GH DURI committee.
         which the condition is attached.
 
     -   For example, "claimNameA.sourceA" asserts that "sourceA" is the
-        [Passport Assertion Source](#passport-assertion-source) of "claimNameA"
-        whereas "claimNameA.condition.claimNameB.sourceB" expects that
-        "claimNameB" exists elsewhere in the Passport and is provided by
+        [Passport Visa Assertion Source](#passport-visa-assertion-source) of
+        "claimNameA" whereas "claimNameA.condition.claimNameB.sourceB" expects
+        that "claimNameB" exists elsewhere in the Passport and is provided by
         "sourceB".
 
 -   The Passport Clearinghouse MUST verify that for each condition claim and each
@@ -854,11 +855,11 @@ Types](#custom-passport-visa-types) and still be compliant.
     -   Example:
         "sub1|https%3A%2F%2Fexample.org%2Fa%7Cb%2Cc,sub2|https%3A%2F%2Fexample2.org".
 
--   The "[source](#source)" field refers to the [Passport Assertion
-    Source](#passport-assertion-source) that is making the assertion. This is
+-   The "[source](#source)" field refers to the [Passport Visa Assertion
+    Source](#passport-visa-assertion-source) that is making the assertion. This is
     typically the same organization as the [Passport Visa
     Signatory](#passport-visa-signatory) "iss" that signs the Passport
-    Visa, but the "source" MAY also refer to another Passport Assertion
+    Visa, but the "source" MAY also refer to another Passport Visa Assertion
     Source depending on which organization collected the information.
 
 -   As a non-normative example, if a policy needs 3 Passport Visas and
@@ -1000,7 +1001,7 @@ Use cases include, but are not limited to the following:
         
     -   MAY utilize the [condition](#condition) field on
         "ControlledAccessGrants" to cause such a grant to require
-        a Passport Visa from a trusted Passport Assertion Source to
+        a Passport Visa from a trusted Passport Visa Assertion Source to
         assert that the identity has a role within a specific organization.
         This can be achieved by using the
         [AffiliationAndRole](#affiliationandrole) Passport Visa Type on
