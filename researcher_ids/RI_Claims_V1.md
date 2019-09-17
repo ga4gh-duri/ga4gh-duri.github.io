@@ -321,7 +321,7 @@ appropriate OIDC endpoint as outlined in the GA4GH AAI Specification.
 
     If the Passport Broker is the [Passport Visa
     Signatory](#passport-visa-signatory), it MUST set the "iss" to itself and
-    sign such Embedded Tokens with its own private key as described in the
+    sign such Passport Visas with its own private key as described in the
     [AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 8.  <a name="requirement-8"></a> Passport Visas are designed for machine
@@ -357,7 +357,7 @@ appropriate OIDC endpoint as outlined in the GA4GH AAI Specification.
             [Passport Visa Signatory](#passport-visa-signatory); or
 
         2.  The Passport Clearinghouse can rely on a trusted service that
-            provides trust sufficient trust of any of the Passport Broker,
+            provides sufficient trust of any of the Passport Broker,
             Passport Assertion Source and/or Passport Visa Signatory such
             that the Passport Clearinghouse can establish trust of all three
             such parties.
@@ -422,10 +422,15 @@ Claim](#example-passport-jwt-claim) section of the specification.
     as JWS Compact Serialization string as defined by [RFC7515 section
     7.1](https://tools.ietf.org/html/rfc7515#section-7.1).
 
--   Embedded Token Signatories, Passport Brokers, Passport Clearinghouses, and
-    their Clients MUST conform to the
+-   Passport Visa Signatories, Passport Brokers, and Passport Clearinghouses
+    MUST conform to the
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
     requirements for Embedded Tokens in their use of Passport Visas.
+    
+-   Clients MUST conform to the [Client/Application
+    Conformance](https://github.com/cdvoisin/data-security/blob/master/AAI/AAIConnectProfile.md#clientapplication-conformance)
+    of the GA4GH AAI Specification for integrating with GA4GH Passport
+    services.
 
 -   Validation, as outlined elsewhere in this specification and the
     GA4GH AAI Specification, MUST be performed before Passport Visas are
@@ -508,18 +513,23 @@ the GA4GH DURI committee.
 
 -   REQUIRED. Seconds since unix epoch that represents when the [Passport
     Assertion Source](#passport-assertion-source) made the claim.
+    
+-   Note that the `iat` JWT claim on the Passport Visa reflects the timestamp
+    of when the Passport Visa was minted whereas the `asserted` field 
+    reflects when the assertion source data was last added or updated in the
+    [Passport Assertion Repository](#passport-assertion-repository).
 
--   Its use by a Passport Clearinghouse is described in the
+-   `asserted` is used by a Passport Clearinghouse is described in the
     [Passport Visa Expiry](#passport-visa-expiry) section.
 
--   If a [Passport Assertion Repository](#passport-assertion-repository)
-    does not include enough information to construct an `iat` timestamp, a
-    [Passport Visa Signatory](#passport-visa-signatory) MAY use a recent
-    timestamp (for example, the current timestamp) if the Passport Assertion
-    Repository is kept up to date such that the Passport Visa Signatory can
-    ensure that the claim is valid at or near the time of minting the Passport
-    Visa as an Embedded Token. However, generally it is RECOMMENDED to have
-    the Passport Assertion Repository provide more accurate `iat` information.
+-   If a Passport Assertion Repository does not include enough information to
+    construct an `asserted` timestamp, a [Passport Visa
+    Signatory](#passport-visa-signatory) MAY use a recent timestamp (for
+    example, the current timestamp) if the Passport Assertion Repository is
+    kept up to date such that the Passport Visa Signatory can ensure that the
+    claim is valid at or near the time of minting the Passport Visa as an
+    Embedded Token. However, generally it is RECOMMENDED to have the Passport
+    Assertion Repository provide more accurate `asserted` information.
 
 #### "**value**"
 
