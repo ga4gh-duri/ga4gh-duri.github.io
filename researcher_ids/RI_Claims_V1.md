@@ -1,16 +1,15 @@
 --------------------------------------------------------------------------------
 
-# GA4GH Passports
+# GA4GH Passport
 
 **Version**: 0.9.5 (FROZEN RFC)
 
 **Work Stream Name**: Data Use and Researcher Identity (DURI)
 
-**Product Name**: GA4GH Passports
+**Product Name**: GA4GH Passport
 
 **Product Description:** This document provides the GA4GH technical
-specification for the
-[Passport JWT Claim](#passport-jwt-claim) to be
+specification for a GA4GH [Passport](#passport) to be
 consumed by [Passport Clearinghouses](#passport-clearinghouse) in a
 standardized approach to determine whether or not data access should be
 granted. Additionally, the specification provides guidance on encoding
@@ -519,7 +518,7 @@ the GA4GH DURI committee.
     reflects when the assertion source data was last added or updated in the
     [Passport Visa Assertion Repository](#passport-visa-assertion-repository).
 
--   `asserted` MAY be used by a Passport Clearinghouse is described in the
+-   `asserted` MAY be used by a Passport Clearinghouse as described in the
     [Passport Visa Expiry](#passport-visa-expiry) section.
 
 -   If a Passport Visa Assertion Repository does not include enough
@@ -540,7 +539,8 @@ the GA4GH DURI committee.
 -   For example, `value` =
     "<https://doi.org/10.1038/s41431-018-0219-y>" when `type` =
     "ResearcherStatus" represents the Registered Access Bona Fide researcher
-    status.
+    status. Note that Registered Access requires more than one claim as outlined
+    in the [Registered Access](#registered-access) section.
 
 -   For the purposes of enforcing its policies for access, a Passport
     Clearinghouse evaluating the `value` field MUST:
@@ -694,7 +694,7 @@ the GA4GH DURI committee.
         behalf of the Passport Visa Identity's person, and the person who is making
         the assertion has the same Passport Visa Type and `value` in that `source`
         organization. The `source` field represents the peer’s
-        organization that is making the assertion, which which is not necessarily
+        organization that is making the assertion, which is not necessarily
         the same organization as the Passport Visa Identity's organization.
 
     -   **system**: The `source` organization’s information system has made the
@@ -804,9 +804,9 @@ Types](#custom-passport-visa-types).
     describe the terms and policies.
 
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
-    acknowledges the ethics terms as needed for
-    [Registered Access](#registered-access) Bona Fide researcher
-    status.
+    acknowledges ethics compliance for [Registered Access](#registered-access).
+    Note that more claims are needed to meet the requirements for Registered
+    Access status.
 
 -   MUST include the "[by](#by)" field.
 
@@ -825,7 +825,8 @@ Types](#custom-passport-visa-types).
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
     acknowledges the registration process as needed for
     [Registered Access](#registered-access) Bona Fide researcher
-    status.
+    status. Note that more claims are needed to meet the requirements for
+    Registered Access status.
 
 ### ControlledAccessGrants
 
@@ -1073,8 +1074,8 @@ the following mechanisms are available within Passport Visa:
     downstream policies to limit the life, if needed, of how long assertions
     will be accepted for use with access and refresh tokens.
 
-2.  Passport Visas have an "[exp](#exp)" field to allow Passport
-    Clearinghouses to limit the life of access and refresh tokens.
+2.  Passport Visas have an "[exp](#exp)" field to allow Passport Brokers and
+    Passport Clearinghouses to limit the duration of access.
 
 At a minimum, these Passport Visa Fields MUST be checked by all Passport
 Clearinghouses and systems MUST be in place to begin to take action to remove access
