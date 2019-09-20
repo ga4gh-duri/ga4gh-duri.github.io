@@ -795,7 +795,8 @@ Types](#custom-passport-visa-types).
 
 -   The [Passport Visa Identity](#passport-visa-identity) or the
     "[source](#source)" organization has acknowledged the specific terms,
-    policies, and conditions indicated by the `value` field.
+    policies, and conditions (or meet particular criteria) as indicated by the
+    `value` field.
     
 -   The `value` field conforms to [URL Field](#url-fields) format.
 
