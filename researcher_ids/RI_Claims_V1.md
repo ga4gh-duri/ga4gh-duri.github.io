@@ -4,7 +4,7 @@
 
 **Version**: 0.9.5 (FROZEN RFC)
 
-**Work Stream Name**: Data Use and Researcher Identity
+**Work Stream Name**: Data Use and Researcher Identity (DURI)
 
 **Product Name**: GA4GH Passports
 
@@ -17,7 +17,7 @@ granted. Additionally, the specification provides guidance on encoding
 specific [use cases](#encoding-use-cases), including [Passport
 Visas](#passport-visa) for [Registered Access](#registered-access) as
 described in the "[Registered access: authorizing data
-access](https://www.nature.com/articles/s41431-018-0219-y) publication."
+access](https://www.nature.com/articles/s41431-018-0219-y)" publication.
 **Refer to the [Overview](#overview) for an introduction to how data
 objects and services defined in this specification fit together.**
 
@@ -55,7 +55,7 @@ objects and services defined in this specification fit together.**
     - [condition](#condition)
     - [by](#by)
   - [URL Fields](#url-fields)
-- [**GA4GH Standard Passport Visa Definitions**](#ga4gh-standard-passport-visa-definitions)
+- [**GA4GH Standard Passport Visa Type Definitions**](#ga4gh-standard-passport-visa-type-definitions)
   - [AffiliationAndRole](#affiliationandrole)
   - [AcceptedTermsAndPolicies](#acceptedtermsandpolicies)
   - [ResearcherStatus](#researcherstatus)
@@ -80,8 +80,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport
 
--   A GA4GH-compatible access token, as per the [GA4GH AAI
-    specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md),
+-   A GA4GH-compatible access token ("GA4GH Access Token"), as per the [GA4GH
+    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md),
     along with the [Passport JWT Claim](#passport-jwt-claim) that is
     returned from [Passport Broker](#passport-broker) service endpoints
     using such an access token.
@@ -130,10 +130,10 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport Visa Identity
 
--   The {"iss", "sub"} pair of JWT standard claims ([RFC7519 section
+-   The {`iss`, `sub`} pair of JWT standard claims ([RFC7519 section
     4.1.1](https://tools.ietf.org/html/rfc7519#section-4.1.1)) that are
-    included within an [Passport Visa](#passport-visa) that represents a
-    given user (such as a user account) within the "iss" system.
+    included within a [Passport Visa](#passport-visa) that represents a
+    given user (such as a user account) within the issuer's (`iss`) system.
 
 #### Passport Visa Object
 
@@ -152,13 +152,12 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     other [Passport Visa Fields](#passport-visa-fields).
     
 -   For example, a Passport Visa Type of "AffiliationAndRole" per the
-    [GA4GH Standard Passport Visa Definitions](#ga4gh-standard-passport-visa-definitions)
+    [GA4GH Standard Passport Visa Type Definitions](#ga4gh-standard-passport-visa-type-definitions)
     specifies the semantics of the Passport Visa as well as the
     expected encoding of the "[value](#value)" field for this purpose. 
 
--   In addition to [GA4GH Standard Passport Visa Definitions
-    (types)](#ga4gh-standard-passport-visa-definitions), there MAY also
-    be Passport Visas with [Custom Passport Visa
+-   In addition to GA4GH Standard Passport Visa Type Definitions, there
+    MAY also be Passport Visas with [Custom Passport Visa
     Types](#custom-passport-visa-types).
 
 ### **Actors and Services**
@@ -205,8 +204,11 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   A service handling Passport Visas and assembling Passports while
     conforming as a
     [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-broker)
-    service with conformance outlined in the [Conformance for Brokers section
-    of the GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-brokers).
+    service.
+    
+-   In addition to conformance requirements outlined within this specification,
+    also see [Conformance for Brokers section of the GA4GH AAI
+    specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-brokers).
 
 #### Passport Clearinghouse
 
@@ -272,11 +274,17 @@ Visas on demand. Implementations MAY vary in this regard.
 ### General Requirements
 
 1.  <a name="requirement-1"></a>
-    Use of the [Passport JWT Claim](#passport-jwt-claim) MUST conform the
-    the [GA4GH AAI
-    Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
-    The services described in this specification MUST also conform to the
-    GA4GH AAI Specification.
+    Use of the [Passport JWT Claim](#passport-jwt-claim) MUST conform to the
+    [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+    The services defined in this specification that are based on services defined
+    by the GA4GH AAI Specification MUST also conform to the GA4GH AAI Specification.
+    
+    -   Passport Visa Issuer MUST conform as a GA4GH AAI Embedded Token
+        Signatory.
+
+    -   Passport Broker MUST conform as a GA4GH AAI Broker.
+
+    -   Passport Clearinghouse MUST conform as a GA4GH AAI Claim Clearinghouse.
 
 2.  <a name="requirement-2"></a> A Passport JWT Claim consists of a list of
     [Passport Visas](#passport-visa). These Passport Visas MUST conform to
@@ -298,10 +306,11 @@ Visas on demand. Implementations MAY vary in this regard.
         of the Passport Clearinghouse that inspects the Passport Visas.
 
 4.  <a name="requirement-4"></a> Passport Visas MUST have an indication of
-    which organization asserted the claim (i.e. the "[source](#source)" field),
-    but Passport Visas do not generally indicate individual persons involved
-    in making the assertion (i.e. who assigned/signed the claim) as detailed
-    identity information is not needed to make an access decision.
+    which organization made the Passport Visa Assertion (i.e. the
+    "[source](#source)" field), but Passport Visas do not generally indicate
+    individual persons involved in making the assertion (i.e. who assigned/signed
+    the assertion) as detailed identity information is not needed to make an
+    access decision.
 
 5.  <a name="requirement-5"></a> Additional information about identity
     that is not needed to make an access decision SHOULD not be included in the
@@ -313,37 +322,37 @@ Visas on demand. Implementations MAY vary in this regard.
 
 6.  <a name="requirement-6"></a> All Passport Visas within the
     `ga4gh_passport_v1` scope eligible for release to the requestor MUST be
-    consistently provided. Reasons for limiting exchange may include user
-    approval, contractual limitations, regulatory restrictions, or filtering
-    claims to only the subset needed for a particular purpose, etc.
+    provided. Reasons for limiting exchange may include user approval,
+    contractual limitations, regulatory restrictions, or filtering Passport
+    Visas to only the subset needed for a particular purpose, etc.
 
 7.  <a name="requirement-7"></a> The [Passport JWT Claim](#passport-jwt-claim)
-    is only included in the Passport if the `ga4gh_passport_v1` scope is
+    MUST only be included in the Passport if the `ga4gh_passport_v1` scope is
     requested from the [Passport Broker](#passport-broker) and other conditions
     are met as outlined within this specification.
 
     If the Passport Broker is the [Passport Visa Issuer](#passport-visa-issuer),
-    it MUST set the "iss" to itself and sign such Passport Visas with its own
+    it MUST set the `iss` to itself and sign such Passport Visas with its own
     private key as described in the
-    [AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+    [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 8.  <a name="requirement-8"></a> Passport Visas are designed for machine
-    interpretation only to make an access decision and is a non-goal to support
-    rich user interface requirements nor do these claims fully encode the audit
-    trail.
+    interpretation only in order to make an access decision and is a non-goal to
+    support rich user interface requirements nor do these claims fully encode the
+    audit trail.
 
 9.  <a name="requirement-9"></a> A Passport Visa Object MAY
     contain a "[condition](#condition)" field that restricts the Passport Visa
     to only be valid when the condition is met.
 
     -   For example, an identity can have several affiliations and a
-        "ControlledAccessGrants" in a Passport Visa MAY be coupled to one
+        Passport Visa with type "ControlledAccessGrants" MAY be dependent on one
         of them using the Condition field.
 
 10. <a name="requirement-10"></a> Processing a Passport within a Passport
-    Clearinghouse is to abide by the following:
+    Clearinghouse MUST abide by the following:
     
-    1.  Passport Clearinghouses MUST reject all requests that provide Passports
+    1.  Passport Clearinghouses MUST reject all requests that include Passports
         that fail the neccessary checks of the access token as described in
         the [GA4GH AAI
         Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
@@ -354,7 +363,7 @@ Visas on demand. Implementations MAY vary in this regard.
     3.  Passport Clearinghouses MUST ignore Passports and Passport Visas
         unless:
     
-        1.  The Passport Clearinghouse has a sufficient trust relationships
+        1.  The Passport Clearinghouse has sufficient trust relationships
             with all of: the [Passport Broker](#passport-broker), [Passport
             Visa Assertion Source](#passport-visa-assertion-source),
             [Passport Visa Issuer](#passport-visa-issuer); or
@@ -382,19 +391,8 @@ For example, a user interface mapping of
 such as "this person is a bona fide researcher as described by the 'Registered
 access: authorizing data access' publication".
 
-Support for User Interfaces is not part of this specification. It is a non-goal
-for this specification to consider the processes that would support user
-interfaces, such as:
-
--   String definitions could be provided as a community effort (e.g. on a wiki)
-    and providing some assurance that definitions have not been tampered with.
-
--   Any such open effort could be made easy to update and allow self-register
-    new string mappings (e.g. affiliation domain name to research organization
-    name)
-
--   May provide a rich set of internationalization/localization features for
-    clients to consume.
+It is a non-goal for this specification to consider the processes and data for
+the purpose of supporting user interfaces.
 
 ## Passport JWT Claim Format
 
@@ -422,7 +420,7 @@ Claim](#example-passport-jwt-claim) section of the specification.
 
 -   Passport Visas MUST conform to one of the
     [GA4GH AAI Specification Embedded Token formats](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#embedded-token-issued-by-embedded-token-signatories)
-    as JWS Compact Serialization string as defined by [RFC7515 section
+    as JWS Compact Serialization strings as defined by [RFC7515 section
     7.1](https://tools.ietf.org/html/rfc7515#section-7.1).
 
 -   Passport Visa Issuers, Passport Brokers, and Passport Clearinghouses
@@ -442,7 +440,7 @@ Claim](#example-passport-jwt-claim) section of the specification.
 ### Passport Visa Format
 
 Passport Visas are JWS Compact Serialization strings of the following
-form when represented in JSON:
+form when represented as JSON:
 
 ```
 {
@@ -469,10 +467,9 @@ form when represented in JSON:
 }.<signature>
 ```
 
-Where fields within the `ga4gh_visa_v1` object are as described in the
-[Passport Visa Fields](#passport-visa-fields) section of this
-specification except for "exp" which is a direct JWT claim and not
-stored within the `ga4gh_visa_v1` object.
+Where fields within the `ga4gh_visa_v1` [Passport Visa
+Object](#passport-visa-object) are as described in the [Passport Visa
+Fields](#passport-visa-fields) section of this specification.
 
 One of `scope` or `jku` MUST be present as described in
 [Conformance for Embedded Token Signatories](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-signatories)
@@ -507,9 +504,9 @@ the GA4GH DURI committee.
 
 #### "**type**"
 
--   REQUIRED. A [Passport Visa Type](#passport-visa-type) that is
-    either a [GA4GH Standard Passport Visa
-    Definition](#ga4gh-standard-passport-visa-definition) name, or a
+-   REQUIRED. A [Passport Visa Type](#passport-visa-type) string that is
+    either a [GA4GH Standard Passport Visa Type
+    Definition](#ga4gh-standard-passport-visa-type-definition) name, or a
     [Custom Passport Visa Type](#custom-passport-visa-types) name.
 
 #### "**asserted**"
@@ -522,7 +519,7 @@ the GA4GH DURI committee.
     reflects when the assertion source data was last added or updated in the
     [Passport Visa Assertion Repository](#passport-visa-assertion-repository).
 
--   `asserted` is used by a Passport Clearinghouse is described in the
+-   `asserted` MAY be used by a Passport Clearinghouse is described in the
     [Passport Visa Expiry](#passport-visa-expiry) section.
 
 -   If a Passport Visa Assertion Repository does not include enough
@@ -536,9 +533,9 @@ the GA4GH DURI committee.
 
 #### "**value**"
 
--   REQUIRED. A string that represents the type, process and version of the
-    claim. The format of the string can vary by the [Passport Visa
-    Type](#passport-visa-type).
+-   REQUIRED. A string that represents any of the scope, process, identifier and
+    version of the assertion. The format of the string can vary by the [Passport
+    Visa Type](#passport-visa-type).
 
 -   For example, `value` =
     "<https://doi.org/10.1038/s41431-018-0219-y>" when `type` =
@@ -549,27 +546,28 @@ the GA4GH DURI committee.
     Clearinghouse evaluating the `value` field MUST:
     
     -   Validate URL strings as per the [URL Field](#url-fields)
-        requirements.
+        requirements if the Passport Visa Type definition indicates the value
+        is a URL (as indicated by the `type` field).
     
     -   Value field strings MUST be full string case-sensitive matches
-        unless the claim defines a safe and reliable format for
-        partitioning into substrings and matching on the various substrings.
-        For example, the standard [AffiliationAndRole
-        visa](#affiliationandrole) can be reliably
-        partitioned by splitting the string at the first “@” sign if such exists,
-        or otherwise producing an error (denying permission).
+        unless the Passport Visa Type defines a safe and reliable format for
+        partitioning the value into substrings and matching on the various
+        substrings. For example, the standard
+        [AffiliationAndRole](#affiliationandrole) Passport Visa Type can be
+        reliably partitioned by splitting the string at the first “@” sign if such
+        exists, or otherwise producing an error (i.e. denying permission).
 
 #### "**source**"
 
 -   REQUIRED. A [URL Field](#url-fields) that provides at a minimum the
-    organization that has asserted the claim. If there is no organization
-    asserting a claim, the "source" MUST be set to
+    organization that made the assertion. If there is no organization
+    making the assertion, the "source" MUST be set to
     "https://no.organization".
 
 -   For complex organizations that may require more specific information
-    regarding which part of the organization made the claim, this field MAY also
-    may encode some substructure to the organization that represents the origin
-    of the authority of the claim. When this approach is chosen, then:
+    regarding which part of the organization made the assertion, this field MAY
+    also may encode some substructure to the organization that represents the
+    origin of the authority of the assertion. When this approach is chosen, then:
 
     -   The additional substructure MUST only encode the sub-organization or
         department but no other details or variables that would make it
@@ -578,31 +576,31 @@ the GA4GH DURI committee.
 
     -   The additional information SHOULD be encoded into the subdomain or path
         whenever possible and SHOULD generally avoid the use of query parameters
-        and anchors to represent the sub-organization.
+        or anchors to represent the sub-organization.
 
 #### "**condition**"
 
 -   OPTIONAL. A condition on an [Passport Visa
     Object](#passport-visa-object) indicates that the Passport Visa is
-    only valid if the contents of the condition are present elsewhere in the
-    [Passport](#passport) and such content is both valid
+    only valid if the clauses of the condition match other Passport Visas
+    elsewhere in the [Passport](#passport) and such content is both valid
     (e.g. hasn’t expired; signature of embedded token has been verified against
     the public key; etc.) and if such content is accepted by the Passport
-    Clearinghouse (e.g. the issuer is trusted; the source field meets any policy
-    criteria that has been established, etc.).
+    Clearinghouse (e.g. the issuer is trusted; the `source` field meets any
+    policy criteria that has been established, etc.).
 
 -   A Passport Clearinghouse MUST always check for the presence of
-    the condition field and if present it MUST only accept the Passport Visa
+    the `condition` field and if present it MUST only accept the Passport Visa
     if it can confirm that the condition has been met.
 
--   In the process of finding a matching condition, a Passport Clearinghouse
-    SHOULD ignore Passport Visa Objects that also have a condition, or
-    otherwise MUST avoid deep nesting of condition evaluation (i.e. avoid
-    condition loops, stack overflows, etc).
+-   In the process of finding a matching Passport Visa for a condition, a
+    Passport Clearinghouse MUST ignore Passport Visa Objects that also have a
+    condition. This will avoid deep nesting of condition evaluation (i.e.
+    avoid condition loops, stack overflows, etc).
 
 -   [Passport Visa Fields](#passport-visa-fields) that are not specified
     in the condition are not required to match (i.e. any value will be accepted
-    within that field).
+    within that field and optional fields need not be present).
 
 -   Format:
 
@@ -626,8 +624,8 @@ the GA4GH DURI committee.
     contain a timestamp field such as "asserted".
 
     -   Note that the "source" in the condition is the expected source of the
-        condition’s claim name and value, and is not the source of the claim to
-        which the condition is attached.
+        condition’s claim name and value, and is not the source of the assertion
+        to which the condition is attached.
 
     -   For example, "claimNameA.sourceA" asserts that "sourceA" is the
         [Passport Visa Assertion Source](#passport-visa-assertion-source) of
@@ -635,8 +633,8 @@ the GA4GH DURI committee.
         that "claimNameB" exists elsewhere in the Passport and is provided by
         "sourceB".
 
--   The Passport Clearinghouse MUST verify that for each condition claim and each
-    condition field present, a single corresponding [Passport Visa
+-   The Passport Clearinghouse MUST verify that for each condition Passport Visa
+    Type and each condition field present, a single corresponding [Passport Visa
     Object](#passport-visa-object) and its corresponding
     [fields](#passport-visa-fields) match as per the matching algorithms
     described elsewhere in this specification, along with the following
@@ -682,38 +680,40 @@ the GA4GH DURI committee.
 #### "**by**"
 
 -   OPTIONAL. The level or type of authority within the "source" organization
-    that is asserting the claim.
+    of the assertion.
 
 -   A Passport Clearinghouse MAY use this field as part of an authorization
     decision based on the policies that it enforces.
 
 -   Fixed vocabulary values for this field are:
 
-    -   **self**: The identity for which the claim is being made and the person
-        who made the claim is the same person.
+    -   **self**: The Pasport Visa Identity for which the assertion is being made
+        and the person who made the assertion is the same person.
 
-    -   **peer**: A person, who has the same ResearcherStatus as this claim, has
-        made this assertion. The "source" field represents the peer’s
-        organization that is asserting the claim (which isn’t necessarily the
-        same as the identity’s home organization).
+    -   **peer**: A person at the `source` organization has made this assertion on
+        behalf of the Passport Visa Identity's person, and the person who is making
+        the assertion has the same Passport Visa Type and `value` in that `source`
+        organization. The `source` field represents the peer’s
+        organization that is making the assertion, which which is not necessarily
+        the same organization as the Passport Visa Identity's organization.
 
-    -   **system**: The person’s home organization’s information system has
-        asserted the claim.
+    -   **system**: The `source` organization’s information system has made the
+        assertion based on system data or metadata that it stores.
 
-    -   **so**: The person (also known as "signing official") who authorized
-        this claim is within the "source" organization and at the time the claim
-        was issued possessed direct authority (as part of their formal duties)
-        to bind the organization to their assertion that the identity has met
-        the policies indicated by this claim within the context of its "value"
-        field.
+    -   **so**: The person (also known as "signing official") making the assertion
+        within the `source` organization possesses direct authority (as part of
+        their formal duties) to bind the organization to their assertion that the
+        Passport Visa Identity, did possess such authority at the time the
+        assertion was made.
 
     -   **dac**: A Data Access Committee or other authority that is responsible
-        as a grantee decision-maker for the given "value" and "source" field
+        as a grantee decision-maker for the given `value` and `source` field
         pair.
 
 -   If this field is not provided, then none of the above values can be assumed
-    as the level or type of authority is "unknown". Any policy expecting a
-    specific value as per the list above MUST fail to accept an "unknown" value.
+    as the level or type of authority and the authority MUST be assumed to be
+    "unknown". Any policy expecting a specific value as per the list above MUST
+    fail to accept an "unknown" value.
 
 ### URL Fields
 
@@ -747,16 +747,16 @@ limitations:
 5.  URLs SHOULD resolve to a human readable document for a policy maker to
     reason about.
 
-## GA4GH Standard Passport Visa Definitions
+## GA4GH Standard Passport Visa Type Definitions
 
 Note: in addition to these GA4GH standard Passport Visa Types, there is also
 the ability to for a Passport Visa Issuer to encode [Custom Passport Visa
-Types](#custom-passport-visa-types) and still be compliant.
+Types](#custom-passport-visa-types).
 
 ### AffiliationAndRole
 
--   The Identity’s role within the identity’s affiliated institution as
-    specified by one of the following:
+-   The Passport Visa Identity’s role within the identity’s affiliated institution
+    as specified by one of the following:
 
     -   [eduPersonScopedAffiliation](http://software.internet2.edu/eduperson/internet2-mace-dir-eduperson-201602.html#eduPersonScopedAffiliation)
         attributed value of: faculty, student, or member. \
@@ -772,13 +772,18 @@ Types](#custom-passport-visa-types) and still be compliant.
 
     -   A custom role that includes a namespace prefix followed by a dot (".")
         where implementers introducing a new custom claim role MUST coordinate
-        with the DURI committee to align custom role use cases to maximize
-        interoperability and avoid fragmentation across implementations.
-
+        with GA4GH (or a body it elects) to align custom role use cases in order
+        to maximize interoperability and avoid fragmentation across
+        implementations.
+        
         -   Example: "nih.researcher\@med.stanford.edu" where "nih" is the
             namespace and "researcher" is the custom role within that namespace.
 
--   If there is no affiliated institution associated with a given claim, the
+        -   Custom roles and their prefixes MUST be limited to characters: a-z,
+            dash ("-"), underscore ("_"), digits (0-9). Custom roles and prefixes
+            MUST start with characters a-z.
+
+-   If there is no affiliated institution associated with a given assertion, the
     affiliation portion of AffliationAndRole MUST be set to "no.organization".
 
     -   Example: "public.citizen-scientist\@no.organization"
@@ -788,15 +793,14 @@ Types](#custom-passport-visa-types) and still be compliant.
 
 ### AcceptedTermsAndPolicies
 
--   The set of unique identifiers in the form of URLs to indicate that the
-    [Passport Visa Identity](#passport-visa-identity) or the
-    "[source](#source)" organization have acknowledged the specific terms,
-    policies, and conditions indicated by the URL.
+-   The [Passport Visa Identity](#passport-visa-identity) or the
+    "[source](#source)" organization has acknowledged the specific terms,
+    policies, and conditions indicated by the `value` field.
     
 -   The `value` field conforms to [URL Field](#url-fields) format.
 
--   The URLs SHOULD resolve to a public-facing, human readable web page that
-    describes the terms and policies.
+-   The URL SHOULD resolve to a public-facing, human readable web page that
+    describe the terms and policies.
 
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
     acknowledges the ethics terms as needed for
@@ -807,14 +811,14 @@ Types](#custom-passport-visa-types) and still be compliant.
 
 ### ResearcherStatus
 
--   Unique identifiers in the form of URLs that indicate that the person has
-    been acknowledged to be a researcher of a particular type or standard.
+-   The person has been acknowledged to be a researcher of a particular type or
+    standard.
 
 -   The `value` field conforms to [URL Field](#url-fields) format, and it
     indicates the minimum standard and/or type of researcher that describes
-    the person represented by the given identity.
+    the person represented by the given Passport Visa Identity.
 
--   The URLs SHOULD resolve to a human readable web page that describes the
+-   The URL SHOULD resolve to a human readable web page that describes the
     process that has been followed and the qualifications this person has met.
 
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
@@ -824,8 +828,8 @@ Types](#custom-passport-visa-types) and still be compliant.
 
 ### ControlledAccessGrants
 
--   A list of datasets or other objects for which controlled access has been
-    granted to this [Passport Visa Identity](#passport-visa-identity).
+-   A dataset or other object for which controlled access has been granted to
+    this [Passport Visa Identity](#passport-visa-identity).
     
 -   The `value` field conforms to [URL Field](#url-fields) format.
 
@@ -839,8 +843,8 @@ Types](#custom-passport-visa-types) and still be compliant.
 
 -   The identity as indicated by the {"iss", "sub"} pair (aka "[Passport Visa
     Identity](#passport-visa-identity)") of the [Passport
-    Visa](#passport-visa) is the same as the identities listed in the
-    "[value](#value)" field.
+    Visa](#passport-visa) is the same as the identity or identities listed
+    in the "[value](#value)" field.
 
 -   The "[value](#value)" field format is a comma-delimited list of
     "<uri-encoded-sub>|<uri-encoded-iss>" entries with no added whitespace
@@ -860,13 +864,13 @@ Types](#custom-passport-visa-types) and still be compliant.
 -   The "[source](#source)" field refers to the [Passport Visa Assertion
     Source](#passport-visa-assertion-source) that is making the assertion. This is
     typically the same organization as the [Passport Visa
-    Issuer](#passport-visa-issuer) "iss" that signs the Passport Visa, but the
+    Issuer](#passport-visa-issuer) `iss` that signs the Passport Visa, but the
     "source" MAY also refer to another Passport Visa Assertion Source depending
     on which organization collected the information.
 
 -   As a non-normative example, if a policy needs 3 Passport Visas and
     there are three Passport Visas that meet the criteria on one Passport
-    but they use 3 different "sub" values ("sub1", "sub2", "sub3"), then
+    but they use 3 different `sub` values ("sub1", "sub2", "sub3"), then
     **any** of the following, if from a trusted issuers and sources, may
     allow these Passport Visas to be combined (shown with JSON payload only
     and without the REQUIRED URI-encoding in order to improve readability of
@@ -937,7 +941,7 @@ Types](#custom-passport-visa-types) and still be compliant.
 ## Custom Passport Visa Types
 
 -   In addition to the
-    [GA4GH Standard Passport Visa Definitions](#ga4gh-standard-passport-visa-definitions),
+    [GA4GH Standard Passport Visa Type Definitions](#ga4gh-standard-passport-visa-type-definitions),
     Passport Visas MAY be added using custom `type` names so long as the
     encoding of these Passport Visas will abide by the requirements described
     elsewhere in this specification.
@@ -949,14 +953,14 @@ Types](#custom-passport-visa-types) and still be compliant.
     [URL Fields](#url-fields) section of the specification.
 
 -   Implementers introducing a new custom `type` name MUST coordinate with the
-    DURI committee to align custom `type` use cases to maximize interoperability
-    and avoid unnecessary fragmentation across implementations.
+    GA4GH (or a body it elects) to align custom `type` use cases to maximize
+    interoperability and avoid unnecessary fragmentation across implementations.
 
 -   Passport Clearinghouses MUST ignore all Passport Visas containing a custom
     `type` name that they do not support.
 
 -   Non-normative example custom `type` name:
-    "https://dbgap.nih.gov/passportVisaTypes/researcherStudies".
+    "https://example.org/passportVisaTypes/researcherStudies".
 
 ## Encoding Use Cases
 
@@ -988,7 +992,7 @@ Use cases include, but are not limited to the following:
     -   If combining Passport Visas from multiple [Passport Visa
         Identities](#passport-visa-identity), the Passport
         Clearinghouse MUST also check the
-        [LinkedIdentities](#ga4ghlinkedidentities) Passport Visas to
+        [LinkedIdentities](#ga4ghlinkedidentities) Passport Visas and
         determine if combining these identities came from a trusted
         [Passport Visa Issuer](#passport-visa-issuer).
 
@@ -1050,9 +1054,13 @@ now()+accessTokenTTL < token.exp
 Where:
 
 -   `accessTokenTTL` represents the duration for which an access token will be
-    accepted and is bounded by the next refresh token cycle and/or any larger
-    propagation delay before access is revoked, which needs to be assessed based
-    on the revocation model.
+    accepted and is bounded by the next refresh token cycle or [Claim
+    Polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#claim-polling)
+    cycle or any larger propagation delay before access is revoked, which
+    needs to be assessed based on the revocation model.
+    
+    -   For example, if Claim Polling is performed once per hour, then
+        `accessTokenTTL` MAY be one hour.
 
 ## Token Revocation
 
@@ -1068,14 +1076,16 @@ the following mechanisms are available within Passport Visa:
     Clearinghouses to limit the life of access and refresh tokens.
 
 At a minimum, these Passport Visa Fields MUST be checked by all Passport
-Clearinghouses and systems MUST be in place to take action to remove access by
-the expiry timestamp or shortly thereafter. Propagation of these permission
+Clearinghouses and systems MUST be in place to begin to take action to remove access
+by the expiry timestamp or shortly thereafter. Propagation of these permission
 changes may also require some reasonable delay.
 
-Systems utilizing Passport Visas MAY also employ other mechanisms outlined in the
-GA4GH AAI Specification. Systems employing Passport Visas MUST provide mechanisms to
+Systems employing Passport Visas MUST provide mechanisms to
 limit the life of access, and specifically MUST conform to the GA4GH AAI
-Specification requirements in this regard.
+Specification requirements in this regard. Systems utilizing Passport Visas MAY also
+employ other mechanisms outlined in the GA4GH AAI Specification, such as [Claim
+Polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#claim-polling)
+if the Passport Visa is encoded as an [Embedded Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-access-token). 
 
 ## Example Passport JWT Claim
 
@@ -1115,7 +1125,7 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
 
 -   **LinkedIdentities**: A Passport Broker at example3.org has provided
     software functionality to allow a user to link their own accounts together.
-    After the user has successfully logged into the two accounts and passed any
+    After the user has successfully logged into the two accounts and passed all
     auth challenges, the Passport Broker added the
     [LinkedIdentities](#linkedidentities) Passport Visa for those two accounts:
     (1) "10001" from example1.org, and (2) "abcd" from example2.org.
