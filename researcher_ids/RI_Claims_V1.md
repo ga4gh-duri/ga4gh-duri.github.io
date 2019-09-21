@@ -510,7 +510,7 @@ Although standard fields within a [Passport Visa Object](#passport-visa-object)
 are defined in this section, other fields MAY exist within the object
 and should be ignored by any Passport Clearinghouse that is not familiar
 with the use of such fields. Field names are reserved for definition by
-the GA4GH DURI committee.
+GA4GH (or a body it elects).
 
 #### "**type**"
 
@@ -927,8 +927,8 @@ Types](#custom-passport-visa-types).
     Visa](#passport-visa) is the same as the identity or identities listed
     in the "[value](#value)" field.
 
--   The "[value](#value)" field format is a comma-delimited list of
-    "<uri-encoded-sub>|<uri-encoded-iss>" entries with no added whitespace
+-   The "[value](#value)" field format is a semicolon-delimited list of
+    "<uri-encoded-sub>,<uri-encoded-iss>" entries with no added whitespace
     between entries.
   
     -   The "iss" and "sub" that are used to encode the "value" field do
@@ -936,11 +936,12 @@ Types](#custom-passport-visa-types).
         requirements since they must match the corresponding Passport Visa
         "iss" and "sub" fields that may be issued.
         
-    -   By URI encoding the "iss", special characters (such as "|" and ",")
-        are encoded within the URL without causing parsing conflicts.
+    -   By URI encoding ([RFC 3986](https://tools.ietf.org/html/rfc3986)) the
+        "iss", special characters (such as "," and ";") are encoded within the URL
+        without causing parsing conflicts.
         
     -   Example:
-        "123456|https%3A%2F%2Fexample.org%2Fa%7Cb%2Cc,7890|https%3A%2F%2Fexample2.org".
+        "123456,https%3A%2F%2Fexample.org%2Fa%7Cb%2Cc;7890,https%3A%2F%2Fexample2.org".
 
 -   The "[source](#source)" field refers to the [Passport Visa Assertion
     Source](#passport-visa-assertion-source) that is making the assertion. This is
@@ -965,7 +966,7 @@ Types](#custom-passport-visa-types).
          "sub": "1234",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
-           "value": "567|https://example2.org/oidc,890123|https://example3.org/oidc",
+           "value": "567,https://example2.org/oidc;890123,https://example3.org/oidc",
            "source": "https://example1.org/oidc"
            ...
          }
@@ -984,7 +985,7 @@ Types](#custom-passport-visa-types).
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
            "value":
-             "1234|http://example1.org/oidc,567|http://example2.org/oidc,890123|http://example3.org/oidc,sub4|http://example4.org/oidc"
+             "1234,http://example1.org/oidc;567,http://example2.org/oidc;890123,http://example3.org/oidc;sub4,http://example4.org/oidc"
            "source": "https://example0.org/oidc"
            ...
          }
@@ -1002,7 +1003,7 @@ Types](#custom-passport-visa-types).
          "sub": "1234",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
-           "value": "567|https://example2.org/oidc",
+           "value": "567,https://example2.org/oidc",
            "source": "https://example1.org/oidc"
            ...
          }
@@ -1012,7 +1013,7 @@ Types](#custom-passport-visa-types).
          "sub": "567",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
-           "value": "890123|https://example3.org/oidc",
+           "value": "890123,https://example3.org/oidc",
            "source": "https://example2.org/oidc"
            ...
          }
@@ -1320,7 +1321,7 @@ reader-friendly.
         "ga4gh_visa_v1": {
             "type": "LinkedIdentities",
             "asserted": 1549680000,
-            "value": "10001|https://issuer.example1.org/oidc,abcd|https://other.example2.org/oidc",
+            "value": "10001,https:%2F%2Fissuer.example1.org%2Foidc;abcd,https:%2F%2Fother.example2.org%2Foidc",
             "source": "https://broker.example3.org/oidc",
             "by": "system"
         }
