@@ -130,6 +130,7 @@ Here is an example of the life of a claim:
         3. The "[source](http://bit.ly/ga4gh-ri-v1#source)" field is checked to see if it is from a trusted source from a trusted source whitelist.
         4. The "[value](http://bit.ly/ga4gh-ri-v1#value)" field is checked to see if it meets the requirements of the access policy.
         5. The "[asserted](http://bit.ly/ga4gh-ri-v1#asserted)" and "[by](http://bit.ly/ga4gh-ri-v1#by)" fields may be checked as well, depending on the policy.
+        6. The "[conditions]((http://bit.ly/ga4gh-ri-v1#conditions)" field is also checked to see if the validity of this Passport Visa has a dependency on having another Passport Visa also present in the same Passport.
 4. If the Passport Clearinghouse decides that the Passport meets the access policy for the data in question, the service proceeds to authorize the researcher's use of the data.
     1. Some Passport Clearinghouses will authorize use of the data by changing the researcher's permissions and issuing a cloud-specific access token to read the bytes using their own cloud-native tools and services.
     2. Other Passport Clearinghouses will read the bytes from another service using special access token that it holds which contains permission to do so, then return the bytes back to the researcher.
