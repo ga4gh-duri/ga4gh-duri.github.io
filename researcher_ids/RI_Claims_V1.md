@@ -578,6 +578,15 @@ the GA4GH DURI committee.
         whenever possible and SHOULD generally avoid the use of query parameters
         or anchors to represent the sub-organization.
 
+    -   Some organizations MAY wish to attribute the `source` to a particular
+        Data Access Committee (DAC), especially for
+        [ControlledAccessGrants](#controlledaccessgrants) Passport Visa Types.
+        For example:
+        
+        `source` = "https://www.ebi.ac.uk/ega/dacs/EGAC00000000001"
+        
+        could represent one particular DAC within EGA.
+
 #### "**condition**"
 
 -   OPTIONAL. A condition on an [Passport Visa
@@ -733,10 +742,11 @@ limitations:
         SHOULD use the "https" scheme even if the resource will also resolve using
         the "http" scheme.
 
-    -   Research institutions are RECOMMENDED to use a persistent URL pointing to
-        established organizational ontology identifier -- whether managed directly
-        or by a third-party service such as a [GRID](https://grid.ac/institutes)
-        -- as their canonical "source" URL.
+    -   When the URL is being used to represent an organization or a well defined
+        child organization within a "[source](#source)" field, it is RECOMMENDED
+        to use a URL as a persistent organizational ontology identifier, whether
+        managed directly or by a third-party service such as
+        [GRID](https://grid.ac/institutes) when reasonable to do so.
 
 3.  The URL SHOULD also be as short as reasonably possible while avoiding
     collisions, and MUST NOT exceed 255 characters.
@@ -861,7 +871,7 @@ Types](#custom-passport-visa-types).
         are encoded within the URL without causing parsing conflicts.
         
     -   Example:
-        "sub1|https%3A%2F%2Fexample.org%2Fa%7Cb%2Cc,sub2|https%3A%2F%2Fexample2.org".
+        "123456|https%3A%2F%2Fexample.org%2Fa%7Cb%2Cc,7890|https%3A%2F%2Fexample2.org".
 
 -   The "[source](#source)" field refers to the [Passport Visa Assertion
     Source](#passport-visa-assertion-source) that is making the assertion. This is
@@ -872,7 +882,7 @@ Types](#custom-passport-visa-types).
 
 -   As a non-normative example, if a policy needs 3 Passport Visas and
     there are three Passport Visas that meet the criteria on one Passport
-    but they use 3 different `sub` values ("sub1", "sub2", "sub3"), then
+    but they use 3 different `sub` values ("1234", "567", "890123"), then
     **any** of the following, if from a trusted issuers and sources, may
     allow these Passport Visas to be combined (shown with JSON payload only
     and without the REQUIRED URI-encoding in order to improve readability of
@@ -883,10 +893,10 @@ Types](#custom-passport-visa-types).
        ```
        {
          "iss": "https://example1.org/oidc",
-         "sub": "sub1",
+         "sub": "1234",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
-           "value": "sub2|https://example2.org/oidc,sub3|https://example3.org/oidc",
+           "value": "567|https://example2.org/oidc,890123|https://example3.org/oidc",
            "source": "https://example1.org/oidc"
            ...
          }
@@ -901,11 +911,11 @@ Types](#custom-passport-visa-types).
        ```
        {
          "iss": "https://example0.org/oidc",
-         "sub": "sub0",
+         "sub": "00001",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
            "value":
-             "sub1|http://example1.org/oidc,sub2|http://example2.org/oidc,sub3|http://example3.org/oidc,sub4|http://example4.org/oidc"
+             "1234|http://example1.org/oidc,567|http://example2.org/oidc,890123|http://example3.org/oidc,sub4|http://example4.org/oidc"
            "source": "https://example0.org/oidc"
            ...
          }
@@ -920,20 +930,20 @@ Types](#custom-passport-visa-types).
        ```
        {
          "iss": "https://example1.org/oidc",
-         "sub": "sub1",
+         "sub": "1234",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
-           "value": "sub2|https://example2.org/oidc",
+           "value": "567|https://example2.org/oidc",
            "source": "https://example1.org/oidc"
            ...
          }
        },
        {
          "iss": "https://example2.org/oidc",
-         "sub": "sub2",
+         "sub": "567",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
-           "value": "sub3|https://example3.org/oidc",
+           "value": "890123|https://example3.org/oidc",
            "source": "https://example2.org/oidc"
            ...
          }
@@ -1023,8 +1033,8 @@ Use cases include, but are not limited to the following:
 In addition to any other policy restrictions that a Passport Clearinghouse
 may enforce, Passport Clearinghouses that provide access for a given
 duration provided by the user (excluding any revocation policies) MUST
-enforce one of the following algorithm options to ensure that claim expiry
-is accounted for:
+enforce one of the following algorithm options to ensure that Passport Visa
+expiry is accounted for:
 
 **Option A**: use the following algorithm to determine if the Passport Visa
 is valid for the entire duration of the requested duration:
@@ -1061,8 +1071,15 @@ Where:
     cycle or any larger propagation delay before access is revoked, which
     needs to be assessed based on the revocation model.
     
-    -   For example, if Claim Polling is performed once per hour, then
-        `accessTokenTTL` MAY be one hour.
+    -   For example, `accessTokenTTL` may be set to one hour, after which time
+        more access tokens may be minted using a corresponding refresh token if
+        it has not yet been revoked.
+
+**Expiry when using multiple Passport Visas**: if multiple Passport Visas are
+required as part of an access policy evaluation, then the expiry to be used MUST
+be the minimum expiry timestamp, as calculated by the appropriate option above,
+across all Passport Visas (`token` set) that were accepted as part of evaluating
+the access policy.
 
 ## Token Revocation
 
