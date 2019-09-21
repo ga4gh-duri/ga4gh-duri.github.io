@@ -53,6 +53,7 @@ objects and services defined in this specification fit together.**
     - [value](#value)
     - [source](#source)
     - [conditions](#conditions)
+      - [Pattern Matching](#pattern-matching)
     - [by](#by)
   - [URL Fields](#url-fields)
 - [**GA4GH Standard Passport Visa Type Definitions**](#ga4gh-standard-passport-visa-type-definitions)
@@ -620,7 +621,9 @@ GA4GH (or a body it elects).
     not implement full condition checking. However, even in this case it MUST
     still check for the presence of the `conditions` field on Passport Visa
     Objects and reject (ignore) any Passport Visas that contain a non-empty
-    `conditions` field value.
+    `conditions` field value. Likewise if not all condition matching algorithms
+    are implemented, it MUST reject any Passport Visas that contain patterns
+    that are not supported.
 
 -   Format:
 
@@ -667,8 +670,31 @@ GA4GH (or a body it elects).
         -   If prefix is "const", then suffix MUST use case sensitive full string
             matching.
 
-        -   If prefix is "glob", then suffix MUST use full string Glob pattern
-            matching.
+        -   If prefix is "pattern", then suffix MUST use full string [Pattern
+            Matching](#pattern-matching) to match input.
+
+        -   If prefix is "split_pattern", then the full suffix MUST use full
+            string [Pattern Matching](#pattern-matching) on each full
+            substring from splitting the cooresponding Passport Visa Object
+            field value that is being compared by the ";" character. If any one
+            full substring matches, then the Condition Clause field has found a
+            match.
+            
+            -   For example: a Condition Clause field value of
+                "split_pattern:123,https:%2F%2Fexample?.org" will match a Passport
+                Visa Object field value of
+                "001,https::%2F%2Fexample1.org;123,https::%2F%2Fexample2.org;456,https::%2F%2Fexample3.org"
+                because this comparison value will be split into:
+                ```
+                [
+                  "001,https::%2F%2Fexample1.org",
+                  "123,https::%2F%2Fexample2.org",
+                  "456,https::%2F%2Fexample3.org"
+                ]
+                ```
+                and the second entry in that list is a match using the Pattern
+                Matching definition with `123,https:%2F%2Fexample?.org` as the
+                pattern to use.
 
         -   If prefix is unknown or unsupported, then the Condition Clause must
             fail to match.
@@ -722,7 +748,7 @@ GA4GH (or a body it elects).
       [
         {
           "type": "AffiliationAndRole",
-          "value": "glob:faculty@*",
+          "value": "pattern:faculty@*",
           "source": "const:https://visas.elixir.org"
           "by": "const:system"
         }
@@ -756,6 +782,68 @@ GA4GH (or a body it elects).
         -   `source` = "https://visas.elixir.org"; AND
 
         -   `by` = "system"
+
+##### Pattern Matching
+
+-   MUST Use full string case-sensitive character pattern comparision.
+
+-   MUST support special meaning characters as the specification of patterns:
+
+    -   `?` : A `<question-mark>` is a pattern that SHALL match any single
+        character.
+    
+    -   `*` : An `<asterisk>` is a pattern that SHALL match multiple characters:
+    
+        -   Match any string, including the empty string and null string.
+        
+        -   Match the greatest possible number of characters that still allows
+            the remainder of the pattern to match the string.
+
+    -   `\` : A `<backslash>` character SHALL denote an escaped character where
+         the next character will be taken as an ordinary character without
+         any special pattern semantics. The `<backslash>` itself is then not
+         included in the pattern. Escaping can also be performed on the
+         `<backslash>` character itself. Examples: `\\` will include `\` in the
+         pattern, whereas `\?` will include `?` in the pattern as an ordinary
+         character instead of matching any single character. A trailing escape
+         character without a character that follows SHALL be treated as an
+         error and hence the pattern will not be able to match any input.
+
+    -   `[` : An `<open-bracket>` that contains a Bracket Character Set ("BCS")
+            pattern as set of characters. The substring contributing to a BCS 
+            is terminated by a corresponding unescaped `]` character
+            (`<close-bracket>`). A BCS is used to match a single character of
+            input. The substring between the `<open-bracket>` and
+            `<close-bracket>` SHALL contribute characters to the BCS as follows,
+            listed in priority order:
+            
+        -   `<backslash>` character SHALL escape the next character with the set
+            similarly to as described above outside the BCS. This escape
+            sequence will produce one ordinary character for inclusion in the
+            BCS.
+
+        -   If the first character is an unescaped `!` (`<not>`), then the BCS
+            match will reverse its logic to only match a single character of
+            input that is NOT in the BCS. This character is then not included in
+            the BCS and not treated as an ordinary character.
+
+        -   If the `-` (`<hyphen>`) character is present, then the previous
+            ordinary character (or ordinary character after being escaped) SHALL
+            denote the start of a character range and the next ordinary
+            character (or ordinary character after being escaped) SHALL denote
+            the end of a character range. All characters within this range SHALL
+            be included in the BCS. If there is no previous or next character,
+            then the `<hyphen>` character SHALL be interpreted as an ordinary
+            character and no range is specified.
+                
+            Example: `[a-f0-9\]z-]` will match one character of input to any of
+            the following characters: "abcdef0123456789]z-".
+
+        -   All other characters SHALL be added to the BCS verbatim.
+
+-   A method evaluating a pattern on a string of input SHALL return a true if
+    the input has found one or more possible ways to match or false if it does
+    not.
 
 #### "**by**"
 
