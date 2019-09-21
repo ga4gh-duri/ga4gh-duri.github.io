@@ -26,6 +26,7 @@ objects and services defined in this specification fit together.**
 ### Table of Contents
 
 - [**Conventions and Terminology**](#conventions-and-terminology)
+  - [GA4GH AAI Specification](#ga4gh-aai-specification)
   - [Objects and Tokens](#objects-and-tokens)
     - [Passport](#passport)
     - [Passport JWT Claim](#passport-jwt-claim)
@@ -74,6 +75,12 @@ objects and services defined in this specification fit together.**
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+
+#### GA4GH AAI Specification
+
+-   Refers to the [GA4GH Authentication and Authorization Infrastructure
+    (AAI) OpenID Connect Profile](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
+    specification.
 
 ### **Objects and Tokens**
 
@@ -226,8 +233,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 In Diagram 1, the objects and tokens that make up a [Passport](#passport)
 come together. Note that the [Passport JWT Claim](#passport-jwt-claim) is not
-encoded within the GA4GH access token. The contents of this claim are fetched
-separately from the Passport Broker by sending the access token to the
+encoded within the GA4GH Access Token. The contents of this JWT claim are
+fetched separately from the Passport Broker by sending the access token to the
 appropriate Passport Broker service endpoint (see the [GA4GH AAI
 Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
 for more details).
@@ -237,38 +244,41 @@ for more details).
 
 **Diagram 2: basic flow of data from Passport Visa Assertion Source to Passport Clearinghouse.**
 
-In Diagram 2, the general flow of Passport-related data from [Passport
-Visa Assertion Source](#passport-visa-assertion-source) organization to [Passport
-Clearinghouse](#passport-clearinghouse) service is shown at a high level. The
-colors used in Diagram 2 correspond to the colors of the data from Diagram 1 to
-give a sense of which services contributed the data. However, various elements
-within the [Passport Visa](#passport-visa) can be collected into standard form
-by either the [Passport Visa Assertion
+In Diagram 2, the general flow of Passport-related data from a [Passport
+Visa Assertion Source](#passport-visa-assertion-source) organization to a
+[Passport Clearinghouse](#passport-clearinghouse) service is shown at a high
+level. The colors used in Diagram 2 correspond to the colors of the data from
+[Diagram 1](#diagram-1) to give a sense of which services contributed the data.
+However, various elements within the [Passport Visa](#passport-visa) can be
+collected into standard form by either the [Passport Visa Assertion
 Repository](#passport-visa-assertion-repository) service or the
 [Passport Visa Issuer](#passport-visa-issuer) service depending on the
 protocols and procedures employed between these components.
 
-Implementations introduce clients, services, and procedures -- not shown in
-Diagram 2 -- to provide the mechanisms to move the data between the Passport
-Visa Assertion Source and the [Passport Broker](#passport-broker). This MAY be
-proprietary and is beyond the scope of this specification. The flow
-between these components (represented by black arrows) MAY not be direct or
-conversely services shown as being separate MAY be combined into one service.
-For example, some implementations MAY deploy one service that handles the
-responsiblities of both the Passport Visa Issuer and the Passport Broker.
+Implementations may introduce clients, additional services, and protocols --
+not detailed in Diagram 2 -- to provide the mechanisms to move the data between
+the Passport Visa Assertion Source and the [Passport Broker](#passport-broker).
+These mechanisms are unspecified by the scope of this specification except that
+they MUST adhere to security and privacy best practices, such as those outlined
+in the GA4GH AAI Specification, in their handling of user sessions, Passport
+assertions, tokens and related data. The flow between these components
+(represented by black arrows) MAY not be direct or conversely services shown as
+being separate MAY be combined into one service. For example, some
+implementations MAY deploy one service that handles the responsibilities of
+both the Passport Visa Issuer and the Passport Broker.
 
 However, the data protocols, procedures, and service functionality between
 the Passport Broker and the [Passport Clearinghouse](#passport-clearinghouse)
-(represented by a red arrow) MUST conform with the [GA4GH Authentication and
-Authorization Infrastructure (AAI) OpenID Connect Profile Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
-("GA4GH AAI Specification"). Other services, such as the Passport Visa
-Issuer also has conformance obligations within these same specifications even
-though the transport mechanisms as input and output may be proprietary.
+(represented by a red arrow) MUST conform with the GA4GH AAI Specification.
+Other services, such as the Passport Visa Issuer also has conformance
+obligations within these same specifications even though the detailed
+transport mechanisms as input and output may be unspecified.
 
-The Passport Visa Assertion Repository is the repository for the Passport Visa
-Assertion Source and typically does not store Passport Visas as signed tokens.
-Generally, Passport Visa Issuers use the repository content to mint Passport
-Visas on demand. Implementations MAY vary in this regard.
+The Passport Visa Assertion Repository service is the repository for the
+Passport Visa Assertion Source organization and typically does not store
+Passport Visas as signed tokens. Generally, Passport Visa Issuers use the
+repository content to mint Passport Visas on demand. Implementations MAY vary
+in this regard.
 
 ### General Requirements
 
