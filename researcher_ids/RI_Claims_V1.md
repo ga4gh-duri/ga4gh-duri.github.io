@@ -2,7 +2,7 @@
 
 # GA4GH Passport
 
-**Version**: 0.9.5 (FROZEN RFC)
+**Version**: 0.9.6 (FROZEN RFC)
 
 **Work Stream Name**: Data Use and Researcher Identity (DURI)
 
@@ -51,7 +51,7 @@ objects and services defined in this specification fit together.**
     - [asserted](#asserted)
     - [value](#value)
     - [source](#source)
-    - [condition](#condition)
+    - [conditions](#conditions)
     - [by](#by)
   - [URL Fields](#url-fields)
 - [**GA4GH Standard Passport Visa Type Definitions**](#ga4gh-standard-passport-visa-type-definitions)
@@ -341,12 +341,13 @@ Visas on demand. Implementations MAY vary in this regard.
     audit trail.
 
 9.  <a name="requirement-9"></a> A Passport Visa Object MAY
-    contain a "[condition](#condition)" field that restricts the Passport Visa
-    to only be valid when the condition is met.
+    contain the "[conditions](#conditions)" field to restrict the Passport Visa
+    to only be valid when the conditions are met.
 
     -   For example, an identity can have several affiliations and a
-        Passport Visa with type "ControlledAccessGrants" MAY be dependent on one
-        of them using the Condition field.
+        Passport Visa with type "ControlledAccessGrants" MAY establish a
+        dependency on one of them being present in the Passport by using the
+        `conditions` field.
 
 10. <a name="requirement-10"></a> Processing a Passport within a Passport
     Clearinghouse MUST abide by the following:
@@ -460,7 +461,7 @@ form when represented as JSON:
     "asserted": <seconds-since-epoch>,
     "value": "<value-string>",
     "source": "<source-URL>",
-    ["condition": {...},]
+    ["conditions": [...],]
     ["by": "<by-identifier>"]
   }
 }.<signature>
@@ -587,11 +588,11 @@ the GA4GH DURI committee.
         
         could represent one particular DAC within EGA.
 
-#### "**condition**"
+#### "**conditions**"
 
--   OPTIONAL. A condition on an [Passport Visa
+-   OPTIONAL. A set of conditions on an [Passport Visa
     Object](#passport-visa-object) indicates that the Passport Visa is
-    only valid if the clauses of the condition match other Passport Visas
+    only valid if the clauses of the conditions match other Passport Visas
     elsewhere in the [Passport](#passport) and such content is both valid
     (e.g. hasn’t expired; signature of embedded token has been verified against
     the public key; etc.) and if such content is accepted by the Passport
@@ -599,92 +600,152 @@ the GA4GH DURI committee.
     policy criteria that has been established, etc.).
 
 -   A Passport Clearinghouse MUST always check for the presence of
-    the `condition` field and if present it MUST only accept the Passport Visa
-    if it can confirm that the condition has been met.
+    the `conditions` field and if present it MUST only accept the Passport
+    Visa if it can confirm that the conditions have been met.
 
--   In the process of finding a matching Passport Visa for a condition, a
-    Passport Clearinghouse MUST ignore Passport Visa Objects that also have a
-    condition. This will avoid deep nesting of condition evaluation (i.e.
-    avoid condition loops, stack overflows, etc).
-
--   [Passport Visa Fields](#passport-visa-fields) that are not specified
-    in the condition are not required to match (i.e. any value will be accepted
-    within that field and optional fields need not be present).
+-   Although it is RECOMMENDED to always implement full condition checking
+    capabilities as described in this section, if a Claim Clearinghouse will be
+    deployed for a more limited purpose where it is not expected to ever receive
+    Passport Visas with conditions, then such a Claim Clearinghouse MAY choose to
+    not implement full condition checking. However, even in this case it MUST
+    still check for the presence of the `conditions` field on Passport Visa
+    Objects and reject (ignore) any Passport Visas that contain a non-empty
+    `conditions` field value.
 
 -   Format:
 
-```
-"condition": {
-  "<PassportVisaType1>" : {
-    "<FieldName1>": [
-      "<Value1a>",
-      "<Value1b>"
-    ],
-    "<FieldName2>": ["<Value2>"],
-    ...
-  },
-  "<PassportVisaType2>" : { ... }
-}
-```
+    ```
+    "conditions": [
+      [
+        { // Condition clause 1
+          "type": "<passport-visa-type>",
+          "<passport-visa-object-field1>": "<match-type>:<match-value>",
+          "<passport-visa-object-field2>": "<match-type>:<match-value>",
+          ...
+        }, // AND
+        { // Condition clause 2
+          ...
+        }
+      ], // OR
+      [
+        { // Condition clause 3
+          "type": "<passport-visa-type>",
+          "<passport-visa-object-field>": "<match-type>:<match-value>",
+          ...
+        }
+      ],
+      ...
+    ]
+    ```
 
--   Condition fields are restricted to only Passport Visa Field names
-    (e.g. "value", "source", etc.), except that it MUST NOT include "condition"
-    (i.e. a condition cannot be placed on another condition) and MUST NOT
-    contain a timestamp field such as "asserted".
+-   The `conditions` value is a two-nested-lists structure in Disjunctive
+    Normal Form:
+    
+    -   The outer level list is a set of OR clauses
+    
+    -   The inner level list is a set of AND clauses that contain "Condition
+        Clauses"
 
-    -   Note that the "source" in the condition is the expected source of the
-        condition’s claim name and value, and is not the source of the assertion
-        to which the condition is attached.
+    -   A Condition Clause MUST specify a "type" field with a value as a
+        Passport Visa Type plus it MUST include at least one other field with a
+        name that matches a valid Passport Visa Object field name.
+      
+    -   The values of Condition Clause fields MUST have a string prefix followed
+        by a colon and then string suffix, except for "type" where it MUST be
+        assumed to be "const" and is not specified.
+        
+        -   If prefix is "const", then suffix MUST use case sensitive full string
+            matching.
 
-    -   For example, "claimNameA.sourceA" asserts that "sourceA" is the
-        [Passport Visa Assertion Source](#passport-visa-assertion-source) of
-        "claimNameA" whereas "claimNameA.condition.claimNameB.sourceB" expects
-        that "claimNameB" exists elsewhere in the Passport and is provided by
-        "sourceB".
+        -   If prefix is "glob", then suffix MUST use full string Glob pattern
+            matching.
 
--   The Passport Clearinghouse MUST verify that for each condition Passport Visa
-    Type and each condition field present, a single corresponding [Passport Visa
-    Object](#passport-visa-object) and its corresponding
-    [fields](#passport-visa-fields) match as per the matching algorithms
-    described elsewhere in this specification, along with the following
-    requirements:
+        -   If prefix is unknown or unsupported, then the Condition Clause must
+            fail to match.
 
-    -   Checking the correctness of the condition MUST be performed first. For
-        example, the field name but be a valid choice.
+-   Condition Clause fields are restricted to only [Passport Visa Field
+    names](#passport-visa-fields) (e.g. `value`, `source`, etc.) with string value
+    definitions.
 
-    -   A condition field matches when any one string within the specified list
-        matches a corresponding claim’s field in the Passport.
+    -   It MUST NOT include `conditions` (i.e. a condition cannot be placed on
+        another condition)
 
-    -   All condition fields that are specified MUST match the same Passport
-        Visa Object in the Passport.
+    -   It MUST NOT contain a timestamp field such as `asserted`.
+
+-   The Passport Clearinghouse MUST verify that for each Condition Clause
+    present, there exists a valid single corresponding [Passport Visa
+    Object](#passport-visa-object) such that:
+
+    -   Checking the correctness of the Condition Clause MUST be performed first.
+        For example, a `type` field MUST be present.
+
+    -   Ignore Passport Visa Objects that have the `conditions` field present.
+        This will avoid deep nesting of condition evaluation (i.e. avoid condition
+        loops, stack overflows, etc).
+
+    -   A Condition Clause field matches when the `<match-type>` algorthm
+        matches a corresponding Passport Visa Object’s field in the Passport.
+
+    -   [Passport Visa Fields](#passport-visa-fields) that are not specified
+        in the Condition Clause are not required to match (i.e. any value will be
+        accepted within that field, including if the field is not present in the
+        Passport Visa Object).
+
+    -   All Condition Clause fields that are specified within one Condition
+        Clause MUST match the same Passport Visa Object in the Passport.
 
 -   Non-normative example:
 
     ```
-    "condition": {
-      "AffiliationAndRole": {
-        "value": [
-          "faculty@uni-heidelberg.de",
-          "student@uni-heidelberg.de"
-        ],
-        "by": [
-          "so",
-          "system"
-        ]
-      }
-    }
+    "conditions": [
+      [
+        {
+          "type": "AffiliationAndRole",
+          "value": "const:faculty@uni-heidelberg.de",
+          "by": "const:so"
+        }, // AND
+        {
+          "type": "ResearcherStatus",
+          "value": "const:https://doi.org/10.1038/s41431-018-0219-y",
+        }
+      ], // OR
+      [
+        {
+          "type": "AffiliationAndRole",
+          "value": "glob:faculty@*",
+          "source": "const:https://visas.elixir.org"
+          "by": "const:system"
+        }
+      ]
+    ]
     ```
 
     Would match a corresponding AffiliationAndRole claim within the same
     Passport Visa Object that has **any** of the following:
 
-    -   `value` = "faculty\@uni-heidelberg.de" AND `by` = "so"
+    -   On "Passport Visa match 1":
+    
+        -   `type` = "AffilationAndRole"; AND
 
-    -   `value` = "faculty\@uni-heidelberg.de" AND `by` = "system"
+        -   `value` = "faculty\@uni-heidelberg.de"; AND
 
-    -   `value` = "student\@uni-heidelberg.de" AND `by` = "so"
+        -   `by` = "so"
+        
+        AND on any other Passport Visa as well as checking "Passport Visa match 1":
+        
+        -   `type` = "ResearcherStatus"; AND
 
-    -   `value` = "student\@uni-heidelberg.de" AND `by` = "system"
+        -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
+
+    -   OR, alternative acceptance is matching just one Passport Visa:
+
+        -   `type` = "AffilationAndRole"; AND
+
+        -   `value` starts with "faculty\@"; AND
+
+        -   `source` = "https://visas.elixir.org"; AND
+
+        -   `by` = "system"
 
 #### "**by**"
 
@@ -847,9 +908,7 @@ Types](#custom-passport-visa-types).
 
 -   The `source` field contains the access grantee organization.
 
--   MUST include "[by](#by)" field.
-
--   This claim MAY include a "[condition](#condition)" field.
+-   MUST include the "[by](#by)" field.
 
 ### LinkedIdentities
 
@@ -1017,15 +1076,15 @@ Use cases include, but are not limited to the following:
         [ControlledAccessGrants](#controlledaccessgrants) for
         permissions associated with specific data or datasets.
         
-    -   MAY utilize the [condition](#condition) field on
+    -   MAY utilize the [conditions](#conditions) field on
         "ControlledAccessGrants" to cause such a grant to require
         a Passport Visa from a trusted Passport Visa Assertion Source to
         assert that the identity has a role within a specific organization.
         This can be achieved by using the
         [AffiliationAndRole](#affiliationandrole) Passport Visa Type on
-        the `condition`.
+        the `conditions`.
 
-    -   MAY utilize any other valid Passport Visa Type or `condition` fields
+    -   MAY utilize any other valid Passport Visa Type or `conditions` field
         that may be required to meet controlled access policies.
 
 ## Passport Visa Expiry
@@ -1120,16 +1179,16 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
     National Cancer Institute for datasets 710 and approval for dataset 432 for
     a dataset from EGA.
 
-    -   In this example, assume dataset 710 does not have a
-        "[condition](#condition)" based on the
+    -   In this example, assume dataset 710 does not have any
+        "[conditions](#conditions)" based on the
         AffiliationAndRole because the system that is asserting the claim has an
         out of band process to check the researcher’s affiliation and role and
         withdraw the dataset 710 claim automatically, hence it does not need the
-        condition to accomplish this.
+        `conditions` field to accomplish this.
 
     -   In this example, assume that dataset 432 does not use an out of band
         mechanism to check affiliation and role, so it makes use of the
-        "[condition](#condition)" field mechanism to
+        "[conditions](#conditions)" field mechanism to
         enforce the affiliation and role. The dataset 432 claim is only valid if
         accompanied with a valid AffiliationAndRole claim for
         "faculty\@med.stanford.edu".
@@ -1194,16 +1253,24 @@ reader-friendly.
             "value": "https://ega-archive.org/datasets/00000432",
             "source": "https://grid.ac/institutes/grid.225360.0",
             "by": "dac"
-            "condition": {
-                "AffiliationAndRole" : {
-                    "value": ["faculty@med.stanford.edu"],
-                    "source": ["https://grid.ac/institutes/grid.240952.8"],
-                    "by": [
-                        "so",
-                        "system"
-                    ]
-                }
-            },
+            "conditions": [
+                [
+                    {
+                        "type": "AffiliationAndRole",
+                        "value": "faculty@med.stanford.edu",
+                        "source": "https://grid.ac/institutes/grid.240952.8",
+                        "by": "so"
+                    }
+                ],
+                [
+                    {
+                        "type": "AffiliationAndRole",
+                        "value": "faculty@med.stanford.edu",
+                        "source": "https://grid.ac/institutes/grid.240952.8",
+                        "by": "system"
+                    }
+                ]
+            ],
         }
     },
     {
@@ -1255,6 +1322,7 @@ reader-friendly.
 
 | Version | Date       | Editor                             | Notes                                                         |
 |---------|------------|------------------------------------|---------------------------------------------------------------|
+| 0.9.6   | 2019-09-20 | Craig Voisin                       | New conditions field format                                   |
 | 0.9.5   | 2019-08-26 | Craig Voisin                       | Embedded Tokens, LinkedIdentities, overview, new definitions  |
 | 0.9.4   | 2019-08-12 | Craig Voisin                       | Introduce custom claim names, changes for "no organization"   |
 | 0.9.3   | 2019-08-09 | Craig Voisin                       | Updates related to introducing Embedded Passport Tokens       |
