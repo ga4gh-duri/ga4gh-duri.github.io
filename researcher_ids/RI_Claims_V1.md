@@ -115,7 +115,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport Visa
 
--   An attestation or access assertion from a [Passport Visa Assertion
+-   An assertion from a [Passport Visa Assertion
     Source](#passport-visa-assertion-source) organization that is bound to
     a [Passport Visa Identity](#passport-visa-identity) and signed by a
     [Passport Visa Issuer](#passport-visa-issuer) service whose
