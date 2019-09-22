@@ -545,9 +545,9 @@ GA4GH (or a body it elects).
 
 -   For example, `value` =
     "<https://doi.org/10.1038/s41431-018-0219-y>" when `type` =
-    "ResearcherStatus" represents the Registered Access Bona Fide researcher
-    status. Note that Registered Access requires more than one claim as outlined
-    in the [Registered Access](#registered-access) section.
+    "ResearcherStatus" represents a version of Registered Access Bona Fide
+    researcher status. Note that Registered Access requires more than one claim as
+    outlined in the [Registered Access](#registered-access) section.
 
 -   For the purposes of enforcing its policies for access, a Passport
     Clearinghouse evaluating the `value` field MUST:
@@ -970,9 +970,9 @@ Types](#custom-passport-visa-types).
     describe the terms and policies.
 
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
-    acknowledges ethics compliance for [Registered Access](#registered-access).
-    Note that more claims are needed to meet the requirements for Registered
-    Access status.
+    acknowledges ethics compliance for a particular version of [Registered
+    Access](#registered-access). Note that more claims are needed to meet the
+    requirements for Registered Access status.
 
 -   MUST include the "[by](#by)" field.
 
@@ -989,8 +989,8 @@ Types](#custom-passport-visa-types).
     process that has been followed and the qualifications this person has met.
 
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
-    acknowledges the registration process as needed for
-    [Registered Access](#registered-access) Bona Fide researcher
+    acknowledges a particular version of the registration process as needed
+    for [Registered Access](#registered-access) Bona Fide researcher
     status. Note that more claims are needed to meet the requirements for
     Registered Access status.
 
@@ -1135,21 +1135,27 @@ Use cases include, but are not limited to the following:
 
 ### Registered Access
 
--   To meet the requirements of
-    [Registered Access](https://doi.org/10.1038/s41431-018-0219-y) to
-    data, a user needs to have **all** of the following Passport Visas:
+-   To meet the requirements of Registered Access to data as defined by
+    publication <https://doi.org/10.1038/s41431-018-0219-y> as a specific
+    version of Registered Access, a user needs to have **all** of the following
+    Passport Visas:
 
-    -   Meeting the ethics requirements is represented by:
+    1.  Meeting the ethics requirements is represented by:
     
         -   `type` = "AcceptedTermsAndPolicies"; and
         
         -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
 
-    -   Meeting the bona fide status is represented by:
+    2.  Meeting the bona fide status is represented by:
     
         -   `type` = "ResearcherStatus"; and
         
         -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
+
+-   If other versions of Registered Access are introduced, then the `value`
+    fields for AcceptedTermsAndPolicies as well as ResearcherStatus MAY
+    refer to the document or publication or sections thereof to act as the
+    permanent identifiers for such versions of Registered Access.
 
 -   The [Passport Clearinghouse](#passport-clearinghouse) (e.g. to
     authorize a registered access beacon) needs to evaluate the
