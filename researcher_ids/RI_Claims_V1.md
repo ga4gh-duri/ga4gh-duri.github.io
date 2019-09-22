@@ -592,7 +592,9 @@ GA4GH (or a body it elects).
         
         `source` = "https://www.ebi.ac.uk/ega/dacs/EGAC00000000001"
         
-        could represent one particular DAC within EGA.
+        could represent one particular logical "DAC" organization as referred
+        to by the EBI organization, and could be maintained by the EBI as a
+        permanent identitifer for this DAC.
 
 #### "**conditions**"
 
