@@ -439,11 +439,6 @@ Claim](#example-passport-jwt-claim) section of the specification.
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
     requirements for Embedded Tokens in their use of Passport Visas.
     
--   Clients MUST conform to the [Client/Application
-    Conformance](https://github.com/cdvoisin/data-security/blob/master/AAI/AAIConnectProfile.md#clientapplication-conformance)
-    of the GA4GH AAI Specification for integrating with GA4GH Passport
-    services.
-
 -   Validation, as outlined elsewhere in this specification and the
     GA4GH AAI Specification, MUST be performed before Passport Visas are
     used for identity or authorization.
