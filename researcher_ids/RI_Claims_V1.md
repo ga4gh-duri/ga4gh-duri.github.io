@@ -261,7 +261,7 @@ not detailed in Diagram 2 -- to provide the mechanisms to move the data between
 the Passport Visa Assertion Source and the [Passport Broker](#passport-broker).
 These mechanisms are unspecified by the scope of this specification except that
 they MUST adhere to security and privacy best practices, such as those outlined
-in the GA4GH AAI Specification, in their handling of user sessions, Passport
+in the GA4GH AAI Specification, in their handling of protocols, Passport
 assertions, tokens and related data. The flow between these components
 (represented by black arrows) MAY not be direct or conversely services shown as
 being separate MAY be combined into one service. For example, some
@@ -675,7 +675,11 @@ GA4GH (or a body it elects).
             substring from splitting the cooresponding Passport Visa Object
             field value that is being compared by the ";" character. If any one
             full substring matches, then the Condition Clause field has found a
-            match.
+            match. "split_pattern" SHOULD only be used on fields where the
+            Passport Visa Type has been specified in a format that makes splitting
+            on this character to be reliable, such as URI-encoded substrings with
+            semicolon separators (see [LinkedIdentities](#linkedidentities) as an
+            example).
             
             -   For example: a Condition Clause field value of
                 "split_pattern:123,https:%2F%2Fexample?.org" will match a Passport
@@ -716,7 +720,7 @@ GA4GH (or a body it elects).
         This will avoid deep nesting of condition evaluation (i.e. avoid condition
         loops, stack overflows, etc).
 
-    -   A Condition Clause field matches when the `<match-type>` algorthm
+    -   A Condition Clause field matches when the `<match-type>` algorithm
         matches a corresponding Passport Visa Object’s field in the Passport.
 
     -   [Passport Visa Fields](#passport-visa-fields) that are not specified
@@ -782,7 +786,7 @@ GA4GH (or a body it elects).
 
 ##### Pattern Matching
 
--   MUST Use full string case-sensitive character pattern comparision.
+-   MUST Use full string case-sensitive character pattern comparison.
 
 -   MUST support special meaning characters as the specification of patterns:
 
@@ -1352,8 +1356,8 @@ reader-friendly.
         "ga4gh_visa_v1": {
             "type": "ControlledAccessGrants",
             "asserted": 1549640000,
-            "value": "https://ega-archive.org/datasets/00000432",
-            "source": "https://grid.ac/institutes/grid.225360.0",
+            "value": "https://ega-archive.org/datasets/EGAD00000000432",
+            "source": "https://ega-archive.org/dacs/EGAC00001000205",
             "by": "dac"
             "conditions": [
                 [
