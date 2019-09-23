@@ -2,7 +2,7 @@
 
 # GA4GH Passport
 
-**Version**: 0.9.5 (FROZEN RFC)
+**Version**: 0.9.6 (FROZEN RFC)
 
 **Work Stream Name**: Data Use and Researcher Identity (DURI)
 
@@ -26,6 +26,7 @@ objects and services defined in this specification fit together.**
 ### Table of Contents
 
 - [**Conventions and Terminology**](#conventions-and-terminology)
+  - [GA4GH AAI Specification](#ga4gh-aai-specification)
   - [Objects and Tokens](#objects-and-tokens)
     - [Passport](#passport)
     - [Passport JWT Claim](#passport-jwt-claim)
@@ -51,7 +52,8 @@ objects and services defined in this specification fit together.**
     - [asserted](#asserted)
     - [value](#value)
     - [source](#source)
-    - [condition](#condition)
+    - [conditions](#conditions)
+      - [Pattern Matching](#pattern-matching)
     - [by](#by)
   - [URL Fields](#url-fields)
 - [**GA4GH Standard Passport Visa Type Definitions**](#ga4gh-standard-passport-visa-type-definitions)
@@ -74,6 +76,12 @@ objects and services defined in this specification fit together.**
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+
+#### GA4GH AAI Specification
+
+-   Refers to the [GA4GH Authentication and Authorization Infrastructure
+    (AAI) OpenID Connect Profile](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
+    specification.
 
 ### **Objects and Tokens**
 
@@ -107,7 +115,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport Visa
 
--   An attestation or access assertion from a [Passport Visa Assertion
+-   An assertion from a [Passport Visa Assertion
     Source](#passport-visa-assertion-source) organization that is bound to
     a [Passport Visa Identity](#passport-visa-identity) and signed by a
     [Passport Visa Issuer](#passport-visa-issuer) service whose
@@ -226,8 +234,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 In Diagram 1, the objects and tokens that make up a [Passport](#passport)
 come together. Note that the [Passport JWT Claim](#passport-jwt-claim) is not
-encoded within the GA4GH access token. The contents of this claim are fetched
-separately from the Passport Broker by sending the access token to the
+encoded within the GA4GH Access Token. The contents of this JWT claim are
+fetched separately from the Passport Broker by sending the access token to the
 appropriate Passport Broker service endpoint (see the [GA4GH AAI
 Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
 for more details).
@@ -237,38 +245,41 @@ for more details).
 
 **Diagram 2: basic flow of data from Passport Visa Assertion Source to Passport Clearinghouse.**
 
-In Diagram 2, the general flow of Passport-related data from [Passport
-Visa Assertion Source](#passport-visa-assertion-source) organization to [Passport
-Clearinghouse](#passport-clearinghouse) service is shown at a high level. The
-colors used in Diagram 2 correspond to the colors of the data from Diagram 1 to
-give a sense of which services contributed the data. However, various elements
-within the [Passport Visa](#passport-visa) can be collected into standard form
-by either the [Passport Visa Assertion
+In Diagram 2, the general flow of Passport-related data from a [Passport
+Visa Assertion Source](#passport-visa-assertion-source) organization to a
+[Passport Clearinghouse](#passport-clearinghouse) service is shown at a high
+level. The colors used in Diagram 2 correspond to the colors of the data from
+[Diagram 1](#diagram-1) to give a sense of which services contributed the data.
+However, various elements within the [Passport Visa](#passport-visa) can be
+collected into standard form by either the [Passport Visa Assertion
 Repository](#passport-visa-assertion-repository) service or the
 [Passport Visa Issuer](#passport-visa-issuer) service depending on the
 protocols and procedures employed between these components.
 
-Implementations introduce clients, services, and procedures -- not shown in
-Diagram 2 -- to provide the mechanisms to move the data between the Passport
-Visa Assertion Source and the [Passport Broker](#passport-broker). This MAY be
-proprietary and is beyond the scope of this specification. The flow
-between these components (represented by black arrows) MAY not be direct or
-conversely services shown as being separate MAY be combined into one service.
-For example, some implementations MAY deploy one service that handles the
-responsiblities of both the Passport Visa Issuer and the Passport Broker.
+Implementations may introduce clients, additional services, and protocols --
+not detailed in Diagram 2 -- to provide the mechanisms to move the data between
+the Passport Visa Assertion Source and the [Passport Broker](#passport-broker).
+These mechanisms are unspecified by the scope of this specification except that
+they MUST adhere to security and privacy best practices, such as those outlined
+in the GA4GH AAI Specification, in their handling of protocols, Passport
+assertions, tokens and related data. The flow between these components
+(represented by black arrows) MAY not be direct or conversely services shown as
+being separate MAY be combined into one service. For example, some
+implementations MAY deploy one service that handles the responsibilities of
+both the Passport Visa Issuer and the Passport Broker.
 
 However, the data protocols, procedures, and service functionality between
 the Passport Broker and the [Passport Clearinghouse](#passport-clearinghouse)
-(represented by a red arrow) MUST conform with the [GA4GH Authentication and
-Authorization Infrastructure (AAI) OpenID Connect Profile Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
-("GA4GH AAI Specification"). Other services, such as the Passport Visa
-Issuer also has conformance obligations within these same specifications even
-though the transport mechanisms as input and output may be proprietary.
+(represented by a red arrow) MUST conform with the GA4GH AAI Specification.
+Other services, such as the Passport Visa Issuer also has conformance
+obligations within these same specifications even though the detailed
+transport mechanisms as input and output may be unspecified.
 
-The Passport Visa Assertion Repository is the repository for the Passport Visa
-Assertion Source and typically does not store Passport Visas as signed tokens.
-Generally, Passport Visa Issuers use the repository content to mint Passport
-Visas on demand. Implementations MAY vary in this regard.
+The Passport Visa Assertion Repository service is the repository for the
+Passport Visa Assertion Source organization and typically does not store
+Passport Visas as signed tokens. Generally, Passport Visa Issuers use the
+repository content to mint Passport Visas on demand. Implementations MAY vary
+in this regard.
 
 ### General Requirements
 
@@ -341,12 +352,13 @@ Visas on demand. Implementations MAY vary in this regard.
     audit trail.
 
 9.  <a name="requirement-9"></a> A Passport Visa Object MAY
-    contain a "[condition](#condition)" field that restricts the Passport Visa
-    to only be valid when the condition is met.
+    contain the "[conditions](#conditions)" field to restrict the Passport Visa
+    to only be valid when the conditions are met.
 
     -   For example, an identity can have several affiliations and a
-        Passport Visa with type "ControlledAccessGrants" MAY be dependent on one
-        of them using the Condition field.
+        Passport Visa with type "ControlledAccessGrants" MAY establish a
+        dependency on one of them being present in the Passport by using the
+        `conditions` field.
 
 10. <a name="requirement-10"></a> Processing a Passport within a Passport
     Clearinghouse MUST abide by the following:
@@ -427,11 +439,6 @@ Claim](#example-passport-jwt-claim) section of the specification.
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
     requirements for Embedded Tokens in their use of Passport Visas.
     
--   Clients MUST conform to the [Client/Application
-    Conformance](https://github.com/cdvoisin/data-security/blob/master/AAI/AAIConnectProfile.md#clientapplication-conformance)
-    of the GA4GH AAI Specification for integrating with GA4GH Passport
-    services.
-
 -   Validation, as outlined elsewhere in this specification and the
     GA4GH AAI Specification, MUST be performed before Passport Visas are
     used for identity or authorization.
@@ -460,7 +467,7 @@ form when represented as JSON:
     "asserted": <seconds-since-epoch>,
     "value": "<value-string>",
     "source": "<source-URL>",
-    ["condition": {...},]
+    ["conditions": [...],]
     ["by": "<by-identifier>"]
   }
 }.<signature>
@@ -499,7 +506,7 @@ Although standard fields within a [Passport Visa Object](#passport-visa-object)
 are defined in this section, other fields MAY exist within the object
 and should be ignored by any Passport Clearinghouse that is not familiar
 with the use of such fields. Field names are reserved for definition by
-the GA4GH DURI committee.
+GA4GH (or a body it elects).
 
 #### "**type**"
 
@@ -538,9 +545,9 @@ the GA4GH DURI committee.
 
 -   For example, `value` =
     "<https://doi.org/10.1038/s41431-018-0219-y>" when `type` =
-    "ResearcherStatus" represents the Registered Access Bona Fide researcher
-    status. Note that Registered Access requires more than one claim as outlined
-    in the [Registered Access](#registered-access) section.
+    "ResearcherStatus" represents a version of Registered Access Bona Fide
+    researcher status. Note that Registered Access requires more than one claim as
+    outlined in the [Registered Access](#registered-access) section.
 
 -   For the purposes of enforcing its policies for access, a Passport
     Clearinghouse evaluating the `value` field MUST:
@@ -585,13 +592,15 @@ the GA4GH DURI committee.
         
         `source` = "https://www.ebi.ac.uk/ega/dacs/EGAC00000000001"
         
-        could represent one particular DAC within EGA.
+        could represent one particular logical "DAC" organization as referred
+        to by the EBI organization, and could be maintained by the EBI as a
+        permanent identitifer for this DAC.
 
-#### "**condition**"
+#### "**conditions**"
 
--   OPTIONAL. A condition on an [Passport Visa
+-   OPTIONAL. A set of conditions on an [Passport Visa
     Object](#passport-visa-object) indicates that the Passport Visa is
-    only valid if the clauses of the condition match other Passport Visas
+    only valid if the clauses of the conditions match other Passport Visas
     elsewhere in the [Passport](#passport) and such content is both valid
     (e.g. hasn’t expired; signature of embedded token has been verified against
     the public key; etc.) and if such content is accepted by the Passport
@@ -599,92 +608,243 @@ the GA4GH DURI committee.
     policy criteria that has been established, etc.).
 
 -   A Passport Clearinghouse MUST always check for the presence of
-    the `condition` field and if present it MUST only accept the Passport Visa
-    if it can confirm that the condition has been met.
+    the `conditions` field and if present it MUST only accept the Passport
+    Visa if it can confirm that the conditions have been met.
 
--   In the process of finding a matching Passport Visa for a condition, a
-    Passport Clearinghouse MUST ignore Passport Visa Objects that also have a
-    condition. This will avoid deep nesting of condition evaluation (i.e.
-    avoid condition loops, stack overflows, etc).
-
--   [Passport Visa Fields](#passport-visa-fields) that are not specified
-    in the condition are not required to match (i.e. any value will be accepted
-    within that field and optional fields need not be present).
+-   Although it is RECOMMENDED to always implement full condition checking
+    capabilities as described in this section, if a Claim Clearinghouse will be
+    deployed for a more limited purpose where it is not expected to ever receive
+    Passport Visas with conditions, then such a Claim Clearinghouse MAY choose to
+    not implement full condition checking. However, even in this case it MUST
+    still check for the presence of the `conditions` field on Passport Visa
+    Objects and reject (ignore) any Passport Visas that contain a non-empty
+    `conditions` field value. Likewise if not all condition matching algorithms
+    are implemented, it MUST reject any Passport Visas that contain patterns
+    that are not supported.
 
 -   Format:
 
-```
-"condition": {
-  "<PassportVisaType1>" : {
-    "<FieldName1>": [
-      "<Value1a>",
-      "<Value1b>"
-    ],
-    "<FieldName2>": ["<Value2>"],
-    ...
-  },
-  "<PassportVisaType2>" : { ... }
-}
-```
+    ```
+    "conditions": [
+      [
+        { // Condition clause 1
+          "type": "<passport-visa-type>",
+          "<passport-visa-object-field1>": "<match-type>:<match-value>",
+          "<passport-visa-object-field2>": "<match-type>:<match-value>",
+          ...
+        }, // AND
+        { // Condition clause 2
+          ...
+        }
+      ], // OR
+      [
+        { // Condition clause 3
+          "type": "<passport-visa-type>",
+          "<passport-visa-object-field>": "<match-type>:<match-value>",
+          ...
+        }
+      ],
+      ...
+    ]
+    ```
 
--   Condition fields are restricted to only Passport Visa Field names
-    (e.g. "value", "source", etc.), except that it MUST NOT include "condition"
-    (i.e. a condition cannot be placed on another condition) and MUST NOT
-    contain a timestamp field such as "asserted".
+-   The `conditions` value is a two-nested-lists structure in Disjunctive
+    Normal Form:
+    
+    -   The outer level list is a set of OR clauses
+    
+    -   The inner level list is a set of AND clauses that contain "Condition
+        Clauses"
 
-    -   Note that the "source" in the condition is the expected source of the
-        condition’s claim name and value, and is not the source of the assertion
-        to which the condition is attached.
+    -   A Condition Clause MUST specify a "type" field with a value as a
+        Passport Visa Type plus it MUST include at least one other field with a
+        name that matches a valid Passport Visa Object field name.
+      
+    -   The values of Condition Clause fields MUST have a string prefix followed
+        by a colon and then string suffix, except for "type" where it MUST be
+        assumed to be "const" and is not specified.
+        
+        -   If prefix is "const", then suffix MUST use case sensitive full string
+            matching.
 
-    -   For example, "claimNameA.sourceA" asserts that "sourceA" is the
-        [Passport Visa Assertion Source](#passport-visa-assertion-source) of
-        "claimNameA" whereas "claimNameA.condition.claimNameB.sourceB" expects
-        that "claimNameB" exists elsewhere in the Passport and is provided by
-        "sourceB".
+        -   If prefix is "pattern", then suffix MUST use full string [Pattern
+            Matching](#pattern-matching) to match input.
 
--   The Passport Clearinghouse MUST verify that for each condition Passport Visa
-    Type and each condition field present, a single corresponding [Passport Visa
-    Object](#passport-visa-object) and its corresponding
-    [fields](#passport-visa-fields) match as per the matching algorithms
-    described elsewhere in this specification, along with the following
-    requirements:
+        -   If prefix is "split_pattern", then the full suffix MUST use full
+            string [Pattern Matching](#pattern-matching) on each full
+            substring from splitting the cooresponding Passport Visa Object
+            field value that is being compared by the ";" character. If any one
+            full substring matches, then the Condition Clause field has found a
+            match. "split_pattern" SHOULD only be used on fields where the
+            Passport Visa Type has been specified in a format that makes splitting
+            on this character to be reliable, such as URI-encoded substrings with
+            semicolon separators (see [LinkedIdentities](#linkedidentities) as an
+            example).
+            
+            -   For example: a Condition Clause field value of
+                "split_pattern:123,https:%2F%2Fexample?.org" will match a Passport
+                Visa Object field value of
+                "001,https::%2F%2Fexample1.org;123,https::%2F%2Fexample2.org;456,https::%2F%2Fexample3.org"
+                because this comparison value will be split into:
+                ```
+                [
+                  "001,https::%2F%2Fexample1.org",
+                  "123,https::%2F%2Fexample2.org",
+                  "456,https::%2F%2Fexample3.org"
+                ]
+                ```
+                and the second entry in that list is a match using the Pattern
+                Matching definition with `123,https:%2F%2Fexample?.org` as the
+                pattern to use.
 
-    -   Checking the correctness of the condition MUST be performed first. For
-        example, the field name but be a valid choice.
+        -   If prefix is unknown or unsupported, then the Condition Clause must
+            fail to match.
 
-    -   A condition field matches when any one string within the specified list
-        matches a corresponding claim’s field in the Passport.
+-   Condition Clause fields are restricted to only [Passport Visa Field
+    names](#passport-visa-fields) (e.g. `value`, `source`, etc.) with string value
+    definitions.
 
-    -   All condition fields that are specified MUST match the same Passport
-        Visa Object in the Passport.
+    -   It MUST NOT include `conditions` (i.e. a condition cannot be placed on
+        another condition)
+
+    -   It MUST NOT contain a timestamp field such as `asserted`.
+
+-   The Passport Clearinghouse MUST verify that for each Condition Clause
+    present, there exists a valid single corresponding [Passport Visa
+    Object](#passport-visa-object) such that:
+
+    -   Checking the correctness of the Condition Clause MUST be performed first.
+        For example, a `type` field MUST be present.
+
+    -   Ignore Passport Visa Objects that have the `conditions` field present.
+        This will avoid deep nesting of condition evaluation (i.e. avoid condition
+        loops, stack overflows, etc).
+
+    -   A Condition Clause field matches when the `<match-type>` algorithm
+        matches a corresponding Passport Visa Object’s field in the Passport.
+
+    -   [Passport Visa Fields](#passport-visa-fields) that are not specified
+        in the Condition Clause are not required to match (i.e. any value will be
+        accepted within that field, including if the field is not present in the
+        Passport Visa Object).
+
+    -   All Condition Clause fields that are specified within one Condition
+        Clause MUST match the same Passport Visa Object in the Passport.
 
 -   Non-normative example:
 
     ```
-    "condition": {
-      "AffiliationAndRole": {
-        "value": [
-          "faculty@uni-heidelberg.de",
-          "student@uni-heidelberg.de"
-        ],
-        "by": [
-          "so",
-          "system"
-        ]
-      }
-    }
+    "conditions": [
+      [
+        {
+          "type": "AffiliationAndRole",
+          "value": "const:faculty@uni-heidelberg.de",
+          "by": "const:so"
+        }, // AND
+        {
+          "type": "ResearcherStatus",
+          "value": "const:https://doi.org/10.1038/s41431-018-0219-y",
+        }
+      ], // OR
+      [
+        {
+          "type": "AffiliationAndRole",
+          "value": "pattern:faculty@*",
+          "source": "const:https://visas.elixir.org"
+          "by": "const:system"
+        }
+      ]
+    ]
     ```
 
     Would match a corresponding AffiliationAndRole claim within the same
     Passport Visa Object that has **any** of the following:
 
-    -   `value` = "faculty\@uni-heidelberg.de" AND `by` = "so"
+    -   On "Passport Visa match 1":
+    
+        -   `type` = "AffilationAndRole"; AND
 
-    -   `value` = "faculty\@uni-heidelberg.de" AND `by` = "system"
+        -   `value` = "faculty\@uni-heidelberg.de"; AND
 
-    -   `value` = "student\@uni-heidelberg.de" AND `by` = "so"
+        -   `by` = "so"
+        
+        AND on any other Passport Visa as well as checking "Passport Visa match 1":
+        
+        -   `type` = "ResearcherStatus"; AND
 
-    -   `value` = "student\@uni-heidelberg.de" AND `by` = "system"
+        -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
+
+    -   OR, alternative acceptance is matching just one Passport Visa:
+
+        -   `type` = "AffilationAndRole"; AND
+
+        -   `value` starts with "faculty\@"; AND
+
+        -   `source` = "https://visas.elixir.org"; AND
+
+        -   `by` = "system"
+
+##### Pattern Matching
+
+-   MUST Use full string case-sensitive character pattern comparison.
+
+-   MUST support special meaning characters as the specification of patterns:
+
+    -   `?` : A `<question-mark>` is a pattern that SHALL match any single
+        character.
+    
+    -   `*` : An `<asterisk>` is a pattern that SHALL match multiple characters:
+    
+        -   Match any string, including the empty string and null string.
+        
+        -   Match the greatest possible number of characters that still allows
+            the remainder of the pattern to match the string.
+
+    -   `\` : A `<backslash>` character SHALL denote an escaped character where
+         the next character will be taken as an ordinary character without
+         any special pattern semantics. The `<backslash>` itself is then not
+         included in the pattern. Escaping can also be performed on the
+         `<backslash>` character itself. Examples: `\\` will include `\` in the
+         pattern, whereas `\?` will include `?` in the pattern as an ordinary
+         character instead of matching any single character. A trailing escape
+         character without a character that follows SHALL be treated as an
+         error and hence the pattern will not be able to match any input.
+
+    -   `[` : An `<open-bracket>` that contains a Bracket Character Set ("BCS")
+            pattern as set of characters. The substring contributing to a BCS 
+            is terminated by a corresponding unescaped `]` character
+            (`<close-bracket>`). A BCS is used to match a single character of
+            input. The substring between the `<open-bracket>` and
+            `<close-bracket>` SHALL contribute characters to the BCS as follows,
+            listed in priority order:
+            
+        -   `<backslash>` character SHALL escape the next character with the set
+            similarly to as described above outside the BCS. This escape
+            sequence will produce one ordinary character for inclusion in the
+            BCS.
+
+        -   If the first character is an unescaped `!` (`<not>`), then the BCS
+            match will reverse its logic to only match a single character of
+            input that is NOT in the BCS. This character is then not included in
+            the BCS and not treated as an ordinary character.
+
+        -   If the `-` (`<hyphen>`) character is present, then the previous
+            ordinary character (or ordinary character after being escaped) SHALL
+            denote the start of a character range and the next ordinary
+            character (or ordinary character after being escaped) SHALL denote
+            the end of a character range. All characters within this range SHALL
+            be included in the BCS. If there is no previous or next character,
+            then the `<hyphen>` character SHALL be interpreted as an ordinary
+            character and no range is specified.
+                
+            Example: `[a-f0-9\]z-]` will match one character of input to any of
+            the following characters: "abcdef0123456789]z-".
+
+        -   All other characters SHALL be added to the BCS verbatim.
+
+-   A method evaluating a pattern on a string of input SHALL return a true if
+    the input has found one or more possible ways to match or false if it does
+    not.
 
 #### "**by**"
 
@@ -814,9 +974,9 @@ Types](#custom-passport-visa-types).
     describe the terms and policies.
 
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
-    acknowledges ethics compliance for [Registered Access](#registered-access).
-    Note that more claims are needed to meet the requirements for Registered
-    Access status.
+    acknowledges ethics compliance for a particular version of [Registered
+    Access](#registered-access). Note that more claims are needed to meet the
+    requirements for Registered Access status.
 
 -   MUST include the "[by](#by)" field.
 
@@ -833,8 +993,8 @@ Types](#custom-passport-visa-types).
     process that has been followed and the qualifications this person has met.
 
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
-    acknowledges the registration process as needed for
-    [Registered Access](#registered-access) Bona Fide researcher
+    acknowledges a particular version of the registration process as needed
+    for [Registered Access](#registered-access) Bona Fide researcher
     status. Note that more claims are needed to meet the requirements for
     Registered Access status.
 
@@ -847,9 +1007,7 @@ Types](#custom-passport-visa-types).
 
 -   The `source` field contains the access grantee organization.
 
--   MUST include "[by](#by)" field.
-
--   This claim MAY include a "[condition](#condition)" field.
+-   MUST include the "[by](#by)" field.
 
 ### LinkedIdentities
 
@@ -858,8 +1016,8 @@ Types](#custom-passport-visa-types).
     Visa](#passport-visa) is the same as the identity or identities listed
     in the "[value](#value)" field.
 
--   The "[value](#value)" field format is a comma-delimited list of
-    "<uri-encoded-sub>|<uri-encoded-iss>" entries with no added whitespace
+-   The "[value](#value)" field format is a semicolon-delimited list of
+    "<uri-encoded-sub>,<uri-encoded-iss>" entries with no added whitespace
     between entries.
   
     -   The "iss" and "sub" that are used to encode the "value" field do
@@ -867,11 +1025,12 @@ Types](#custom-passport-visa-types).
         requirements since they must match the corresponding Passport Visa
         "iss" and "sub" fields that may be issued.
         
-    -   By URI encoding the "iss", special characters (such as "|" and ",")
-        are encoded within the URL without causing parsing conflicts.
+    -   By URI encoding ([RFC 3986](https://tools.ietf.org/html/rfc3986)) the
+        "iss", special characters (such as "," and ";") are encoded within the URL
+        without causing parsing conflicts.
         
     -   Example:
-        "123456|https%3A%2F%2Fexample.org%2Fa%7Cb%2Cc,7890|https%3A%2F%2Fexample2.org".
+        "123456,https%3A%2F%2Fexample.org%2Fa%7Cb%2Cc;7890,https%3A%2F%2Fexample2.org".
 
 -   The "[source](#source)" field refers to the [Passport Visa Assertion
     Source](#passport-visa-assertion-source) that is making the assertion. This is
@@ -896,7 +1055,7 @@ Types](#custom-passport-visa-types).
          "sub": "1234",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
-           "value": "567|https://example2.org/oidc,890123|https://example3.org/oidc",
+           "value": "567,https://example2.org/oidc;890123,https://example3.org/oidc",
            "source": "https://example1.org/oidc"
            ...
          }
@@ -915,7 +1074,7 @@ Types](#custom-passport-visa-types).
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
            "value":
-             "1234|http://example1.org/oidc,567|http://example2.org/oidc,890123|http://example3.org/oidc,sub4|http://example4.org/oidc"
+             "1234,http://example1.org/oidc;567,http://example2.org/oidc;890123,http://example3.org/oidc;sub4,http://example4.org/oidc"
            "source": "https://example0.org/oidc"
            ...
          }
@@ -933,7 +1092,7 @@ Types](#custom-passport-visa-types).
          "sub": "1234",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
-           "value": "567|https://example2.org/oidc",
+           "value": "567,https://example2.org/oidc",
            "source": "https://example1.org/oidc"
            ...
          }
@@ -943,7 +1102,7 @@ Types](#custom-passport-visa-types).
          "sub": "567",
          "ga4gh_visa_v1": {
            "type": "LinkedIdentities",
-           "value": "890123|https://example3.org/oidc",
+           "value": "890123,https://example3.org/oidc",
            "source": "https://example2.org/oidc"
            ...
          }
@@ -980,21 +1139,27 @@ Use cases include, but are not limited to the following:
 
 ### Registered Access
 
--   To meet the requirements of
-    [Registered Access](https://doi.org/10.1038/s41431-018-0219-y) to
-    data, a user needs to have **all** of the following Passport Visas:
+-   To meet the requirements of Registered Access to data as defined by
+    publication <https://doi.org/10.1038/s41431-018-0219-y> as a specific
+    version of Registered Access, a user needs to have **all** of the following
+    Passport Visas:
 
-    -   Meeting the ethics requirements is represented by:
+    1.  Meeting the ethics requirements is represented by:
     
         -   `type` = "AcceptedTermsAndPolicies"; and
         
         -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
 
-    -   Meeting the bona fide status is represented by:
+    2.  Meeting the bona fide status is represented by:
     
         -   `type` = "ResearcherStatus"; and
         
         -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
+
+-   If other versions of Registered Access are introduced, then the `value`
+    fields for AcceptedTermsAndPolicies as well as ResearcherStatus MAY
+    refer to the document or publication or sections thereof to act as the
+    permanent identifiers for such versions of Registered Access.
 
 -   The [Passport Clearinghouse](#passport-clearinghouse) (e.g. to
     authorize a registered access beacon) needs to evaluate the
@@ -1017,15 +1182,15 @@ Use cases include, but are not limited to the following:
         [ControlledAccessGrants](#controlledaccessgrants) for
         permissions associated with specific data or datasets.
         
-    -   MAY utilize the [condition](#condition) field on
+    -   MAY utilize the [conditions](#conditions) field on
         "ControlledAccessGrants" to cause such a grant to require
         a Passport Visa from a trusted Passport Visa Assertion Source to
         assert that the identity has a role within a specific organization.
         This can be achieved by using the
         [AffiliationAndRole](#affiliationandrole) Passport Visa Type on
-        the `condition`.
+        the `conditions`.
 
-    -   MAY utilize any other valid Passport Visa Type or `condition` fields
+    -   MAY utilize any other valid Passport Visa Type or `conditions` field
         that may be required to meet controlled access policies.
 
 ## Passport Visa Expiry
@@ -1120,16 +1285,16 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
     National Cancer Institute for datasets 710 and approval for dataset 432 for
     a dataset from EGA.
 
-    -   In this example, assume dataset 710 does not have a
-        "[condition](#condition)" based on the
+    -   In this example, assume dataset 710 does not have any
+        "[conditions](#conditions)" based on the
         AffiliationAndRole because the system that is asserting the claim has an
         out of band process to check the researcher’s affiliation and role and
         withdraw the dataset 710 claim automatically, hence it does not need the
-        condition to accomplish this.
+        `conditions` field to accomplish this.
 
     -   In this example, assume that dataset 432 does not use an out of band
         mechanism to check affiliation and role, so it makes use of the
-        "[condition](#condition)" field mechanism to
+        "[conditions](#conditions)" field mechanism to
         enforce the affiliation and role. The dataset 432 claim is only valid if
         accompanied with a valid AffiliationAndRole claim for
         "faculty\@med.stanford.edu".
@@ -1191,19 +1356,27 @@ reader-friendly.
         "ga4gh_visa_v1": {
             "type": "ControlledAccessGrants",
             "asserted": 1549640000,
-            "value": "https://ega-archive.org/datasets/00000432",
-            "source": "https://grid.ac/institutes/grid.225360.0",
+            "value": "https://ega-archive.org/datasets/EGAD00000000432",
+            "source": "https://ega-archive.org/dacs/EGAC00001000205",
             "by": "dac"
-            "condition": {
-                "AffiliationAndRole" : {
-                    "value": ["faculty@med.stanford.edu"],
-                    "source": ["https://grid.ac/institutes/grid.240952.8"],
-                    "by": [
-                        "so",
-                        "system"
-                    ]
-                }
-            },
+            "conditions": [
+                [
+                    {
+                        "type": "AffiliationAndRole",
+                        "value": "faculty@med.stanford.edu",
+                        "source": "https://grid.ac/institutes/grid.240952.8",
+                        "by": "so"
+                    }
+                ],
+                [
+                    {
+                        "type": "AffiliationAndRole",
+                        "value": "faculty@med.stanford.edu",
+                        "source": "https://grid.ac/institutes/grid.240952.8",
+                        "by": "system"
+                    }
+                ]
+            ],
         }
     },
     {
@@ -1243,7 +1416,7 @@ reader-friendly.
         "ga4gh_visa_v1": {
             "type": "LinkedIdentities",
             "asserted": 1549680000,
-            "value": "10001|https://issuer.example1.org/oidc,abcd|https://other.example2.org/oidc",
+            "value": "10001,https:%2F%2Fissuer.example1.org%2Foidc;abcd,https:%2F%2Fother.example2.org%2Foidc",
             "source": "https://broker.example3.org/oidc",
             "by": "system"
         }
@@ -1255,6 +1428,7 @@ reader-friendly.
 
 | Version | Date       | Editor                             | Notes                                                         |
 |---------|------------|------------------------------------|---------------------------------------------------------------|
+| 0.9.6   | 2019-09-20 | Craig Voisin                       | New conditions field format                                   |
 | 0.9.5   | 2019-08-26 | Craig Voisin                       | Embedded Tokens, LinkedIdentities, overview, new definitions  |
 | 0.9.4   | 2019-08-12 | Craig Voisin                       | Introduce custom claim names, changes for "no organization"   |
 | 0.9.3   | 2019-08-09 | Craig Voisin                       | Updates related to introducing Embedded Passport Tokens       |
