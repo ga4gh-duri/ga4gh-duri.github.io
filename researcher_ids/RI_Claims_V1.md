@@ -506,7 +506,9 @@ Although standard fields within a [Passport Visa Object](#passport-visa-object)
 are defined in this section, other fields MAY exist within the object
 and should be ignored by any Passport Clearinghouse that is not familiar
 with the use of such fields. Field names are reserved for definition by
-GA4GH (or a body it elects).
+GA4GH (or a body it elects). For field types that define their field values
+as a character strings, the string values MUST NOT exceed 255 characters in
+length.
 
 #### "**type**"
 
@@ -662,7 +664,8 @@ GA4GH (or a body it elects).
       
     -   The values of Condition Clause fields MUST have a string prefix followed
         by a colon and then string suffix, except for "type" where it MUST be
-        assumed to be "const" and is not specified.
+        assumed to be "const" and is not specified. String suffixes MUST NOT
+        exceed 255 characters in length.
         
         -   If prefix is "const", then suffix MUST use case sensitive full string
             matching.
@@ -804,43 +807,21 @@ GA4GH (or a body it elects).
          the next character will be taken as an ordinary character without
          any special pattern semantics. The `<backslash>` itself is then not
          included in the pattern. Escaping can also be performed on the
-         `<backslash>` character itself. Examples: `\\` will include `\` in the
-         pattern, whereas `\?` will include `?` in the pattern as an ordinary
-         character instead of matching any single character. A trailing escape
-         character without a character that follows SHALL be treated as an
-         error and hence the pattern will not be able to match any input.
+         `<backslash>` character itself.
 
-    -   `[` : An `<open-bracket>` that contains a Bracket Character Set ("BCS")
-            pattern as set of characters. The substring contributing to a BCS 
-            is terminated by a corresponding unescaped `]` character
-            (`<close-bracket>`). A BCS is used to match a single character of
-            input. The substring between the `<open-bracket>` and
-            `<close-bracket>` SHALL contribute characters to the BCS as follows,
-            listed in priority order:
-            
-        -   `<backslash>` character SHALL escape the next character with the set
-            similarly to as described above outside the BCS. This escape
-            sequence will produce one ordinary character for inclusion in the
-            BCS.
+         -   Examples: `\\` will include `\` as an ordinary character in the
+             pattern, whereas `\?` will include `?` in the pattern as an
+             ordinary character instead of matching any single character.
 
-        -   If the first character is an unescaped `!` (`<not>`), then the BCS
-            match will reverse its logic to only match a single character of
-            input that is NOT in the BCS. This character is then not included in
-            the BCS and not treated as an ordinary character.
+         -   A trailing escape character without a character that follows SHALL
+             be treated as an error and hence the pattern will not be able to
+             match any input.
 
-        -   If the `-` (`<hyphen>`) character is present, then the previous
-            ordinary character (or ordinary character after being escaped) SHALL
-            denote the start of a character range and the next ordinary
-            character (or ordinary character after being escaped) SHALL denote
-            the end of a character range. All characters within this range SHALL
-            be included in the BCS. If there is no previous or next character,
-            then the `<hyphen>` character SHALL be interpreted as an ordinary
-            character and no range is specified.
-                
-            Example: `[a-f0-9\]z-]` will match one character of input to any of
-            the following characters: "abcdef0123456789]z-".
-
-        -   All other characters SHALL be added to the BCS verbatim.
+         -   The only valid escape patterns are `\\`, `\?`, `\*`. If any other
+             escape character is attempted (i.e. the second character in the
+             escape pattern is not one of `?`, `*`, or `\`), the escape pattern
+             SHALL be treated as an error and hence the pattern will not be able
+             to match any input.
 
 -   A method evaluating a pattern on a string of input SHALL return a true if
     the input has found one or more possible ways to match or false if it does
@@ -1363,17 +1344,17 @@ reader-friendly.
                 [
                     {
                         "type": "AffiliationAndRole",
-                        "value": "faculty@med.stanford.edu",
-                        "source": "https://grid.ac/institutes/grid.240952.8",
-                        "by": "so"
+                        "value": "const:faculty@med.stanford.edu",
+                        "source": "const:https://grid.ac/institutes/grid.240952.8",
+                        "by": "const:so"
                     }
                 ],
                 [
                     {
                         "type": "AffiliationAndRole",
-                        "value": "faculty@med.stanford.edu",
-                        "source": "https://grid.ac/institutes/grid.240952.8",
-                        "by": "system"
+                        "value": "const:faculty@med.stanford.edu",
+                        "source": "const:https://grid.ac/institutes/grid.240952.8",
+                        "by": "const:system"
                     }
                 ]
             ],
