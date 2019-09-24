@@ -803,25 +803,9 @@ length.
         -   Match the greatest possible number of characters that still allows
             the remainder of the pattern to match the string.
 
-    -   `\` : A `<backslash>` character SHALL denote an escaped character where
-         the next character will be taken as an ordinary character without
-         any special pattern semantics. The `<backslash>` itself is then not
-         included in the pattern. Escaping can also be performed on the
-         `<backslash>` character itself.
-
-         -   Examples: `\\` will include `\` as an ordinary character in the
-             pattern, whereas `\?` will include `?` in the pattern as an
-             ordinary character instead of matching any single character.
-
-         -   A trailing escape character without a character that follows SHALL
-             be treated as an error and hence the pattern will not be able to
-             match any input.
-
-         -   The only valid escape patterns are `\\`, `\?`, `\*`. If any other
-             escape character is attempted (i.e. the second character in the
-             escape pattern is not one of `?`, `*`, or `\`), the escape pattern
-             SHALL be treated as an error and hence the pattern will not be able
-             to match any input.
+-   There is no escape character for special characters such as patterns.
+    `?` is always treated as the `<question-mark>` pattern and `*` is always
+    treated as the `<asterisk>` pattern.
 
 -   A method evaluating a pattern on a string of input SHALL return a true if
     the input has found one or more possible ways to match or false if it does
