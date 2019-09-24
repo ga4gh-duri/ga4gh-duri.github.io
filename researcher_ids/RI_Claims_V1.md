@@ -789,6 +789,9 @@ length.
 
 ##### Pattern Matching
 
+-   Pattern Matching is only for use as specified by
+    "[conditions](#conditions)".
+
 -   MUST Use full string case-sensitive character pattern comparison.
 
 -   MUST support special meaning characters as the specification of patterns:
