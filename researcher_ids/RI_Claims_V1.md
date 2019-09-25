@@ -506,9 +506,7 @@ Although standard fields within a [Passport Visa Object](#passport-visa-object)
 are defined in this section, other fields MAY exist within the object
 and should be ignored by any Passport Clearinghouse that is not familiar
 with the use of such fields. Field names are reserved for definition by
-GA4GH (or a body it elects). For field types that define their field values
-as a character strings, the string values MUST NOT exceed 255 characters in
-length.
+GA4GH (or a body it elects).
 
 #### "**type**"
 
@@ -664,8 +662,7 @@ length.
       
     -   The values of Condition Clause fields MUST have a string prefix followed
         by a colon and then string suffix, except for "type" where it MUST be
-        assumed to be "const" and is not specified. String suffixes MUST NOT
-        exceed 255 characters in length.
+        assumed to be "const" and is not specified.
         
         -   If prefix is "const", then suffix MUST use case sensitive full string
             matching.
