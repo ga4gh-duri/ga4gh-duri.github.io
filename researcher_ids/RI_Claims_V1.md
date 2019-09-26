@@ -545,7 +545,7 @@ GA4GH (or a body it elects).
 -   For example, `value` =
     "<https://doi.org/10.1038/s41431-018-0219-y>" when `type` =
     "ResearcherStatus" represents a version of Registered Access Bona Fide
-    researcher status. Note that Registered Access requires more than one claim as
+    researcher status. Note that Registered Access requires more than one [Passport Visa](#passport-visa) as
     outlined in the [Registered Access](#registered-access) section.
 
 -   For the purposes of enforcing its policies for access, a Passport
