@@ -137,7 +137,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport Visa Identity
 
--   The {`iss`, `sub`} pair of JWT standard claims ([RFC7519 section
+-   The {`sub`, `iss`} pair of JWT standard claims ([RFC7519 section
     4.1.1](https://tools.ietf.org/html/rfc7519#section-4.1.1)) that are
     included within a [Passport Visa](#passport-visa) that represents a
     given user (such as a user account) within the issuer's (`iss`) system.
