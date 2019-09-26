@@ -116,7 +116,7 @@ Here is an example of the life of a claim:
 2. A researcher, using an application, logs into a system (Passport Broker) that knows how to connect to a Passport Visa Signatory service that can read the assert and package it into a Passport Visa. then securely sign this visa.
     1. The login token request contains an OIDC scope of "ga4gh_passport_v1" to indicate that it wishes to have a Passport accessible by presenting the access token.
     2. The Passport Broker asks the user which Passport Visas the researcher wishes to release to the downstream system (Passport Clearinghouse) that wants to use the Passport.
-    3. The Passport Broker packages up all the Passport Visas the researcher wishes to release and mints an OIDC access token, and signs the token with the Identity Broker's private key. This signature will be used by downstream systems to verify the authenticity of the Passport and maintain its integrity (i.e. prevents any party from tampering with the contents).
+    3. The Passport Broker packages up all the Passport Visas the researcher wishes to release and mints an OIDC access token, and signs the token with the Broker's private key. This signature will be used by downstream systems to verify the authenticity of the Passport and maintain its integrity (i.e. prevents any party from tampering with the contents).
 3. The researcher's application either is using a Passport Clearinghouse directly or passes the access token along to a Passport Clearinghouse when it attempts to get access to data.
     1. The Passport Clearinghouse looks at the issuer of the Passport and determines if it trusts the issuer based on a whitelist. If not trusted, the request is denied.
     2. The Passport Clearinghouse fetches the Passport Broker's public key and verifies the signature of the Passport. Other access token checks are performed, such as checking the token's overall expiry timestamp ("exp" claim). Any problem with the token results in a request denied.
@@ -138,6 +138,320 @@ Here is an example of the life of a claim:
 5. Some systems will use the Passport once, exchange it for a downstream access token, and not use the Passport again. Other systems will use the Passport multiple times until the passport token expires.
     1. Some systems can check the validity of a set of Passport Visas every hour and revoke or update access expiry accordingly.
     2. Other systems do not issue refresh tokens, and the only option to get a new Passport is to have the user do a fresh login (OIDC Authorization Flow) to fetch a new Passport.
+
+## Authorization using Standard Passport Visas
+
+[Standard Passport Visa Type Definitions](http://bit.ly/ga4gh-ri-v1##ga4gh-standard-passport-visa-type-definitions)
+may be used as a means to transfer permissions from one system to another in
+a system agnostic manner.
+
+#### AffiliationAndRole
+
+For the purposes of authorization, this Passport Visa Type can be thought of
+as asserting membership in a group. For example, "the user represented by this
+Passport Visa Type should have access to resources intended for general use by
+members of this role and affiliation".
+
+Example Passport Visa payload:
+
+```
+{
+  "iss": "https://login.elixir-czech.org/oidc",
+  "sub": 1234,
+  "iat": 150000000,
+  "exp": 150010000,
+  "ga4gh_visa_v1" : {
+    "value": "faculty@med.stanford.edu",
+    "source": "https://grid.ac/institutes/grid.240952.8",
+    "by": "so"
+  }
+}
+```
+
+A Passport Clearinghouse may use a Passport Visa payload like the example above
+to grant read access to a particular dataset for a wide set of faculty
+collaborators from Stanford Medicine.
+
+Alternatively, a ControlledAccessGrants Passport Visa could add the
+"[conditions](http://bit.ly/ga4gh-ri-v1#conditions)" field that requires that
+the user retains their status as a group member of "faculty at Stanford
+Medicine" for the DAC access grant to the data to remain valid.
+
+#### AcceptedTermsAndPolicies
+
+Some datasets require that a user or organization acknowledges various terms,
+policies, and conditions or meet particular criteria in order to access the
+dataset. For example, a dataset may require that a user has provided all of the
+following:
+
+-   **Agree to ethical handling of the data**: a Passport Visa assertion may be 
+    added once the user reads the policy and clicks that he/she agrees to uphold 
+    its contents.
+
+-   **Agree that an online ethics training course has been completed**: a
+    Passport Visa assertion may be added once the user agrees he/she has
+    completed online ethics training. 
+
+For the above examples, the Passport Visa payloads may look something like this
+(shown as unpacked payloads without headers or signatures to make it more
+reader-friendly):
+
+```
+"ga4gh_passport_v1": [
+    { // shown as unpacked from JWS
+      "iss": "https://login.elixir-czech.org/oidc",
+      "sub": 1234,
+      "iat": 1560000000,
+      "exp": 1560010000,
+      "ga4gh_visa_v1" : {
+        "type": "AcceptedTermsAndPolicies",
+        "value": "https://claims.example.org/training/101",
+        "source": "<https://grid.ac/institutes/grid.5335.0>",
+        "by": "self"
+      }
+    },
+    { // shown as unpacked from JWS
+      "iss": "https://login.elixir-czech.org/oidc",
+      "sub": 1234,
+      "iat": 1560000300,
+      "exp": 1575552300,  // 6 months after "iat"
+      "ga4gh_visa_v1" : {
+        "type": "AcceptedTermsAndPolicies",
+        "value": "https://claims.example.org/tested/101",
+        "source": "<https://grid.ac/institutes/grid.5335.0>",
+        "by": "self"
+      }
+    },
+    { // shown as unpacked from JWS
+      "iss": "https://login.elixir-czech.org/oidc",
+      "sub": 1234,
+      "iat": 1560000400,
+      "exp": 1560010400,
+      "ga4gh_visa_v1" : {
+        "type": "AcceptedTermsAndPolicies",
+        "value": "https://claims.example.org/ethics/101",
+        "source": "<https://grid.ac/institutes/grid.5335.0>",
+        "by": "self"
+      }
+    }
+  ]
+}
+```
+
+A Passport Clearinghouse would look for all three entries to be present on the
+same Passport and to be valid all within the window of access being requested by
+the researcher.
+
+#### ResearcherStatus
+
+For the purposes of authorization, this Passport Visa Type encodes what general
+researcher groups the user is a member of. For example, perhaps the user has
+been awarded a Clinical Research Associate certification such as this Passport
+Visa payload:
+
+```
+{
+  "iss": "https://login.example.org/oidc",
+  "sub": 1234,
+  "iat": 150000000,
+  "exp": 150010000,
+  "ga4gh_visa_v1" : {
+    "type": "ResearcherStatus",
+    "value": "<https://acrpnet.org/certifications/cra-certification>",
+    "source": "<https://grid.ac/institutes/grid.470375.2>",
+    "by": "system"
+  }
+}
+```
+
+Another example is that the user may be awarded a certificate that he or she has
+completed ethics training.
+
+-   **Receive training**: a Passport Visa assertion may be added at the end of
+    the video after the user clicks that they have understood the content.
+
+-   **Score at least 95% on a competency test on the training material**: a
+    Passport Visa assertion may be added after meeting this threshold on the
+    test, and expires every 6 months.
+
+#### ControlledAccessGrants
+
+This Passport Visa Type encodes the any grants for controlled access datasets.
+Controlled Access indicates that the data should not be read unless an appropriate
+source of authority has authorized this access explicitly. This is in contrast to
+Public Access as well as Registered Access, for example.
+
+It is common that a Passport Clearinghouse will only accept ControlledAccessGrants
+Passport Visas if they come from a trusted issuer, the source is a trusted
+organization that has the authority, and the "by" field is set to "dac" to indicate
+that the organization's Data Access Committee has approved this access. Alternative
+requirements may be used instead, however only grants for Controlled Access
+datasets are intended to be encoded within this Passport Visa Type.
+
+An example Passport Visa payload:
+
+```
+{
+  "iss": "https://dbgap.nih.gov/oidc",
+  "sub": 1234,
+  "iat": 150000000,
+  "exp": 150010000,
+  "ga4gh_visa_v1" : {
+    "type": "ControlledAccessGrants",
+    "value": "https://claims.example.org/datasets/33333",
+    "source": "<https://grid.ac/institutes/grid.48336.3a>",
+    "by": "dac"
+  }
+}
+```
+
+In the example above, the user has been granted access to dataset 33333 by the
+National Cancer Institute's DAC which is using dbGaP to present the claim as the
+[Broker](http://bit.ly/ga4gh-aai-profile#term-broker).
+
+It is important to note that the token issuer ("iss") may not be the same
+organization represented by the "source" field, as shown in the example above.
+
+#### LinkedIdentities
+
+This Passport Visa Type provides a means for an Broker to associate two
+different accounts
+("[Passport Visa Identities](http://bit.ly/ga4gh-ri-v1#passport-visa-identity)")
+with one user. Some Brokers have the ability to link accounts together, and in
+doing so the Broker can combine Passport Visas from these accounts into one
+Passport. Brokers that provide account linking should follow security and privacy
+best practices in their implementation of this feature.
+
+If a Passport Clearinghouse wants to evaluate two Passport Visas when making an
+authorization decision, and if those two Passport Visas come from different
+accounts, then how does the Passport Clearinghouse know whether or not to trust
+that these accounts were combined correctly given that Passports can be combined
+at multiple levels of Brokers before arriving at the Passport Clearinghouse?
+Which Broker combined these accounts, and can it be trusted?
+
+To address these trust concerns, the LinkedIdentities claim can be provided by
+Brokers. The claim contains two or more accounts that represent the same user and
+is signed by the Broker. Using this Passport Visa Type, a Passport Clearinghouse
+can know which Broker combined these accounts (within a chain of Brokers that may
+have assembled the Passport), and can decide whether or not to trust that Broker
+to do so correctly.
+
+The use of this Passport Visa Type can prevent particular security issue where
+Brokers that illegitimately combine claims from otherwise trusted sources will
+fail to get access to resources when presenting them to a Passport Clearinghouse.
+
+Example Passport Visa payload for LinkedIdentities:
+
+```
+{
+  "iss": "https://broker.example3.org/oidc",
+  "sub": "999999",
+  "iat": 1549680000,
+  "exp": 1581208000,
+  ...
+  "ga4gh_visa_v1": {
+    "value": "10001|https://issuer.example1.org/oidc,abcd|https://other.example2.org/oidc",
+    "source": "https://broker.example3.org/oidc",
+    "by": "system"
+  }
+}
+```
+
+In this example, a Broker (example3.org) has linked two other accounts for the
+same user from example1.org (subject "10001") and example2.org (subject "abcd").
+It did so using an automated system (`by = "system"`) of allowing the user to
+present credentials for all three accounts as proof of identity ownership.
+
+Notice that subjects "999999", "10001", and "abcd" are abstract account
+identifiers and not email addresses or other personal information. These are
+the same identifiers that can be found in other Passport Visas such that the
+Passport Clearinghouse, when inspecting multiple Passport Visas as part of an
+access policy, would verify that either:
+
+1.  All the accounts are the same across the subset of Passport Visas of interest
+    to the policy; or
+
+2.  There exists a set of LinkedIdentities Passport Visas from trusted parties
+    that allows the accounts associated Passport Visas of interest to be combined.
+
+#### Claims Use for Registered Access
+
+[Registered Access Encoding](http://bit.ly/ga4gh-ri-v1#registered-access) makes
+use of two Passport Visas, and may need more Passport Visas if those requirements
+come from different identities that are being combined ("Passport Visa
+Identities"). This allows the assertions that show that the Registered Access
+requirements have been met to come from different sources and for different roles.
+
+For example (shown as unpacked payloads without headers or signatures to make it
+more reader-friendly):
+
+```
+"ga4gh_passport_v1": [
+    { // shown as unpacked payload from JWS
+      "iss": "https://login.elixir-czech.org/oidc",
+      "sub": 1234,
+      "iat": 150000000,
+      "exp": 150010000,
+      "ga4gh_visa_v1" : {
+        "type": "ResearcherStatus",
+        "value": "<https://doi.org/10.1038/s41431-018-0219-y>",
+        "source": "<https://grid.ac/institutes/grid.5335.0>",
+        "by": "peer"
+      }
+    },
+    { // shown as unpacked payload from JWS
+      "iss": "auth.uni-heidelberg.de/oidc",
+      "sub": 123123,
+      "iat": 150001000,
+      "exp": 150020000,
+      "ga4gh_visa_v1" : {
+        "type": "AcceptedTermsAndPolicies",
+        "value": "<https://doi.org/10.1038/s41431-018-0219-y>",
+        "source": "<https://grid.ac/institutes/grid.5253.1>",
+        "by": "self"
+      }
+    },
+    { // shown as unpacked payload from JWS
+      "iss": "https://login.elixir-czech.org/oidc",
+      "sub": "1234",
+      "iat": 150000000,
+      "exp": 150010000,
+      ...
+      "ga4gh_visa_v1": {
+        "type": "LinkedIdentities",
+        "value": "123123|auth.uni-heidelberg.de/oidc",
+        "source": "https://broker.example3.org/oidc",
+        "by": "system"
+      }
+    }
+  ]
+}
+```
+
+In the above example, the Registered Access Bona Fide Status came from a peer at
+Cambridge University (grid.5335.0) and collected via ELIXIR whereas the
+Registered Access Acceptance of Ethics came from Heidelberg University
+(grid.5253.1) and was self-declared (i.e. the researcher herself made the
+assertion) and is bound by her home organization, Heidelberg University.
+
+The ResearcherStatus and AcceptedTermsAndPolicies Passport Visas come from two
+different accounts ("Passport Visa Identities") as indicated by their "iss" and
+"sub" JWT claims. These two claims can be treated as coming from the same user if
+the Passport Clearinghouse trusts ELIXIR to combine them via the LinkedIdentities
+Passport Visa included in the above example.
+
+It is only when the two requirements of Registered Access are met, together on
+one Passport from trusted sources, that Registered Access may apply to the
+researcher in question. In this case, a Passport Clearinghouse that would
+accept these Passport Visas must trust the Brokers of ELIXIR and Heidelberg
+University as well as both [Claim Source
+organizations](http://bit.ly/ga4gh-aai-profile#term-claim-source) encoded in the
+"[source](http://bit.ly/ga4gh-ri-v1#source)" field (i.e. both Cambridge University
+and Heidelberg University). The "[by](http://bit.ly/ga4gh-ri-v1#by)" field must
+also be acceptable based on policies for the Passport Clearinghouse in addition to
+other validation of the tokens and fields as described in the [AAI
+specification](http://bit.ly/ga4gh-aai-profile) and the [Passport
+specification](http://bit.ly/ga4gh-ri-v1).
 
 ## Flow Of Claims
 
