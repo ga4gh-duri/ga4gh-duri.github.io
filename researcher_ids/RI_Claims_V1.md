@@ -1196,8 +1196,8 @@ now()+accessTokenTTL < token.exp
 Where:
 
 -   `accessTokenTTL` represents the duration for which an access token will be
-    accepted and is bounded by the next refresh token cycle or [Claim
-    Polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#claim-polling)
+    accepted and is bounded by the next refresh token cycle or [Access Token
+    Polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#at-polling)
     cycle or any larger propagation delay before access is revoked, which
     needs to be assessed based on the revocation model.
     
@@ -1232,8 +1232,8 @@ changes may also require some reasonable delay.
 Systems employing Passport Visas MUST provide mechanisms to
 limit the life of access, and specifically MUST conform to the GA4GH AAI
 Specification requirements in this regard. Systems utilizing Passport Visas MAY also
-employ other mechanisms outlined in the GA4GH AAI Specification, such as [Claim
-Polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#claim-polling)
+employ other mechanisms outlined in the GA4GH AAI Specification, such as [Access
+Token Polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#at-polling)
 if the Passport Visa is encoded as an [Embedded Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-access-token). 
 
 ## Example Passport JWT Claim
