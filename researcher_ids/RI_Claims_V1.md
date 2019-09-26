@@ -975,19 +975,19 @@ Types](#custom-passport-visa-types).
 
 ### LinkedIdentities
 
--   The identity as indicated by the {"iss", "sub"} pair (aka "[Passport Visa
+-   The identity as indicated by the {"sub", "iss"} pair (aka "[Passport Visa
     Identity](#passport-visa-identity)") of the [Passport
     Visa](#passport-visa) is the same as the identity or identities listed
     in the "[value](#value)" field.
 
 -   The "[value](#value)" field format is a semicolon-delimited list of
-    "<uri-encoded-sub>,<uri-encoded-iss>" entries with no added whitespace
+    "&lt;uri-encoded-sub>,&lt;uri-encoded-iss>" entries with no added whitespace
     between entries.
   
-    -   The "iss" and "sub" that are used to encode the "value" field do
+    -   The "sub" and "iss" that are used to encode the "value" field do
         not need to conform to [URL Field](#url-fields)
         requirements since they must match the corresponding Passport Visa
-        "iss" and "sub" fields that may be issued.
+        "sub" and "iss" fields that may be issued.
         
     -   By URI encoding ([RFC 3986](https://tools.ietf.org/html/rfc3986)) the
         "iss", special characters (such as "," and ";") are encoded within the URL
