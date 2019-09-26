@@ -200,11 +200,11 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 #### Passport Visa Issuer
 
 -   A compliant [AAI Embedded Token
-    Signatory](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-signatory)
+    Issuer](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-issuer)
     service that signs a [Passport Visa](#passport-visa).
 
--   See [Conformance for Embedded Token Signatories section of the GA4GH
-    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-signatories).
+-   See [Conformance for Embedded Token Issuers section of the GA4GH
+    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-issuers).
 
 #### Passport Broker
 
@@ -289,8 +289,7 @@ in this regard.
     The services defined in this specification that are based on services defined
     by the GA4GH AAI Specification MUST also conform to the GA4GH AAI Specification.
     
-    -   Passport Visa Issuer MUST conform as a GA4GH AAI Embedded Token
-        Signatory.
+    -   Passport Visa Issuer MUST conform as a GA4GH AAI Embedded Token Issuer.
 
     -   Passport Broker MUST conform as a GA4GH AAI Broker.
 
@@ -430,7 +429,7 @@ Claim](#example-passport-jwt-claim) section of the specification.
 ### Passport Visa Requirements
 
 -   Passport Visas MUST conform to one of the
-    [GA4GH AAI Specification Embedded Token formats](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#embedded-token-issued-by-embedded-token-signatories)
+    [GA4GH AAI Specification Embedded Token formats](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#embedded-token-issued-by-embedded-token-issuer)
     as JWS Compact Serialization strings as defined by [RFC7515 section
     7.1](https://tools.ietf.org/html/rfc7515#section-7.1).
 
@@ -478,7 +477,7 @@ Object](#passport-visa-object) are as described in the [Passport Visa
 Fields](#passport-visa-fields) section of this specification.
 
 One of `scope` or `jku` MUST be present as described in
-[Conformance for Embedded Token Signatories](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-signatories)
+[Conformance for Embedded Token Issuers](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-issuers)
 within the [AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 #### "**exp**"
