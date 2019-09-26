@@ -29,7 +29,7 @@ objects and services defined in this specification fit together.**
   - [GA4GH AAI Specification](#ga4gh-aai-specification)
   - [Objects and Tokens](#objects-and-tokens)
     - [Passport](#passport)
-    - [Passport JWT Claim](#passport-jwt-claim)
+    - [Passport Claim](#passport-claim)
     - [Passport Visa](#passport-visa)
     - [Passport Visa Identity](#passport-visa-identity)
     - [Passport Visa Object](#passport-visa-object)
@@ -43,7 +43,7 @@ objects and services defined in this specification fit together.**
 - [**Overview**](#overview)
   - [General Requirements](#general-requirements)
   - [Support for User Interfaces](#support-for-user-interfaces)
-- [**Passport JWT Claim Format**](#passport-jwt-claim-format)
+- [**Passport Claim Format**](#passport-claim-format)
   - [Passport Visa Requirements](#passport-visa-requirements)
   - [Passport Visa Format](#passport-visa-format)
     - [exp](#exp)
@@ -68,7 +68,7 @@ objects and services defined in this specification fit together.**
   - [Controlled Access](#controlled-access)
 - [**Passport Visa Expiry**](#passport-visa-expiry)
 - [**Token Revocation**](#token-revocation)
-- [**Example Passport JWT Claim**](#example-passport-jwt-claim)
+- [**Example Passport Claim**](#example-passport-claim)
 - [**Specification Revision History**](#specification-revision-history)
 
 ## Conventions and Terminology
@@ -89,21 +89,21 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 -   A GA4GH-compatible access token ("GA4GH Access Token"), as per the [GA4GH
     AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md),
-    along with the [Passport JWT Claim](#passport-jwt-claim) that is
+    along with the [Passport Claim](#passport-claim) that is
     returned from [Passport Broker](#passport-broker) service endpoints
     using such an access token.
 
-#### Passport JWT Claim
+#### Passport Claim
 
--   The `ga4gh_passport_v1` JWT claim. It is a [GA4GH
+-   The `ga4gh_passport_v1` claim returned in the response of UserInfo or other OIDC provider endpoints. It is a [GA4GH
     Claim](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-ga4gh-claim)
     with a claim value being a list of [Passport Visas](#passport-visa).
     
 -   Passport Visas from multiple [Passport Visa
     Issuer](#passport-visa-issuer) services can be bundled together in the
-    same `ga4gh_passport_v1` JWT claim.
+    same `ga4gh_passport_v1` claim.
 
--   For example, the following structure encodes a Passport JWT Claim:
+-   For example, the following structure encodes a Passport Claim:
 
     ```
     "ga4gh_passport_v1" : [
@@ -130,9 +130,9 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     ([Passport Visa Fields](#passport-visa-fields)) that describe
     the assertion and limitations thereof.
     
--   Passport Visas are included in the [Passport JWT
-    Claim](#passport-jwt-claim). See the [Passport JWT Claim
-    Format](#passport-jwt-claim-format) section of this specification for
+-   Passport Visas are included in the [Passport
+    Claim](#passport-claim). See the [Passport Claim
+    Format](#passport-claim-format) section of this specification for
     more details.
 
 #### Passport Visa Identity
@@ -233,8 +233,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 **Diagram 1: The composition of objects and tokens within a Passport.**
 
 In Diagram 1, the objects and tokens that make up a [Passport](#passport)
-come together. Note that the [Passport JWT Claim](#passport-jwt-claim) is not
-encoded within the GA4GH Access Token. The contents of this JWT claim are
+come together. Note that the [Passport Claim](#passport-claim) is not
+encoded within the GA4GH Access Token. The contents of this claim are
 fetched separately from the Passport Broker by sending the access token to the
 appropriate Passport Broker service endpoint (see the [GA4GH AAI
 Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
@@ -284,7 +284,7 @@ in this regard.
 ### General Requirements
 
 1.  <a name="requirement-1"></a>
-    Use of the [Passport JWT Claim](#passport-jwt-claim) MUST conform to the
+    Use of the [Passport Claim](#passport-claim) MUST conform to the
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
     The services defined in this specification that are based on services defined
     by the GA4GH AAI Specification MUST also conform to the GA4GH AAI Specification.
@@ -295,7 +295,7 @@ in this regard.
 
     -   Passport Clearinghouse MUST conform as a GA4GH AAI Claim Clearinghouse.
 
-2.  <a name="requirement-2"></a> A Passport JWT Claim consists of a list of
+2.  <a name="requirement-2"></a> A Passport Claim consists of a list of
     [Passport Visas](#passport-visa). These Passport Visas MUST conform to
     [Embedded Tokens](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
     as outlined by the GA4GH AAI Specification.
@@ -335,7 +335,7 @@ in this regard.
     contractual limitations, regulatory restrictions, or filtering Passport
     Visas to only the subset needed for a particular purpose, etc.
 
-7.  <a name="requirement-7"></a> The [Passport JWT Claim](#passport-jwt-claim)
+7.  <a name="requirement-7"></a> The [Passport Claim](#passport-claim)
     MUST only be included in the Passport if the `ga4gh_passport_v1` scope is
     requested from the [Passport Broker](#passport-broker) and other conditions
     are met as outlined within this specification.
@@ -404,12 +404,12 @@ access: authorizing data access' publication".
 It is a non-goal for this specification to consider the processes and data for
 the purpose of supporting user interfaces.
 
-## Passport JWT Claim Format
+## Passport Claim Format
 
-The [Passport JWT Claim](#passport-jwt-claim) name maps to an array of
+The [Passport Claim](#passport-claim) name maps to an array of
 [Passport Visas](#passport-visa) which are encoded as
 [Embedded Tokens](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
-within a Passport JWT Claim.
+within a Passport Claim.
 
 Non-normative example of a set of Passport Visas, encoded as Embedded
 Token JWS Compact Serialization strings:
@@ -423,8 +423,8 @@ Token JWS Compact Serialization strings:
 }
 ```
 
-For a more reader-friendly example, see the [Example Passport JWT
-Claim](#example-passport-jwt-claim) section of the specification.
+For a more reader-friendly example, see the [Example Passport
+Claim](#example-passport-claim) section of the specification.
 
 ### Passport Visa Requirements
 
@@ -1235,9 +1235,9 @@ employ other mechanisms outlined in the GA4GH AAI Specification, such as [Access
 Token Polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#at-polling)
 if the Passport Visa is encoded as an [Embedded Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-access-token). 
 
-## Example Passport JWT Claim
+## Example Passport Claim
 
-This non-normative example illustrates a [Passport JWT Claim](#passport-jwt-claim)
+This non-normative example illustrates a [Passport Claim](#passport-claim)
 that has Passport Visas representing Registered Access bona fide researcher
 status along with other Passport Visas for access to specific Controlled Access
 data. The [Passport Visa Types](#passport-visa-type) for this example are:
