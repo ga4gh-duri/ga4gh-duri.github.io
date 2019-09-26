@@ -939,7 +939,7 @@ Types](#custom-passport-visa-types).
 
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
     acknowledges ethics compliance for a particular version of [Registered
-    Access](#registered-access). Note that more claims are needed to meet the
+    Access](#registered-access). Note that more [Passport Visas](#passport-visa) are needed to meet the
     requirements for Registered Access status.
 
 -   MUST include the "[by](#by)" field.
@@ -959,7 +959,7 @@ Types](#custom-passport-visa-types).
 -   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
     acknowledges a particular version of the registration process as needed
     for [Registered Access](#registered-access) Bona Fide researcher
-    status. Note that more claims are needed to meet the requirements for
+    status. Note that more [Passport Visas](#passport-visa) are needed to meet the requirements for
     Registered Access status.
 
 ### ControlledAccessGrants
