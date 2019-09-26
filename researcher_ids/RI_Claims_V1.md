@@ -95,7 +95,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport Claim
 
--   The `ga4gh_passport_v1` claim returned in the response of UserInfo or other OIDC provider endpoints. It is a [GA4GH
+-   The `ga4gh_passport_v1` claim. It is a [GA4GH
     Claim](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-ga4gh-claim)
     with a claim value being a list of [Passport Visas](#passport-visa).
     
