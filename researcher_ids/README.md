@@ -116,21 +116,21 @@ Here is an example of the life of a claim:
 2. A researcher, using an application, logs into a system (Passport Broker) that knows how to connect to a Passport Visa Signatory service that can read the assert and package it into a Passport Visa. then securely sign this visa.
     1. The login token request contains an OIDC scope of "ga4gh_passport_v1" to indicate that it wishes to have a Passport accessible by presenting the access token.
     2. The Passport Broker asks the user which Passport Visas the researcher wishes to release to the downstream system (Passport Clearinghouse) that wants to use the Passport.
-    3. The Passport Broker packages up all the Passport Visas the researcher wishes to release and mints an OIDC access token, and signs the token with the Broker's private key. This signature will be used by downstream systems to verify the authenticity of the Passport and maintain its integrity (i.e. prevents any party from tampering with the contents).
+    3. The Passport Broker packages up all the Passport Visas the researcher wishes to release and mints an OIDC access token, and signs the token with the Passport Broker's private key. This signature will be used by downstream systems to verify the authenticity of the Passport and maintain its integrity (i.e. prevents any party from tampering with the contents).
 3. The researcher's application either is using a Passport Clearinghouse directly or passes the access token along to a Passport Clearinghouse when it attempts to get access to data.
     1. The Passport Clearinghouse looks at the issuer of the Passport and determines if it trusts the issuer based on a whitelist. If not trusted, the request is denied.
     2. The Passport Clearinghouse fetches the Passport Broker's public key and verifies the signature of the Passport. Other access token checks are performed, such as checking the token's overall expiry timestamp ("exp" claim). Any problem with the token results in a request denied.
     3. The Passport Clearinghouse makes a /userinfo call back to the Passport Broker to fetch the Passport in the form of a JWT Claim.
     4. Passport Visas within the Passport are compared to access policies that have been configured for the data being requested and the access level being requested.
-        1. Protected access using a Beacon may require the Registered Access claims to be present.
+        1. Registered access using a Beacon may require the Registered Access claims to be present.
         2. Access to some datasets may require a specific ControlledAccessGrants claim to be present.
     5. The Passport Clearinghouse will accept or reject claims and tries to find a set of acceptable claims that match the access policy.  
-        1. The "[exp](http://bit.ly/ga4gh-passport-v1#exp)" JWT claim is checked to make sure it hasn't expired, and may use [special expiry checking logic](http://bit.ly/ga4gh-passport-v1#passport-visa-expiry) to make sure it isn't going to expire soon.
-        2. The "[type](http://bit.ly/ga4gh-passport-v1#type)" field is checked to see if matches the Passport Visa Type required for the policy in question.
-        3. The "[source](http://bit.ly/ga4gh-passport-v1#source)" field is checked to see if it is from a trusted source from a trusted source whitelist.
-        4. The "[value](http://bit.ly/ga4gh-passport-v1#value)" field is checked to see if it meets the requirements of the access policy.
-        5. The "[asserted](http://bit.ly/ga4gh-passport-v1#asserted)" and "[by](http://bit.ly/ga4gh-passport-v1#by)" fields may be checked as well, depending on the policy.
-        6. The "[conditions](http://bit.ly/ga4gh-passport-v1#conditions)" field is also checked to see if the validity of this Passport Visa has a dependency on having another Passport Visa also present in the same Passport.
+        1. The "[exp](http://bit.ly/ga4gh-ri-v1#exp)" JWT claim is checked to make sure it hasn't expired, and may use [special expiry checking logic](http://bit.ly/ga4gh-ri-v1#passport-visa-expiry) to make sure it isn't going to expire soon.
+        2. The "[type](http://bit.ly/ga4gh-ri-v1#type)" field is checked to see if it matches the Passport Visa Type required for the policy in question.
+        3. The "[source](http://bit.ly/ga4gh-ri-v1#source)" field is checked to see if it is from a trusted source from a trusted source whitelist.
+        4. The "[value](http://bit.ly/ga4gh-ri-v1#value)" field is checked to see if it meets the requirements of the access policy.
+        5. The "[asserted](http://bit.ly/ga4gh-ri-v1#asserted)" and "[by](http://bit.ly/ga4gh-ri-v1#by)" fields may be checked as well, depending on the policy.
+        6. The "[conditions](http://bit.ly/ga4gh-ri-v1#conditions)" field is also checked to see if the validity of this Passport Visa has a dependency on having another Passport Visa also present in the same Passport.
 4. If the Passport Clearinghouse decides that the Passport meets the access policy for the data in question, the service proceeds to authorize the researcher's use of the data.
     1. Some Passport Clearinghouses will authorize use of the data by changing the researcher's permissions and issuing a cloud-specific access token to read the bytes using their own cloud-native tools and services.
     2. Other Passport Clearinghouses will read the bytes from another service using special access token that it holds which contains permission to do so, then return the bytes back to the researcher.
