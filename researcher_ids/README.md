@@ -86,7 +86,7 @@ and data hosting services.
 
 ## Specification Overview
 
-The [GA4GH Passport specification](http://bit.ly/ga4gh-passport-v1) defines a technical standard specifying a machine readable data format to attribute credentials to a person to validate their identity and verify that they are permitted to access data held by a third-party data custodian. The Passport specification further defines the mechanism by which such credentials are assigned and exchanged in a secure manner. By adopting the Passport specification, a data custodian should have the ability to greatly speed-up the sharing of data with trusted persons such as researchers working on next generations health studies.
+The [GA4GH Passport specification](http://bit.ly/ga4gh-passport-v1) defines a technical standard specifying a machine readable data format to attribute credentials to a person to validate their identity and verify that they are permitted to access data held by a third-party data custodian. The Passport specification further defines the mechanism by which such credentials are exchanged in a secure manner. By adopting the Passport specification, a data custodian should have the ability to greatly speed-up the sharing of data with trusted persons such as researchers working on next generations health studies.
 
 Credentials for data access are assigned to a person in the form of Passport Visas. A number of Passport Visas can be assigned to a person and included in a signed access token, thereby constituting a Passport for that person. Passport Assertion Sources, such as research institutions, can create assertions to associate with a person's identity that can turn into Passport Visas.
 
