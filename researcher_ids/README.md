@@ -103,6 +103,12 @@ Claims can be set to expire and also contain additional information such as a UR
 
 Upon creation of Passport Visas, a Passport Broker will sign, store and/or transfer the Passport Visas as part of a standard OpenID Connect (OIDC) token to downstream services that can use it to authorize access to data.
 
+## Flow Of Claims
+
+![Basic Passport Flow of Data](/assets/img/passport_flow_of_data_basic.svg)
+
+See the [Overview](http://bit.ly/ga4gh-passport-v1#overview) section of the Passport specification for an understanding of the services involved. Note that it is possible for some implementations can combine services from the diagram into one larger service, and in such cases it must comply to requirements of all the services that it implements.
+
 ## How Claims Work
 
 The precise method to create Passport Visas, inject them into Passports, and use them downstream will vary from system to system. This flexibility speaks to the many use cases and different types of systems that are deployed and want to federate claims.
@@ -113,7 +119,7 @@ Here is an example of the life of a claim:
     1. The assertion information is stored in a Passport Assertion Repository.
     2. Audit information is added about who made the assertion, when the assertion was made, and any other artifacts it may have about around making the assertion.
     3. The Passport Assertion Source may choose to have the assertion expire in 30 days, and can reissue a replacement assertion if needed again after that. 
-2. A researcher, using an application, logs into a system (Passport Broker) that knows how to connect to a Passport Visa Signatory service that can read the assert and package it into a Passport Visa. then securely sign this visa.
+2. A researcher, using an application, logs into a system (Passport Broker) that knows how to connect to a Passport Visa Issuer service that can read the assert and package it into a Passport Visa. then securely sign this visa.
     1. The login token request contains an OIDC scope of "ga4gh_passport_v1" to indicate that it wishes to have a Passport accessible by presenting the access token.
     2. The Passport Broker asks the user which Passport Visas the researcher wishes to release to the downstream system (Passport Clearinghouse) that wants to use the Passport.
     3. The Passport Broker packages up all the Passport Visas the researcher wishes to release and mints an OIDC access token, and signs the token with the Passport Broker's private key. This signature will be used by downstream systems to verify the authenticity of the Passport and maintain its integrity (i.e. prevents any party from tampering with the contents).
@@ -161,6 +167,7 @@ Example Passport Visa payload:
   "iat": 150000000,
   "exp": 150010000,
   "ga4gh_visa_v1" : {
+    "type": "AffiliationAndRole",
     "value": "faculty@med.stanford.edu",
     "source": "https://grid.ac/institutes/grid.240952.8",
     "by": "so"
@@ -350,6 +357,7 @@ Example Passport Visa payload for LinkedIdentities:
   "exp": 1581208000,
   ...
   "ga4gh_visa_v1": {
+    "type": "LinkedIdentities",
     "value": "10001|https://issuer.example1.org/oidc,abcd|https://other.example2.org/oidc",
     "source": "https://broker.example3.org/oidc",
     "by": "system"
@@ -452,10 +460,6 @@ also be acceptable based on policies for the Passport Clearinghouse in addition 
 other validation of the tokens and fields as described in the [AAI
 specification](http://bit.ly/ga4gh-aai-profile) and the [Passport
 specification](http://bit.ly/ga4gh-passport-v1).
-
-## Flow Of Claims
-
-![alt text](/assets/img/flow_of_claims.png)
 
 ## Why so many expiry timestamps?
 
