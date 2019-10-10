@@ -250,11 +250,11 @@ Visa Assertion Source](#passport-visa-assertion-source) organization to a
 [Passport Clearinghouse](#passport-clearinghouse) service is shown at a high
 level. The colors used in Diagram 2 correspond to the colors of the data from
 [Diagram 1](#diagram-1) to give a sense of which services contributed the data.
-However, various elements within the [Passport Visa](#passport-visa) can be
-collected into standard form by either the [Passport Visa Assertion
-Repository](#passport-visa-assertion-repository) service or the
-[Passport Visa Issuer](#passport-visa-issuer) service depending on the
-protocols and procedures employed between these components.
+Note that the assertion stored in the [Passport Visa Assertion
+Repository](#passport-visa-assertion-repository) may not be in GA4GH Passport
+standard form, in which case the [Passport Visa Issuer](#passport-visa-issuer)
+needs to ensure that the data is transformed into standard form without
+misrepresenting the original intent.
 
 Implementations may introduce clients, additional services, and protocols --
 not detailed in Diagram 2 -- to provide the mechanisms to move the data between
