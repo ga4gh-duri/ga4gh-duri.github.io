@@ -2,7 +2,7 @@
 
 # GA4GH Passport
 
-**Version**: 0.9.6 (FROZEN RFC)
+**Version**: 1.0.0
 
 **Work Stream Name**: Data Use and Researcher Identity (DURI)
 
@@ -1394,6 +1394,7 @@ reader-friendly.
 
 | Version | Date       | Editor                             | Notes                                                         |
 |---------|------------|------------------------------------|---------------------------------------------------------------|
+| 1.0.0   | 2019-10-23 | Craig Voisin                       | Change version number re GA4GH Steering Committee approval    |
 | 0.9.6   | 2019-09-20 | Craig Voisin                       | New conditions field format                                   |
 | 0.9.5   | 2019-08-26 | Craig Voisin                       | Embedded Tokens, LinkedIdentities, overview, new definitions  |
 | 0.9.4   | 2019-08-12 | Craig Voisin                       | Introduce custom claim names, changes for "no organization"   |
