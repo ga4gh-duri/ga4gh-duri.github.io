@@ -37,7 +37,7 @@ The DURI is split into 2 subgroups
 
 #### Leads:
 - [Craig Voisin](https://www.linkedin.com/in/craigvoisin/?originalSubdomain=ca)
-- Stephanie Dyke
+- [Sarion Bowers](https://www.sanger.ac.uk/person/bowers-sarion/)
 
 #### Technical Programme Manager
 
