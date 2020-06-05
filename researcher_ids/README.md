@@ -1,4 +1,4 @@
-# Researcher Identity & Access Claims
+# Researcher Identities: GA4GH Passports and Visas
 
 ## Quick Links
 
