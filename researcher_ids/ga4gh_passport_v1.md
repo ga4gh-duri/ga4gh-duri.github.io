@@ -2,7 +2,7 @@
 
 # GA4GH Passport
 
-**Version**: 1.0.0
+**Version**: 1.0.1
 
 **Work Stream Name**: Data Use and Researcher Identity (DURI)
 
@@ -121,7 +121,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     [Passport Visa Issuer](#passport-visa-issuer) service whose
     signature is verifiable via its public key.
 
--   Encoded as an
+-   Encoded as a JWT
     [Embedded Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
     JWS Compact Serialization string with its decoded payload containing
     a `ga4gh_visa_v1` JWT claim.
@@ -147,6 +147,13 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 -   A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim value for
     the `ga4gh_visa_v1` JWT claim name. The claim value is a JSON object
     that provides fields that describe a [Passport Visa](#passport-visa).
+
+-   The `ga4gh_visa_v1` claim is required to define a GA4GH v1 visa and
+    contains controlled vocabulary as defined in this document. This object
+    is not the entire visa, and there are other important claims within
+    Passport Visa JWTs that MAY be specific to its visa type as well as other
+    JWT claims that are required as per this specification and the [GA4GH
+    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 -   For field definitions, refer to the [Passport Visa
     Fields](#passport-visa-fields) section of this specification.
@@ -341,8 +348,8 @@ in this regard.
     are met as outlined within this specification.
 
     If the Passport Broker is the [Passport Visa Issuer](#passport-visa-issuer),
-    it MUST set the `iss` to itself and sign such Passport Visas with its own
-    private key as described in the
+    it MUST set the `iss` to itself and sign such Passport Visas with an
+    appropriate private key as described in the
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 8.  <a name="requirement-8"></a> Passport Visas are designed for machine
@@ -905,14 +912,15 @@ Types](#custom-passport-visa-types).
             ranging from "someone who does research", to "someone who teaches",
             to "someone in education that works with students".
 
-    -   A custom role that includes a namespace prefix followed by a dot (".")
+    -   A custom role that includes a `namespace` prefix followed by a dot (".")
         where implementers introducing a new custom claim role MUST coordinate
         with GA4GH (or a body it elects) to align custom role use cases in order
         to maximize interoperability and avoid fragmentation across
         implementations.
         
-        -   Example: "nih.researcher\@med.stanford.edu" where "nih" is the
-            namespace and "researcher" is the custom role within that namespace.
+        -   Non-normative example: "ega.researcher\@med.stanford.edu" where "ega"
+            is the namespace and "researcher" is the custom role within that
+            namespace.
 
         -   Custom roles and their prefixes MUST be limited to characters: a-z,
             dash ("-"), underscore ("_"), digits (0-9). Custom roles and prefixes
@@ -1145,8 +1153,11 @@ Use cases include, but are not limited to the following:
     Types](#passport-visa-type):
 
     -   MUST utilize one or more
-        [ControlledAccessGrants](#controlledaccessgrants) for
-        permissions associated with specific data or datasets.
+        [ControlledAccessGrants](#controlledaccessgrants) and/or custom
+        controlled access visa type(s) for permissions associated with specific
+        data or datasets. There MAY be more standard visa types introduced for
+        encoding controlled access in future revisions of the Passport
+        specification.
         
     -   MAY utilize the [conditions](#conditions) field on
         "ControlledAccessGrants" to cause such a grant to require
@@ -1248,8 +1259,8 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
     University as asserted by a Signing Official at Stanford.
 
 -   **ControlledAccessGrants**: The person has approved access by the DAC at the
-    National Cancer Institute for datasets 710 and approval for dataset 432 for
-    a dataset from EGA.
+    Example Institute for datasets 710 and approval for dataset 432 for a dataset
+    from EGA.
 
     -   In this example, assume dataset 710 does not have any
         "[conditions](#conditions)" based on the
@@ -1310,8 +1321,8 @@ reader-friendly.
         "ga4gh_visa_v1": {
             "type": "ControlledAccessGrants",
             "asserted": 1549632872,
-            "value": "https://nih.gov/dbgap/phs000710",
-            "source": "https://grid.ac/institutes/grid.48336.3a",
+            "value": "https://example-institute.org/datasets/710",
+            "source": "https://grid.ac/institutes/grid.0000.0a",
             "by": "dac"
         }
     },
@@ -1392,13 +1403,14 @@ reader-friendly.
 
 ## Specification Revision History
 
-| Version | Date       | Editor                             | Notes                                                         |
-|---------|------------|------------------------------------|---------------------------------------------------------------|
-| 1.0.0   | 2019-10-23 | Craig Voisin                       | Change version number re GA4GH Steering Committee approval    |
-| 0.9.6   | 2019-09-20 | Craig Voisin                       | New conditions field format                                   |
-| 0.9.5   | 2019-08-26 | Craig Voisin                       | Embedded Tokens, LinkedIdentities, overview, new definitions  |
-| 0.9.4   | 2019-08-12 | Craig Voisin                       | Introduce custom claim names, changes for "no organization"   |
-| 0.9.3   | 2019-08-09 | Craig Voisin                       | Updates related to introducing Embedded Passport Tokens       |
-| 0.9.2   | 2019-07-09 | Craig Voisin                       | Introduce RI Claim Object definition and use it consistently  |
-| 0.9.1   | 2019-07-08 | Craig Voisin                       | Clarify use cases, rephrase multi-value, update links         |
-| 0.9.0   | 2017-      | Craig Voisin, Mikael Linden et al. | Initial working version                                       |
+| Version | Date       | Editor                             | Notes                                                           |
+|---------|------------|------------------------------------|-----------------------------------------------------------------|
+| 1.0.1   | 2020-06-26 | Craig Voisin                       |   Address comments raised by RAS pilot implementation:<br>1.  Custom visa types may be used for controlled access<br>2.  Passport Visa definition to include "JWT" more explicitly<br>3.  Passport Visa Object isn't the only place for access info<br>4.  Requirement 7 to not imply there is only one private key<br>5.  Example passport claim to not refer to NIH specifically |
+| 1.0.0   | 2019-10-23 | Craig Voisin                       | Change version number re GA4GH Steering Committee approval      |
+| 0.9.6   | 2019-09-20 | Craig Voisin                       | New conditions field format                                     |
+| 0.9.5   | 2019-08-26 | Craig Voisin                       | Embedded Tokens, LinkedIdentities, overview, new definitions    |
+| 0.9.4   | 2019-08-12 | Craig Voisin                       | Introduce custom claim names, changes for "no organization"     |
+| 0.9.3   | 2019-08-09 | Craig Voisin                       | Updates related to introducing Embedded Passport Tokens         |
+| 0.9.2   | 2019-07-09 | Craig Voisin                       | Introduce RI Claim Object definition and use it consistently    |
+| 0.9.1   | 2019-07-08 | Craig Voisin                       | Clarify use cases, rephrase multi-value, update links           |
+| 0.9.0   | 2017-      | Craig Voisin, Mikael Linden et al. | Initial working version                                         |
