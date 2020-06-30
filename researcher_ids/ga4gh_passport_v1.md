@@ -1100,6 +1100,17 @@ Types](#custom-passport-visa-types).
 -   Implementers introducing a new custom `type` name MUST coordinate with the
     GA4GH (or a body it elects) to align custom `type` use cases to maximize
     interoperability and avoid unnecessary fragmentation across implementations.
+    
+    -   To review the custom visa registry, including any visa descriptions,
+        examples and links that have been provided through proposals using this
+        process, visit the [Custom Passport Visa Registry](ga4gh_custom_visas.md)
+        page.
+
+    -   Documentation on encoding and interpreting the claims and fields SHOULD
+        be provided as part of the proposal and for inclusion in a public custom
+        visa registry maintained by GA4GH. This documentation SHOULD also include
+        examples and links to relevant documentation and/or open source software
+        that MAY be available.
 
 -   Passport Clearinghouses MUST ignore all Passport Visas containing a custom
     `type` name that they do not support.
