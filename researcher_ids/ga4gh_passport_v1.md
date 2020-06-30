@@ -1100,6 +1100,17 @@ Types](#custom-passport-visa-types).
 -   Implementers introducing a new custom `type` name MUST coordinate with the
     GA4GH (or a body it elects) to align custom `type` use cases to maximize
     interoperability and avoid unnecessary fragmentation across implementations.
+    
+    -   To review the custom visa registry, including any visa descriptions,
+        examples and links that have been provided through proposals using this
+        process, visit the [Custom Passport Visa Registry](ga4gh_custom_visas.md)
+        page.
+
+    -   Documentation on encoding and interpreting the claims and fields SHOULD
+        be provided as part of the proposal and for inclusion in a public custom
+        visa registry maintained by GA4GH. This documentation SHOULD also include
+        examples and links to relevant documentation and/or open source software
+        that MAY be available.
 
 -   Passport Clearinghouses MUST ignore all Passport Visas containing a custom
     `type` name that they do not support.
@@ -1405,7 +1416,7 @@ reader-friendly.
 
 | Version | Date       | Editor                             | Notes                                                           |
 |---------|------------|------------------------------------|-----------------------------------------------------------------|
-| 1.0.1   | 2020-06-26 | Craig Voisin                       |   Address comments raised by RAS pilot implementation:<br>1.  Custom visa types may be used for controlled access<br>2.  Passport Visa definition to include "JWT" more explicitly<br>3.  Passport Visa Object isn't the only place for access info<br>4.  Requirement 7 to not imply there is only one private key<br>5.  Example passport claim to not refer to NIH specifically |
+| 1.0.1   | 2020-06-26 | Craig Voisin                       |   Address comments raised by RAS pilot implementation:<br>1.  Custom visa types may be used for controlled access<br>2.  Passport Visa definition to include "JWT" more explicitly<br>3.  Passport Visa Object isn't the only place for access info<br>4.  Requirement 7 to not imply there is only one private key<br>5.  Example passport claim to not refer to NIH specifically<br>6. Add a Passport Custom Visa Type registry |
 | 1.0.0   | 2019-10-23 | Craig Voisin                       | Change version number re GA4GH Steering Committee approval      |
 | 0.9.6   | 2019-09-20 | Craig Voisin                       | New conditions field format                                     |
 | 0.9.5   | 2019-08-26 | Craig Voisin                       | Embedded Tokens, LinkedIdentities, overview, new definitions    |
