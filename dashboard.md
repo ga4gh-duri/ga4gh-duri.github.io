@@ -32,7 +32,11 @@
 |   |  |  |  |
   
 done: ![done](https://github.com/ga4gh-duri/ga4gh-duri.github.io/blob/master/assets/img/done.png) 
+
 In progess: ![in progress](https://github.com/ga4gh-duri/ga4gh-duri.github.io/blob/master/assets/img/green_dot.png)
+
 Attention required: ![attention required](https://github.com/ga4gh-duri/ga4gh-duri.github.io/blob/master/assets/img/orange_dot.jpg)
+
 Non-goal: ![non goal](https://github.com/ga4gh-duri/ga4gh-duri.github.io/blob/master/assets/img/non_goal.png)
+
 Blocked: ![blocked](https://github.com/ga4gh-duri/ga4gh-duri.github.io/blob/master/assets/img/red_dot.png)
