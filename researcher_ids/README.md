@@ -26,6 +26,13 @@ Data access authorization information is encoded as Passports and transmitted ac
 
 Organizations and individuals issuing and using Passport Visas must adhere to corresponding data access and data protection policies and regulations, with respect to both the data to which Passport Visas may be used to gain access, and to the personal data of the individual to which Passport Visas apply.
 
+In addition to the further details below, there are two available recorded webinars to help get you started:
+1) A high level overview of the GA4GH Passports concept and benefits
+[![](http://img.youtube.com/vi/l5Cu76NQyUY/0.jpg)](http://www.youtube.com/watch?v=l5Cu76NQyUY "")
+
+2) An in depth technical deep dive into the specification  
+[![](http://img.youtube.com/vi/K7HID5KAhz0/0.jpg)](http://www.youtube.com/watch?v=K7HID5KAhz0 "")
+
 ### Example scientific use case of GA4GH Passport implementation: biobank data discovery using ELIXIR and Beacon
 
 Biobank collections across the globe need a secure way to make data
