@@ -2,7 +2,7 @@
 
 # GA4GH Passport
 
-**Version**: 1.0.1
+**Version**: 1.0.2
 
 **Work Stream Name**: Data Use and Researcher Identity (DURI)
 
@@ -19,9 +19,6 @@ described in the "[Registered access: authorizing data
 access](https://www.nature.com/articles/s41431-018-0219-y)" publication.
 **Refer to the [Overview](#overview) for an introduction to how data
 objects and services defined in this specification fit together.**
-
-**Co-Chairs of Product Subgroup**: Sarion Bowers (Sanger) & Craig Voisin
-(Google)
 
 ### Table of Contents
 
