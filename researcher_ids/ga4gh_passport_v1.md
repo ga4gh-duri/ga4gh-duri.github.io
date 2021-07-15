@@ -87,11 +87,18 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport
 
--   A GA4GH-compatible access token ("GA4GH Access Token"), as per the [GA4GH
-    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md),
-    along with the [Passport Claim](#passport-claim) that is
-    returned from [Passport Broker](#passport-broker) service endpoints
-    using such an access token.
+-   A logical concept that includes a [Passport Bearer Token](#passport-bearer-token)
+    and may also include any [UserInfo Visas](#userinfo-visas) acquired by making calls
+    to the [Passport Broker](#passport-broker) using such a token.
+
+-   This concept is for the convenience of readers, however systems that implement this
+    concept work with the separate byte-encoded objects involved in the composition
+    of a Passport, and not the higher-level logical concept itself.
+
+#### Passport Bearer Token
+
+-   A [GA4GH Passort-Scoped Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-passport-scoped-access-token),
+    as per the [GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 #### Passport Claim
 
@@ -121,10 +128,10 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     [Passport Visa Issuer](#passport-visa-issuer) service whose
     signature is verifiable via its public key.
 
--   Encoded as a JWT
-    [Embedded Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
-    JWS Compact Serialization string with its decoded payload containing
-    a `ga4gh_visa_v1` JWT claim.
+-   Encoded as a
+    [GA4GH Visa](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa)
+    in JWS Compact Serialization string format with its decoded payload
+    containing a `ga4gh_visa_v1` JWT claim.
     
 -   The `ga4gh_visa_v1` JWT claim contains various properties
     ([Passport Visa Fields](#passport-visa-fields)) that describe
@@ -206,12 +213,12 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 #### Passport Visa Issuer
 
--   A compliant [AAI Embedded Token
-    Issuer](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token-issuer)
+-   A compliant [GA4GH Visa
+    Issuer](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa-issuer)
     service that signs a [Passport Visa](#passport-visa).
 
--   See [Conformance for Embedded Token Issuers section of the GA4GH
-    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-issuers).
+-   See [Conformance for Visa Issuers section of the GA4GH
+    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-visa-issuers).
 
 #### Passport Broker
 
@@ -241,10 +248,10 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 In Diagram 1, the objects and tokens that make up a [Passport](#passport)
 come together. Note that the [Passport Claim](#passport-claim) is not
-encoded within the GA4GH Access Token. The contents of this claim are
-fetched separately from the Passport Broker by sending the access token to the
-appropriate Passport Broker service endpoint (see the [GA4GH AAI
-Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
+encoded within the [Passport Bearer Token](#passport-bearer-token). The contents
+of this claim are fetched separately from the [Passport Broker](#passport-broker)
+by sending the Passport Bearer Token to the Passport Broker /userinfo endpoint
+(see the [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
 for more details).
 
 <a href="diagram-2"></a>
@@ -296,7 +303,7 @@ in this regard.
     The services defined in this specification that are based on services defined
     by the GA4GH AAI Specification MUST also conform to the GA4GH AAI Specification.
     
-    -   Passport Visa Issuer MUST conform as a GA4GH AAI Embedded Token Issuer.
+    -   Passport Visa Issuer MUST conform as a GA4GH AAI Visa Issuer.
 
     -   Passport Broker MUST conform as a GA4GH AAI Broker.
 
@@ -304,7 +311,7 @@ in this regard.
 
 2.  <a name="requirement-2"></a> A Passport Claim consists of a list of
     [Passport Visas](#passport-visa). These Passport Visas MUST conform to
-    [Embedded Tokens](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
+    [GA4GH Visas](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa)
     as outlined by the GA4GH AAI Specification.
 
 3.  <a name="requirement-3"></a> Each Passport Visa may
@@ -370,8 +377,8 @@ in this regard.
     Clearinghouse MUST abide by the following:
     
     1.  Passport Clearinghouses MUST reject all requests that include Passports
-        that fail the neccessary checks of the access token as described in
-        the [GA4GH AAI
+        that fail the neccessary checks of the Passport Bearer Token as described
+        for Passport-Scoped Access Tokens in the [GA4GH AAI
         Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
     2.  A Passport Clearinghouse MUST ignore all Passport Visas is does not
@@ -415,11 +422,11 @@ the purpose of supporting user interfaces.
 
 The [Passport Claim](#passport-claim) name maps to an array of
 [Passport Visas](#passport-visa) which are encoded as
-[Embedded Tokens](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-token)
+[GA4GH Visas](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa)
 within a Passport Claim.
 
-Non-normative example of a set of Passport Visas, encoded as Embedded
-Token JWS Compact Serialization strings:
+Non-normative example of a set of Passport Visas, encoded as Visa
+JWS Compact Serialization strings:
 
 ```
 {
@@ -436,14 +443,14 @@ Claim](#example-passport-claim) section of the specification.
 ### Passport Visa Requirements
 
 -   Passport Visas MUST conform to one of the
-    [GA4GH AAI Specification Embedded Token formats](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#embedded-token-issued-by-embedded-token-issuer)
+    [GA4GH AAI Specification Visa formats](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#visa-issued-by-visa-issuer)
     as JWS Compact Serialization strings as defined by [RFC7515 section
     7.1](https://tools.ietf.org/html/rfc7515#section-7.1).
 
 -   Passport Visa Issuers, Passport Brokers, and Passport Clearinghouses
     MUST conform to the
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
-    requirements for Embedded Tokens in their use of Passport Visas.
+    requirements for Visas in their use of Passport Visas.
     
 -   Validation, as outlined elsewhere in this specification and the
     GA4GH AAI Specification, MUST be performed before Passport Visas are
@@ -484,7 +491,7 @@ Object](#passport-visa-object) are as described in the [Passport Visa
 Fields](#passport-visa-fields) section of this specification.
 
 One of `scope` or `jku` MUST be present as described in
-[Conformance for Embedded Token Issuers](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-embedded-token-issuers)
+[Conformance for Visa Issuers](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-visa-issuers)
 within the [AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
 
 #### "**exp**"
@@ -539,8 +546,8 @@ GA4GH (or a body it elects).
     Issuer](#passport-visa-issuer) MAY use a recent timestamp (for
     example, the current timestamp) if the Passport Visa Assertion Repository
     is kept up to date such that the Passport Visa Issuer can ensure that
-    the claim is valid at or near the time of minting the Passport Visa as an
-    Embedded Token. However, generally it is RECOMMENDED to have the Passport
+    the claim is valid at or near the time of minting the Passport Visa.
+    However, generally it is RECOMMENDED to have the Passport
     Visa Assertion Repository provide more accurate `asserted` information.
 
 #### "**value**"
@@ -1257,7 +1264,7 @@ limit the life of access, and specifically MUST conform to the GA4GH AAI
 Specification requirements in this regard. Systems utilizing Passport Visas MAY also
 employ other mechanisms outlined in the GA4GH AAI Specification, such as [Access
 Token Polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#at-polling)
-if the Passport Visa is encoded as an [Embedded Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-embedded-access-token). 
+if the Passport Visa is encoded as a [Visa Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa-access-token). 
 
 ## Example Passport Claim
 
@@ -1307,7 +1314,7 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
 
 Normally a Passport like this would include [Passport Visa
 Format](#passport-visa-format) entries as JWS Compact Serialization strings,
-however this example shows the result after the Embedded Tokens have been
+however this example shows the result after the GA4GH Visas have been
 unencoded into JSON (and reduced to include only the payload) to be more
 reader-friendly.
 
@@ -1416,6 +1423,7 @@ reader-friendly.
 
 | Version | Date       | Editor                             | Notes                                                           |
 |---------|------------|------------------------------------|-----------------------------------------------------------------|
+| 1.0.2   | 2021-07-15 | Craig Voisin                       | Update to use new AAI spec v1.0.4 terminology, fix passport definition |
 | 1.0.1   | 2020-06-26 | Craig Voisin                       |   Address comments raised by RAS pilot implementation:<br>1.  Custom visa types may be used for controlled access<br>2.  Passport Visa definition to include "JWT" more explicitly<br>3.  Passport Visa Object isn't the only place for access info<br>4.  Requirement 7 to not imply there is only one private key<br>5.  Example passport claim to not refer to NIH specifically<br>6. Add a Passport Custom Visa Type registry |
 | 1.0.0   | 2019-10-23 | Craig Voisin                       | Change version number re GA4GH Steering Committee approval      |
 | 0.9.6   | 2019-09-20 | Craig Voisin                       | New conditions field format                                     |
