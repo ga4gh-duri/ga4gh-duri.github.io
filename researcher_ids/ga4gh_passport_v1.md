@@ -29,6 +29,7 @@ objects and services defined in this specification fit together.**
   - [GA4GH AAI Specification](#ga4gh-aai-specification)
   - [Objects and Tokens](#objects-and-tokens)
     - [Passport](#passport)
+    - [Passport Bearer Token](#passport-bearer-token)
     - [Passport Claim](#passport-claim)
     - [Passport Visa](#passport-visa)
     - [Passport Visa Identity](#passport-visa-identity)
@@ -88,12 +89,18 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 #### Passport
 
 -   A logical concept that includes a [Passport Bearer Token](#passport-bearer-token)
-    and may also include any [UserInfo Visas](#userinfo-visas) acquired by making calls
-    to the [Passport Broker](#passport-broker) using such a token.
+    along with any [Passport Visas](#passport-visas) that may be acquired
+    by making /userinfo calls to the [Passport Broker](#passport-broker)
+    using the Passport Bearer Token.
 
--   This concept is for the convenience of readers, however systems that implement this
-    concept work with the separate byte-encoded objects involved in the composition
-    of a Passport, and not the higher-level logical concept itself.
+-   This conceptualization includes all the identity and authorization
+    information that this specification makes available to [Passport
+    Clearinghouses](#passport-clearinghouse).
+
+-   Generally, this concept is for the convenience of readers, however
+    systems that implement this concept work with the separate byte-encoded
+    objects involved in the composition of a conceptual Passport, and not the
+    higher-level logical concept itself.
 
 #### Passport Bearer Token
 
