@@ -99,6 +99,10 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
     objects involved in the composition of a conceptual Passport, and not the
     higher-level logical concept itself.
 
+-   The Passport is a logical concept in v1.0, but MAY have a unified byte encoding
+    (i.e. no longer just be a concept) in future revisions of this specification. This
+    is beyond the scope of this v1.0 specification.
+
 #### Passport Bearer Token
 
 -   A [GA4GH Passort-Scoped Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-passport-scoped-access-token),
