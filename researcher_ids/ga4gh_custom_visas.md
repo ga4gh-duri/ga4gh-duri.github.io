@@ -16,4 +16,4 @@ on the [Update Procedure](UPDATE_PROCEDURE.md) page.
 
 | Date | Visa Name | Visa Type String | Short Description                                      | Documentation Links |
 |------|-----------|------------------|--------------------------------------------------------|--------------------|
-| 2020-06-30 | NIH RAS Controlled Access | `https://ras.nih.gov/visas/v1` | Multiple controlled access authorizations encoded into a single visa with a more detailed list of attributes per authorization. Currently encodes a detailed list of attribrutes that come from NIH's dbGaP visa source repository. | [RAS Service Offerings](https://auth.nih.gov/docs/RAS/serviceofferings.html) |
+| 2020-06-30 | NIH RAS Controlled Access | `https://ras.nih.gov/visas/v1.1` | Multiple controlled access authorizations encoded into a single visa with a more detailed list of attributes per authorization. Currently encodes a detailed list of attribrutes that come from NIH's dbGaP visa source repository. | [RAS Service Offerings](https://auth.nih.gov/docs/RAS/serviceofferings.html) |
