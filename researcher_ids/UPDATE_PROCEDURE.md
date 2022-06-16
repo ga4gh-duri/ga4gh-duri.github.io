@@ -4,15 +4,15 @@ This document outlines the maintainers and update procedures to suggest and init
 
 ## Specification maintainers
 
-**Name**: Martin Kuba
-    Host Institute: Masaryk University
-    Email Address: makub@ics.muni.cz
-    GitHub: @martin-kuba
+**Name**: Martin Kuba  
+    Host Institute: Masaryk University  
+    Email Address: makub@ics.muni.cz  
+    GitHub: @martin-kuba  
 
-**Name**: David Bernick
-    Host Institute: Broad Institute
-    Email Address: dbernick@broadinstitute.org
-    GitHub: @davidbernick
+**Name**: David Bernick  
+    Host Institute: Broad Institute  
+    Email Address: dbernick@broadinstitute.org  
+    GitHub: @davidbernick  
 
 ## Specifications updates
 
