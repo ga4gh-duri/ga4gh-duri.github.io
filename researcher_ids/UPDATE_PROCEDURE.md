@@ -1,18 +1,18 @@
 # Update Procedures
 
-This document outlines the maintainers and update procedures to suggest and innitiate changes to the GA4GH Researcher Identities & Access Claims [specifications](http://bit.ly/ga4gh-ri-v1) and documentation.
+This document outlines the maintainers and update procedures to suggest and initiate changes to the GA4GH Researcher Identities & Access Claims [specifications](http://bit.ly/ga4gh-ri-v1) and documentation.
 
 ## Specification maintainers
 
-**Name**: Craig Voisin  
-    Host Institute: Google  
-    Email Address: craigv@google.com  
-    GitHub: @cdvoisin  
+**Name**: Martin Kuba
+    Host Institute: Masaryk University
+    Email Address: makub@ics.muni.cz
+    GitHub: @martin-kuba
 
-**Name**: Mikael Linden  
-    Host Institute: CSC  
-    Email Address: mikael.linden@csc.fi  
-    GitHub: @mikael-linden 
+**Name**: David Bernick
+    Host Institute: Broad Institute
+    Email Address: dbernick@broadinstitute.org
+    GitHub: @davidbernick
 
 ## Specifications updates
 
