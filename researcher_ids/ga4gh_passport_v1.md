@@ -242,17 +242,17 @@ Claim](#example-passport-claim) section of the specification.
     GA4GH AAI Specification, MUST be performed before Visas are
     used for identity or authorization.
 
-### Visa Format
+## Visa Format
 
 Visas are signed JWTs encoded into strings using JWS Compact Serialization.  
-When decoded, they can be represented as:
+When decoded, their structure is:
 
 ```
 {
-  "typ": "JWT",
-  "alg": "<algorithm>",
-  ["jku": "<JWKS-URL>",]
-  "kid": "<key-identifier>"
+  "typ": "vnd.ga4gh.visa+jwt | at+jwt | JWT",
+  "alg": "<signing-algorithm>",
+  ["jku": "<json-web-keys-set-URL>",]
+  "kid": "<signing-key-identifier>"
 }.
 {
   "iss": "<issuer-URL>",
@@ -271,13 +271,37 @@ When decoded, they can be represented as:
   }
 }.<signature>
 ```
-
-Where claims within the `ga4gh_visa_v1` [Visa Object](#visa-object) are as described 
-in the [Visa Object Claims](#visa-object-claims) section of this specification.
+The standard JWT payload claims `iss`, `sub`, `iat`, `exp` are all REQUIRED.
 
 One of `scope` or `jku` MUST be present as described in
 [Conformance for Visa Issuers](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-visa-issuers)
-within the [AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+within the AAI specification.
+
+Claims within the `ga4gh_visa_v1` [Visa Object](#visa-object) are as described
+in the [Visa Object Claims](#visa-object-claims) section of this specification.
+
+#### "**typ**"
+
+- OPTIONAL. The value of the `typ` header claim is RECOMMENDED to be `vnd.ga4gh.visa+jwt`
+  for [Visa Document Token Format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#visa-document-token-format)
+  visas. The value `JWT` marking  general JWTs MAY also be used.
+- For [Visa Access Token Format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#visa-access-token-format)
+  visas the value is unspecified, but it would likely be `at+jwt` as required by [section 2.1 of RFC 9068](https://datatracker.ietf.org/doc/html/rfc9068#section-2.1)
+  for JWT access tokens.
+- The `typ` header claim is specified by [section 5.1 of JWT RFC](https://datatracker.ietf.org/doc/html/rfc7519#section-5.1)
+  to contain media type of the JWT for disambiguation.
+  The full recommended media type for GA4GH Visas is `application/vnd.ga4gh.visa+jwt` where the subtype consist of
+  the "vendor tree" prefix `vnd`, the "producer name" `ga4gh`, and the "product designation" `visa`
+  followed by the `+jwt` structured syntax suffix (specified in [section 3.2](https://datatracker.ietf.org/doc/html/rfc6838#section-3.2)
+  and [section 4.2.8  of RFC 6838](https://datatracker.ietf.org/doc/html/rfc6838#section-4.2.8)).
+  Then [section 4.1.9 of JWS RFC](https://www.rfc-editor.org/rfc/rfc7515.html#section-4.1.9) recommends to omit the prefix
+  `application/` to keep messages compact.
+
+#### "**alg**"
+
+- REQUIRED.The section [Signing Algorithms](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#signing-algorithms)
+in the AAI specification lists possible algorithms used in the `alg` header claim.
+
 
 #### "**exp**"
 
