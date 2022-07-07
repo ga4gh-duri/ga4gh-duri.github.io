@@ -2,415 +2,197 @@
 
 # GA4GH Passport
 
-**Version**: 1.0.2
+**Version**: 1.2
 
 **Work Stream Name**: Data Use and Researcher Identity (DURI)
 
 **Product Name**: GA4GH Passport
 
 **Product Description:** This document provides the GA4GH technical
-specification for a GA4GH [Passport](#passport) to be
-consumed by [Passport Clearinghouses](#passport-clearinghouse) in a
+specification for a GA4GH [Passport](#term-passport) to be
+consumed by [Passport Clearinghouses](#term-passport-clearinghouse) in a
 standardized approach to determine whether or not data access should be
 granted. Additionally, the specification provides guidance on encoding
-specific [use cases](#encoding-use-cases), including [Passport
-Visas](#passport-visa) for [Registered Access](#registered-access) as
+specific [use cases](#encoding-use-cases), including
+[Visas](#term-visa) for [Registered Access](#registered-access) as
 described in the "[Registered access: authorizing data
 access](https://www.nature.com/articles/s41431-018-0219-y)" publication.
 **Refer to the [Overview](#overview) for an introduction to how data
 objects and services defined in this specification fit together.**
 
 ### Table of Contents
+{:.no_toc}
 
-- [**Conventions and Terminology**](#conventions-and-terminology)
-  - [GA4GH AAI Specification](#ga4gh-aai-specification)
-  - [Objects and Tokens](#objects-and-tokens)
-    - [Passport](#passport)
-    - [Passport Bearer Token](#passport-bearer-token)
-    - [Passport Claim](#passport-claim)
-    - [Passport Visa](#passport-visa)
-    - [Passport Visa Identity](#passport-visa-identity)
-    - [Passport Visa Object](#passport-visa-object)
-    - [Passport Visa Type](#passport-visa-type)
-  - [Actors and Services](#actors-and-services)
-    - [Passport Visa Assertion Source](#passport-visa-assertion-source)
-    - [Passport Visa Assertion Repository](#passport-visa-assertion-repository)
-    - [Passport Visa Issuer](#passport-visa-issuer)
-    - [Passport Broker](#passport-broker)
-    - [Passport Clearinghouse](#passport-clearinghouse)
-- [**Overview**](#overview)
-  - [General Requirements](#general-requirements)
-  - [Support for User Interfaces](#support-for-user-interfaces)
-- [**Passport Claim Format**](#passport-claim-format)
-  - [Passport Visa Requirements](#passport-visa-requirements)
-  - [Passport Visa Format](#passport-visa-format)
-    - [exp](#exp)
-  - [Passport Visa Fields](#passport-visa-fields)
-    - [type](#type)
-    - [asserted](#asserted)
-    - [value](#value)
-    - [source](#source)
-    - [conditions](#conditions)
-      - [Pattern Matching](#pattern-matching)
-    - [by](#by)
-  - [URL Fields](#url-fields)
-- [**GA4GH Standard Passport Visa Type Definitions**](#ga4gh-standard-passport-visa-type-definitions)
-  - [AffiliationAndRole](#affiliationandrole)
-  - [AcceptedTermsAndPolicies](#acceptedtermsandpolicies)
-  - [ResearcherStatus](#researcherstatus)
-  - [ControlledAccessGrants](#controlledaccessgrants)
-  - [LinkedIdentities](#linkedidentities)
-- [**Custom Passport Visa Types**](#custom-passport-visa-types)
-- [**Encoding Use Cases**](#encoding-use-cases)
-  - [Registered Access](#registered-access)
-  - [Controlled Access](#controlled-access)
-- [**Passport Visa Expiry**](#passport-visa-expiry)
-- [**Token Revocation**](#token-revocation)
-- [**Example Passport Claim**](#example-passport-claim)
-- [**Specification Revision History**](#specification-revision-history)
+* toc
+  {:toc}
 
-## Conventions and Terminology
+## Terminology
+
+### Inherited Definitions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
-#### GA4GH AAI Specification
+This specification inherits terminology from the 
+[GA4GH AAI OIDC Profile](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#terminology)
+specification, namely these terms:
 
--   Refers to the [GA4GH Authentication and Authorization Infrastructure
-    (AAI) OpenID Connect Profile](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
-    specification.
+* <a name="term-passport"></a>**[Passport](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-passport)**
+* <a name="term-passport-scoped-access-token"></a>**[Passport-Scoped Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-passport-scoped-access-token)**
+* <a name="term-passport-clearinghouse"></a>**[Passport Clearinghouse](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-passport-clearinghouse)**
+* <a name="term-visa-assertion"></a>**[Visa Assertion](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa-assertion)**
+* <a name="term-visa-assertion-source"></a>**[Visa Assertion Source](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa-assertion-source)**
+* <a name="term-visa-issuer"></a>**[Visa Issuer](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa-issuer)**
+* <a name="term-visa"></a>**[Visa](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa)**
+* <a name="term-jwt"></a>**[JWT](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-jwt)**
+* <a name="term-ga4gh-claim"></a>**[GA4GH Claim](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-ga4gh-claim)**
+* <a name="term-broker"></a>**[Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-broker)**
 
-### **Objects and Tokens**
-
-#### Passport
-
--   A logical concept that includes a [Passport Bearer Token](#passport-bearer-token)
-    along with any [Passport Visas](#passport-visas) that may be acquired
-    by making /userinfo calls to the [Passport Broker](#passport-broker)
-    using the Passport Bearer Token.
-
--   This conceptualization includes all the identity and authorization
-    information that this specification makes available to [Passport
-    Clearinghouses](#passport-clearinghouse).
-
--   Generally, this concept is for the convenience of readers, however
-    systems that implement this concept work with the separate byte-encoded
-    objects involved in the composition of a conceptual Passport, and not the
-    higher-level logical concept itself.
-
--   The Passport is a logical concept in v1.0, but MAY have a unified byte encoding
-    (i.e. no longer just be a concept) in future revisions of this specification. This
-    is beyond the scope of this v1.0 specification.
-
-#### Passport Bearer Token
-
--   A [GA4GH Passort-Scoped Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-passport-scoped-access-token),
-    as per the [GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+### Term Definitions
 
 #### Passport Claim
 
--   The `ga4gh_passport_v1` claim. It is a [GA4GH
-    Claim](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-ga4gh-claim)
-    with a claim value being a list of [Passport Visas](#passport-visa).
+-   The `ga4gh_passport_v1` claim. It is a [GA4GH Claim](#term-ga4gh-claim)
+    with a claim value being a list of [Visas](#term-visa).
     
--   Passport Visas from multiple [Passport Visa
-    Issuer](#passport-visa-issuer) services can be bundled together in the
+-   Visas from multiple [Visa Issuers](#term-visa-issuer) can be bundled together in the
     same `ga4gh_passport_v1` claim.
 
 -   For example, the following structure encodes a Passport Claim:
 
     ```
     "ga4gh_passport_v1" : [
-        <Passport Visa>,
-        <Passport Visa (if more than one)>,
+        <Visa>,
+        <Visa (if more than one)>,
         ...
     ]
     ```
+#### Visa Claim
 
-#### Passport Visa
+-   The `ga4gh_visa_v1` claim. It is a [GA4GH Claim](#term-ga4gh-claim)
+    with a claim value being a [Visa Object](#visa-object).
 
--   An assertion from a [Passport Visa Assertion
-    Source](#passport-visa-assertion-source) organization that is bound to
-    a [Passport Visa Identity](#passport-visa-identity) and signed by a
-    [Passport Visa Issuer](#passport-visa-issuer) service whose
-    signature is verifiable via its public key.
+-   For example, the following structure encodes a Visa Claim:
 
--   Encoded as a
-    [GA4GH Visa](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa)
-    in JWS Compact Serialization string format with its decoded payload
-    containing a `ga4gh_visa_v1` JWT claim.
-    
--   The `ga4gh_visa_v1` JWT claim contains various properties
-    ([Passport Visa Fields](#passport-visa-fields)) that describe
-    the assertion and limitations thereof.
-    
--   Passport Visas are included in the [Passport
-    Claim](#passport-claim). See the [Passport Claim
-    Format](#passport-claim-format) section of this specification for
-    more details.
+    ```
+    "ga4gh_visa_v1" : {
+        "type": "<visa-type>",
+        "asserted": <seconds-since-epoch>,
+        "value": "<value-string>",
+        "source": "<source-URL>",
+    }
+    ```
 
-#### Passport Visa Identity
+#### Visa Identity
 
 -   The {`sub`, `iss`} pair of JWT standard claims ([RFC7519 section
     4.1.1](https://tools.ietf.org/html/rfc7519#section-4.1.1)) that are
-    included within a [Passport Visa](#passport-visa) that represents a
-    given user (such as a user account) within the issuer's (`iss`) system.
+    included within a [Visa](#term-visa) that represents a
+    given user (`sub` for subject) within the issuer's (`iss`) system.
 
-#### Passport Visa Object
+#### Visa Object
 
--   A [JWT](https://tools.ietf.org/html/rfc7519#section-2) claim value for
-    the `ga4gh_visa_v1` JWT claim name. The claim value is a JSON object
-    that provides fields that describe a [Passport Visa](#passport-visa).
+- A claim value for
+    the `ga4gh_visa_v1` claim name. The claim value is a JSON object
+    that provides claims that describe [Visa](#term-visa)'s 
+    properties that cannot be described by the standard JWT claims like `sub` or `exp`.
 
--   The `ga4gh_visa_v1` claim is required to define a GA4GH v1 visa and
+- The `ga4gh_visa_v1` claim is required to define a GA4GH v1 visa and
     contains controlled vocabulary as defined in this document. This object
     is not the entire visa, and there are other important claims within
-    Passport Visa JWTs that MAY be specific to its visa type as well as other
-    JWT claims that are required as per this specification and the [GA4GH
-    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+    Visa JWTs that MAY be specific to its visa type as well as other
+    JWT claims that are required as per this specification and the GA4GH
+    AAI OIDC specification.
 
--   For field definitions, refer to the [Passport Visa
-    Fields](#passport-visa-fields) section of this specification.
+- For claim definitions, refer to the [Visa Object Claims](#visa-object-claims) section of this specification.
 
-#### Passport Visa Type
+#### Visa Type
 
--   The "[type](#type)" field of a [Passport Visa](#passport-visa)
+-   The "[type](#type)" claim value of a [Visa Object](#visa-object)
     that represents the semantics of the assertion and informs all parties
     involved in the authoring or handling the assertion how to interpret
-    other [Passport Visa Fields](#passport-visa-fields).
+    other [Visa Object Claims](#visa-object-claims).
     
--   For example, a Passport Visa Type of "AffiliationAndRole" per the
-    [GA4GH Standard Passport Visa Type Definitions](#ga4gh-standard-passport-visa-type-definitions)
-    specifies the semantics of the Passport Visa as well as the
-    expected encoding of the "[value](#value)" field for this purpose. 
+-   For example, a Visa Type of "AffiliationAndRole" per the
+    [Standard Visa Type Definitions](#ga4gh-standard-visa-type-definitions)
+    specifies the semantics of the Visa as well as the
+    expected encoding of the "[value](#value)" claim value for this purpose. 
 
--   In addition to GA4GH Standard Passport Visa Type Definitions, there
-    MAY also be Passport Visas with [Custom Passport Visa
-    Types](#custom-passport-visa-types).
-
-### **Actors and Services**
-
-#### Passport Visa Assertion Source
-
--   The
-    [AAI Claim Source](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-source)
-    organization of an assertion.
-    
--   The Passport Visa Assertion Source can store assertions in a
-    [Passport Visa Assertion Repository](#passport-visa-assertion-repository).
-    
--   Passport Visas encode this organization's identifier in the
-    "[source](#source)" field of a [Passport Visa 
-    Object](#passport-visa-object) for the assertions that it makes.
-
-#### Passport Visa Assertion Repository
-
--   The [AAI Claim
-    Repository](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-repository)
-    service for the assertions made by a [Passport Visa Assertion
-    Source](#passport-visa-assertion-source) organization.
-
--   A [Passport Visa Issuer](#passport-visa-issuer) service that has
-    access to the Passport Visa Assertion Repository can use these assertions
-    to mint [Passport Visas](#passport-visa).
-
--   Passport Visas are not typically stored in the repository as signed
-    tokens. Often minting of Passport Visas is done on demand from the
-    raw assertion data stored in the repository.
-
-#### Passport Visa Issuer
-
--   A compliant [GA4GH Visa
-    Issuer](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa-issuer)
-    service that signs a [Passport Visa](#passport-visa).
-
--   See [Conformance for Visa Issuers section of the GA4GH
-    AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-visa-issuers).
-
-#### Passport Broker
-
--   A service handling Passport Visas and assembling Passports while
-    conforming as a
-    [Broker](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-broker)
-    service.
-    
--   In addition to conformance requirements outlined within this specification,
-    also see [Conformance for Brokers section of the GA4GH AAI
-    specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-brokers).
-
-#### Passport Clearinghouse
-
--   A service consuming [Passports](#passport) and conforming
-    to the requirements of a [Claim
-    Clearinghouse](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-claim-clearinghouse)
-    service outlined in the [Claim Clearinghouses section of the
-    GA4GH AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-claim-clearinghouses-consuming-access-tokens-to-give-access-to-data).
+-   In addition to Standard Visa Type Definitions, there
+    MAY also be Visas with [Custom Visa Types](#custom-visa-types).
 
 ## Overview
 
-<a href="diagram-1"></a>
-![Passport Composition](/assets/img/passport_composition.svg)
+Please see the [Flow of Assertions](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#flow-of-assertions)
+section in the GA4GH AAI OIDC Profile specification for an overview of interaction among the specified parties.
 
-**Diagram 1: The composition of objects and tokens within a Passport.**
-
-In Diagram 1, the objects and tokens that make up a [Passport](#passport)
-come together. Note that the [Passport Claim](#passport-claim) is not
-encoded within the [Passport Bearer Token](#passport-bearer-token). The contents
-of this claim are fetched separately from the [Passport Broker](#passport-broker)
-by sending the Passport Bearer Token to the Passport Broker /userinfo endpoint
-(see the [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
-for more details).
-
-<a href="diagram-2"></a>
-![Basic Passport Flow of Data](/assets/img/passport_flow_of_data_basic.svg)
-
-**Diagram 2: basic flow of data from Passport Visa Assertion Source to Passport Clearinghouse.**
-
-In Diagram 2, the general flow of Passport-related data from a [Passport
-Visa Assertion Source](#passport-visa-assertion-source) organization to a
-[Passport Clearinghouse](#passport-clearinghouse) service is shown at a high
-level. The colors used in Diagram 2 correspond to the colors of the data from
-[Diagram 1](#diagram-1) to give a sense of which services contributed the data.
-Note that the assertion stored in the [Passport Visa Assertion
-Repository](#passport-visa-assertion-repository) may not be in GA4GH Passport
-standard form, in which case the [Passport Visa Issuer](#passport-visa-issuer)
-needs to ensure that the data is transformed into standard form without
-misrepresenting the original intent.
-
-Implementations may introduce clients, additional services, and protocols --
-not detailed in Diagram 2 -- to provide the mechanisms to move the data between
-the Passport Visa Assertion Source and the [Passport Broker](#passport-broker).
-These mechanisms are unspecified by the scope of this specification except that
-they MUST adhere to security and privacy best practices, such as those outlined
-in the GA4GH AAI Specification, in their handling of protocols, Passport
-assertions, tokens and related data. The flow between these components
-(represented by black arrows) MAY not be direct or conversely services shown as
-being separate MAY be combined into one service. For example, some
-implementations MAY deploy one service that handles the responsibilities of
-both the Passport Visa Issuer and the Passport Broker.
-
-However, the data protocols, procedures, and service functionality between
-the Passport Broker and the [Passport Clearinghouse](#passport-clearinghouse)
-(represented by a red arrow) MUST conform with the GA4GH AAI Specification.
-Other services, such as the Passport Visa Issuer also has conformance
-obligations within these same specifications even though the detailed
-transport mechanisms as input and output may be unspecified.
-
-The Passport Visa Assertion Repository service is the repository for the
-Passport Visa Assertion Source organization and typically does not store
-Passport Visas as signed tokens. Generally, Passport Visa Issuers use the
-repository content to mint Passport Visas on demand. Implementations MAY vary
-in this regard.
 
 ### General Requirements
 
-1.  <a name="requirement-1"></a>
-    Use of the [Passport Claim](#passport-claim) MUST conform to the
-    [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
-    The services defined in this specification that are based on services defined
-    by the GA4GH AAI Specification MUST also conform to the GA4GH AAI Specification.
-    
-    -   Passport Visa Issuer MUST conform as a GA4GH AAI Visa Issuer.
+1.  Each Visa may have a different expiry.
 
-    -   Passport Broker MUST conform as a GA4GH AAI Broker.
-
-    -   Passport Clearinghouse MUST conform as a GA4GH AAI Claim Clearinghouse.
-
-2.  <a name="requirement-2"></a> A Passport Claim consists of a list of
-    [Passport Visas](#passport-visa). These Passport Visas MUST conform to
-    [GA4GH Visas](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa)
-    as outlined by the GA4GH AAI Specification.
-
-3.  <a name="requirement-3"></a> Each Passport Visa may
-    have a different expiry.
-
-    -   This allows a token carrying the claims to be short lived (e.g. 10
-        minutes).
-
-    -   The same document can encode Passport Visas for any
-        [Passport Clearinghouse](#passport-clearinghouse) to evaluate when
-        requesting pre-authorization for a longer duration (e.g. a request can
-        establish intent to access a resource over the next 60 days, even if
-        this access ends up being revoked after 15 days for other reasons)
-        without the creator of the document requiring knowledge of the policies
-        of the Passport Clearinghouse that inspects the Passport Visas.
-
-4.  <a name="requirement-4"></a> Passport Visas MUST have an indication of
-    which organization made the Passport Visa Assertion (i.e. the
-    "[source](#source)" field), but Passport Visas do not generally indicate
+2.  Visas MUST have an indication of
+    which organization made the [Visa Assertion](#term-visa-assertion) (i.e. the
+    "[source](#source)" claim), but Visas do not generally indicate
     individual persons involved in making the assertion (i.e. who assigned/signed
     the assertion) as detailed identity information is not needed to make an
     access decision.
 
-5.  <a name="requirement-5"></a> Additional information about identity
+3.  Additional information about identity
     that is not needed to make an access decision SHOULD not be included in the
-    Passport Visas. Identity description, encoding audit details, other data
-    for non-access purposes are not the intent of these Passport Visas,
+    Visas. Identity description, encoding audit details, other data
+    for non-access purposes are not the intent of these Visas,
     and must be handled via other means beyond the scope of this specification
     should they be needed for entities and systems with sufficient authority to
     process such information.
 
-6.  <a name="requirement-6"></a> All Passport Visas within the
-    `ga4gh_passport_v1` scope eligible for release to the requestor MUST be
-    provided. Reasons for limiting exchange may include user approval,
-    contractual limitations, regulatory restrictions, or filtering Passport
-    Visas to only the subset needed for a particular purpose, etc.
+4.  The [Passport Claim](#passport-claim)
+    MUST only be present in a response when [Passport-Scoped Access Token](#term-passport-scoped-access-token) is provided.
 
-7.  <a name="requirement-7"></a> The [Passport Claim](#passport-claim)
-    MUST only be included in the Passport if the `ga4gh_passport_v1` scope is
-    requested from the [Passport Broker](#passport-broker) and other conditions
-    are met as outlined within this specification.
+5.  If the [Broker](#term-broker) is the [Visa Issuer](#term-visa-issuer),
+    it MUST set the `iss` to itself and sign such Visas with an
+    appropriate private key as described in the GA4GH AAI OIDC specification.
 
-    If the Passport Broker is the [Passport Visa Issuer](#passport-visa-issuer),
-    it MUST set the `iss` to itself and sign such Passport Visas with an
-    appropriate private key as described in the
-    [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
-
-8.  <a name="requirement-8"></a> Passport Visas are designed for machine
+6.  Visas are designed for machine
     interpretation only in order to make an access decision and is a non-goal to
     support rich user interface requirements nor do these claims fully encode the
     audit trail.
 
-9.  <a name="requirement-9"></a> A Passport Visa Object MAY
-    contain the "[conditions](#conditions)" field to restrict the Passport Visa
+7.  A [Visa Object](#visa-object) MAY
+    contain the "[conditions](#conditions)" claim to restrict the Visa
     to only be valid when the conditions are met.
 
     -   For example, an identity can have several affiliations and a
-        Passport Visa with type "ControlledAccessGrants" MAY establish a
+        Visa with type "ControlledAccessGrants" MAY establish a
         dependency on one of them being present in the Passport by using the
-        `conditions` field.
+        `conditions` claim.
 
-10. <a name="requirement-10"></a> Processing a Passport within a Passport
-    Clearinghouse MUST abide by the following:
+8. Processing a Passport within a Passport Clearinghouse MUST abide by the following:
     
     1.  Passport Clearinghouses MUST reject all requests that include Passports
-        that fail the neccessary checks of the Passport Bearer Token as described
-        for Passport-Scoped Access Tokens in the [GA4GH AAI
-        Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+        that fail the necessary checks as described in the GA4GH AAI OIDC specification.
 
-    2.  A Passport Clearinghouse MUST ignore all Passport Visas is does not
+    2.  A Passport Clearinghouse MUST ignore all Visas it does not
         need to process a particular request.
 
-    3.  Passport Clearinghouses MUST ignore Passports and Passport Visas
+    3.  Passport Clearinghouses MUST ignore Passports and Visas
         unless:
     
         1.  The Passport Clearinghouse has sufficient trust relationships
-            with all of: the [Passport Broker](#passport-broker), [Passport
-            Visa Assertion Source](#passport-visa-assertion-source),
-            [Passport Visa Issuer](#passport-visa-issuer); or
+            with all of: the [Broker](#term-broker), [Visa Assertion Source](#term-visa-assertion-source),
+            [Visa Issuer](#term-visa-issuer); or
 
         2.  The Passport Clearinghouse can rely on a trusted service that
-            provides sufficient trust of any of the Passport Broker,
-            Passport Visa Assertion Source and/or Passport Visa Issuer
+            provides sufficient trust of any of the Broker,
+            Visa Assertion Source and/or Visa Issuer
             such that the Passport Clearinghouse can establish trust of all
             three such parties.
 
-    4.  When combining Passport Visas from multiple [Passport Visa
-        Identities](#passport-visa-identity) for the purposes of evaluating
+    4.  When combining Visas with multiple [Visa Identities](#visa-identity) for the purposes of evaluating
         authorization, a Passport Clearinghouse MUST check the
-        [LinkedIdentities](#linkedidentities) claims by trusted issuers
-        and ensure that trusted sources have asserted that these Passport
+        [LinkedIdentities](#linkedidentities) Visas by trusted issuers
+        and ensure that trusted sources have asserted that these
         Visa Identities represent the same end user.
 
 ### Support for User Interfaces
@@ -428,13 +210,9 @@ the purpose of supporting user interfaces.
 
 ## Passport Claim Format
 
-The [Passport Claim](#passport-claim) name maps to an array of
-[Passport Visas](#passport-visa) which are encoded as
-[GA4GH Visas](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa)
-within a Passport Claim.
+The [Passport Claim](#passport-claim) name maps to an array of [Visas](#term-visa). 
 
-Non-normative example of a set of Passport Visas, encoded as Visa
-JWS Compact Serialization strings:
+Non-normative example of a set of Visas, encoded as JWS Compact Serialization strings:
 
 ```
 {
@@ -448,33 +226,33 @@ JWS Compact Serialization strings:
 For a more reader-friendly example, see the [Example Passport
 Claim](#example-passport-claim) section of the specification.
 
-### Passport Visa Requirements
+### Visa Requirements
 
--   Passport Visas MUST conform to one of the
+-   Visas MUST conform to one of the
     [GA4GH AAI Specification Visa formats](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#visa-issued-by-visa-issuer)
     as JWS Compact Serialization strings as defined by [RFC7515 section
     7.1](https://tools.ietf.org/html/rfc7515#section-7.1).
 
--   Passport Visa Issuers, Passport Brokers, and Passport Clearinghouses
+-   Visa Issuers, Brokers, and Passport Clearinghouses
     MUST conform to the
     [GA4GH AAI Specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md)
-    requirements for Visas in their use of Passport Visas.
+    requirements for Visas in their use of Visas.
     
 -   Validation, as outlined elsewhere in this specification and the
-    GA4GH AAI Specification, MUST be performed before Passport Visas are
+    GA4GH AAI Specification, MUST be performed before Visas are
     used for identity or authorization.
 
-### Passport Visa Format
+## Visa Format
 
-Passport Visas are JWS Compact Serialization strings of the following
-form when represented as JSON:
+Visas are signed JWTs encoded into strings using JWS Compact Serialization.  
+When decoded, their structure is:
 
 ```
 {
-  "typ": "JWT",
-  "alg": "RS256",
-  ["jku": "<JKS-URL>",]
-  "kid": "<key-identifier>"
+  "typ": "vnd.ga4gh.visa+jwt | at+jwt | JWT",
+  "alg": "<signing-algorithm>",
+  ["jku": "<json-web-keys-set-URL>",]
+  "kid": "<signing-key-identifier>"
 }.
 {
   "iss": "<issuer-URL>",
@@ -484,7 +262,7 @@ form when represented as JSON:
   "iat": <seconds-since-epoch>,
   "exp": <seconds-since-epoch>,
   "ga4gh_visa_v1": {
-    "type": "<passport-visa-type>",
+    "type": "<visa-type>",
     "asserted": <seconds-since-epoch>,
     "value": "<value-string>",
     "source": "<source-URL>",
@@ -493,23 +271,46 @@ form when represented as JSON:
   }
 }.<signature>
 ```
-
-Where fields within the `ga4gh_visa_v1` [Passport Visa
-Object](#passport-visa-object) are as described in the [Passport Visa
-Fields](#passport-visa-fields) section of this specification.
+The standard JWT payload claims `iss`, `sub`, `iat`, `exp` are all REQUIRED.
 
 One of `scope` or `jku` MUST be present as described in
 [Conformance for Visa Issuers](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#conformance-for-visa-issuers)
-within the [AAI specification](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md).
+within the AAI specification.
+
+Claims within the `ga4gh_visa_v1` [Visa Object](#visa-object) are as described
+in the [Visa Object Claims](#visa-object-claims) section of this specification.
+
+#### "**typ**"
+
+- OPTIONAL. The value of the `typ` header claim is RECOMMENDED to be `vnd.ga4gh.visa+jwt`
+  for [Visa Document Token Format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#visa-document-token-format)
+  visas. The value `JWT` marking  general JWTs MAY also be used.
+- For [Visa Access Token Format](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#visa-access-token-format)
+  visas the value is unspecified, but it would likely be `at+jwt` as required by [section 2.1 of RFC 9068](https://datatracker.ietf.org/doc/html/rfc9068#section-2.1)
+  for JWT access tokens.
+- The `typ` header claim is specified by [section 5.1 of JWT RFC](https://datatracker.ietf.org/doc/html/rfc7519#section-5.1)
+  to contain media type of the JWT for disambiguation.
+  The full recommended media type for GA4GH Visas is `application/vnd.ga4gh.visa+jwt` where the subtype consist of
+  the "vendor tree" prefix `vnd`, the "producer name" `ga4gh`, and the "product designation" `visa`
+  followed by the `+jwt` structured syntax suffix (specified in [section 3.2](https://datatracker.ietf.org/doc/html/rfc6838#section-3.2)
+  and [section 4.2.8  of RFC 6838](https://datatracker.ietf.org/doc/html/rfc6838#section-4.2.8)).
+  Then [section 4.1.9 of JWS RFC](https://www.rfc-editor.org/rfc/rfc7515.html#section-4.1.9) recommends to omit the prefix
+  `application/` to keep messages compact.
+
+#### "**alg**"
+
+- REQUIRED.The section [Signing Algorithms](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#signing-algorithms)
+in the AAI specification lists possible algorithms used in the `alg` header claim.
+
 
 #### "**exp**"
 
 -   REQUIRED. Generally, it is seconds since unix epoch of when the
-    [Passport Visa Assertion Source](#passport-visa-assertion-source)
-    requires such a claim to be no longer valid. A Passport Visa
-    Assertion Source MAY choose to make a claim very long lived.
-    However, a [Passport Visa Issuer](#passport-visa-issuer) MAY
-    choose an earlier timestamp in order to limit the claim’s duration
+    [Visa Assertion Source](#term-visa-assertion-source)
+    requires such an assertion to be no longer valid. A Visa
+    Assertion Source MAY choose to make an assertion very long lived.
+    However, a [Visa Issuer](#term-visa-issuer) MAY
+    choose an earlier timestamp in order to limit the assertion’s duration
     within downstream Passport Clearinghouses.
 
 -   Access is NOT necessarily removed by the `exp` timestamp. Instead,
@@ -518,84 +319,80 @@ within the [AAI specification](https://github.com/ga4gh/data-security/blob/maste
     commence anytime shortly after this cut-off period.
 
 -   Its use by a Passport Clearinghouse is described in the
-    [Passport Visa Expiry](#passport-visa-expiry) section and
+    [Visa Expiry](#visa-expiry) section and
     [Token Revocation](#token-revocation) section.
 
-## Passport Visa Fields
+## Visa Object Claims
 
-Although standard fields within a [Passport Visa Object](#passport-visa-object)
-are defined in this section, other fields MAY exist within the object
+Although standard claims within a [Visa Object](#visa-object)
+are defined in this section, other claims MAY exist within the object
 and should be ignored by any Passport Clearinghouse that is not familiar
-with the use of such fields. Field names are reserved for definition by
+with the use of such claims. Claim names are reserved for definition by
 GA4GH (or a body it elects).
 
 #### "**type**"
 
--   REQUIRED. A [Passport Visa Type](#passport-visa-type) string that is
-    either a [GA4GH Standard Passport Visa Type
-    Definition](#ga4gh-standard-passport-visa-type-definition) name, or a
-    [Custom Passport Visa Type](#custom-passport-visa-types) name.
+-   REQUIRED. A [Visa Type](#visa-type) string that is
+    either a [Standard Visa Type](#ga4gh-standard-visa-type-definitions) name, or a
+    [Custom Visa Type](#custom-visa-types) name.
 
 #### "**asserted**"
 
--   REQUIRED. Seconds since unix epoch that represents when the [Passport
-    Visa Assertion Source](#passport-visa-assertion-source) made the claim.
+- REQUIRED. Seconds since unix epoch that represents when the
+    [Visa Assertion Source](#term-visa-assertion-source) made the claim.
     
--   Note that the `iat` JWT claim on the Passport Visa reflects the timestamp
-    of when the Passport Visa was minted whereas the `asserted` field 
-    reflects when the assertion source data was last added or updated in the
-    [Passport Visa Assertion Repository](#passport-visa-assertion-repository).
+- Note that the standard `iat` JWT claim on the Visa reflects the timestamp
+    of when the Visa was minted whereas the `asserted` claim 
+    reflects when the [Visa Assertion Source](#term-visa-assertion-source) made the assertion.
 
--   `asserted` MAY be used by a Passport Clearinghouse as described in the
-    [Passport Visa Expiry](#passport-visa-expiry) section.
+- `asserted` MAY be used by a Passport Clearinghouse as described in the
+    [Visa Expiry](#visa-expiry) section.
 
--   If a Passport Visa Assertion Repository does not include enough
-    information to construct an `asserted` timestamp, a [Passport Visa
-    Issuer](#passport-visa-issuer) MAY use a recent timestamp (for
-    example, the current timestamp) if the Passport Visa Assertion Repository
-    is kept up to date such that the Passport Visa Issuer can ensure that
-    the claim is valid at or near the time of minting the Passport Visa.
-    However, generally it is RECOMMENDED to have the Passport
-    Visa Assertion Repository provide more accurate `asserted` information.
+- If a Visa Assertion repository does not include enough
+    information to construct an `asserted` timestamp, a [Visa Issuer](#term-visa-issuer) MAY use a recent timestamp (for
+    example, the current timestamp) if the Visa Assertion repository
+    is kept up to date such that the Visa Issuer can ensure that
+    the assertion is valid at or near the time of minting the Visa.
+    However, generally it is RECOMMENDED to have the
+    Visa Assertion repository provide more accurate `asserted` information.
 
 #### "**value**"
 
--   REQUIRED. A string that represents any of the scope, process, identifier and
-    version of the assertion. The format of the string can vary by the [Passport
-    Visa Type](#passport-visa-type).
+- REQUIRED. A string that represents any of the scope, process, identifier and
+    version of the assertion. The format of the string can vary by the
+    [Visa Type](#visa-type).
 
--   For example, `value` =
-    "<https://doi.org/10.1038/s41431-018-0219-y>" when `type` =
-    "ResearcherStatus" represents a version of Registered Access Bona Fide
+- For example, `value: "https://doi.org/10.1038/s41431-018-0219-y"` when `type: "ResearcherStatus"` 
+    represents a version of Registered Access Bona Fide
     researcher status. Note that Registered Access requires more than one
-    [Passport Visa](#passport-visa) as outlined in the [Registered
+    [Visa](#passport-visa) as outlined in the [Registered
     Access](#registered-access) section.
 
--   For the purposes of enforcing its policies for access, a Passport
-    Clearinghouse evaluating the `value` field MUST:
+- For the purposes of enforcing its policies for access, a Passport
+    Clearinghouse evaluating the `value` claim MUST:
     
-    -   Validate URL strings as per the [URL Field](#url-fields)
-        requirements if the Passport Visa Type definition indicates the value
-        is a URL (as indicated by the `type` field).
+    -   Validate URL strings as per the [URL Claim](#url-claims)
+        requirements if the Visa Type definition indicates the value
+        is a URL (as indicated by the `type` claim).
     
-    -   Value field strings MUST be full string case-sensitive matches
-        unless the Passport Visa Type defines a safe and reliable format for
+    -   Value strings MUST be full string case-sensitive matches
+        unless the Visa Type defines a safe and reliable format for
         partitioning the value into substrings and matching on the various
         substrings. For example, the standard
-        [AffiliationAndRole](#affiliationandrole) Passport Visa Type can be
+        [AffiliationAndRole](#affiliationandrole) Visa Type can be
         reliably partitioned by splitting the string at the first “@” sign if such
         exists, or otherwise producing an error (i.e. denying permission).
 
 #### "**source**"
 
--   REQUIRED. A [URL Field](#url-fields) that provides at a minimum the
+-   REQUIRED. A [URL Claim](#url-claims) that provides at a minimum the
     organization that made the assertion. If there is no organization
-    making the assertion, the "source" MUST be set to
-    "https://no.organization".
+    making the assertion, the `source` claim value MUST be set to
+    "https\://no.organization".
 
 -   For complex organizations that may require more specific information
-    regarding which part of the organization made the assertion, this field MAY
-    also may encode some substructure to the organization that represents the
+    regarding which part of the organization made the assertion, this claim MAY
+    also encode some substructure to the organization that represents the
     origin of the authority of the assertion. When this approach is chosen, then:
 
     -   The additional substructure MUST only encode the sub-organization or
@@ -609,39 +406,39 @@ GA4GH (or a body it elects).
 
     -   Some organizations MAY wish to attribute the `source` to a particular
         Data Access Committee (DAC), especially for
-        [ControlledAccessGrants](#controlledaccessgrants) Passport Visa Types.
+        [ControlledAccessGrants](#controlledaccessgrants) Visa Types.
         For example:
         
-        `source` = "https://www.ebi.ac.uk/ega/dacs/EGAC00000000001"
+        `source: "https://www.ebi.ac.uk/ega/dacs/EGAC00000000001"`
         
         could represent one particular logical "DAC" organization as referred
         to by the EBI organization, and could be maintained by the EBI as a
-        permanent identitifer for this DAC.
+        permanent identifier for this DAC.
 
 #### "**conditions**"
 
--   OPTIONAL. A set of conditions on an [Passport Visa
-    Object](#passport-visa-object) indicates that the Passport Visa is
-    only valid if the clauses of the conditions match other Passport Visas
-    elsewhere in the [Passport](#passport) and such content is both valid
-    (e.g. hasn’t expired; signature of embedded token has been verified against
+-   OPTIONAL. A set of conditions on a
+    [Visa Object](#visa-object) indicates that the Visa is
+    only valid if the clauses of the conditions match other Visas
+    elsewhere in the [Passport](#term-passport) and such content is both valid
+    (e.g. hasn’t expired; signature of Visa has been verified against
     the public key; etc.) and if such content is accepted by the Passport
-    Clearinghouse (e.g. the issuer is trusted; the `source` field meets any
+    Clearinghouse (e.g. the issuer is trusted; the `source` claim meets any
     policy criteria that has been established, etc.).
 
 -   A Passport Clearinghouse MUST always check for the presence of
-    the `conditions` field and if present it MUST only accept the Passport
+    the `conditions` claim and if present it MUST only accept the
     Visa if it can confirm that the conditions have been met.
 
 -   Although it is RECOMMENDED to always implement full condition checking
-    capabilities as described in this section, if a Claim Clearinghouse will be
+    capabilities as described in this section, if a Passport Clearinghouse will be
     deployed for a more limited purpose where it is not expected to ever receive
-    Passport Visas with conditions, then such a Claim Clearinghouse MAY choose to
+    Visas with conditions, then such a Passport Clearinghouse MAY choose to
     not implement full condition checking. However, even in this case it MUST
-    still check for the presence of the `conditions` field on Passport Visa
-    Objects and reject (ignore) any Passport Visas that contain a non-empty
-    `conditions` field value. Likewise if not all condition matching algorithms
-    are implemented, it MUST reject any Passport Visas that contain patterns
+    still check for the presence of the `conditions` claim on Visa
+    Objects and reject (ignore) any Visas that contain a non-empty
+    `conditions` claim value. Likewise if not all condition matching algorithms
+    are implemented, it MUST reject any Visas that contain patterns
     that are not supported.
 
 -   Format:
@@ -650,9 +447,9 @@ GA4GH (or a body it elects).
     "conditions": [
       [
         { // Condition clause 1
-          "type": "<passport-visa-type>",
-          "<passport-visa-object-field1>": "<match-type>:<match-value>",
-          "<passport-visa-object-field2>": "<match-type>:<match-value>",
+          "type": "<visa-type>",
+          "<visa-object-claim-name-1>": "<match-type>:<match-value>",
+          "<visa-object-claim-name-2>": "<match-type>:<match-value>",
           ...
         }, // AND
         { // Condition clause 2
@@ -661,8 +458,8 @@ GA4GH (or a body it elects).
       ], // OR
       [
         { // Condition clause 3
-          "type": "<passport-visa-type>",
-          "<passport-visa-object-field>": "<match-type>:<match-value>",
+          "type": "<visa-type>",
+          "<visa-object-claim-name>": "<match-type>:<match-value>",
           ...
         }
       ],
@@ -678,12 +475,12 @@ GA4GH (or a body it elects).
     -   The inner level list is a set of AND clauses that contain "Condition
         Clauses"
 
-    -   A Condition Clause MUST specify a "type" field with a value as a
-        Passport Visa Type plus it MUST include at least one other field with a
-        name that matches a valid Passport Visa Object field name.
+    -   A Condition Clause MUST specify a "type" claim with a value as a
+        Visa Type plus it MUST include at least one other claim with a
+        name that matches a valid Visa Object claim name.
       
-    -   The values of Condition Clause fields MUST have a string prefix followed
-        by a colon and then string suffix, except for "type" where it MUST be
+    -   The values of Condition Clause claims MUST have a string prefix followed
+        by a colon and then string suffix, except for `type` where it MUST be
         assumed to be "const" and is not specified.
         
         -   If prefix is "const", then suffix MUST use case sensitive full string
@@ -694,18 +491,18 @@ GA4GH (or a body it elects).
 
         -   If prefix is "split_pattern", then the full suffix MUST use full
             string [Pattern Matching](#pattern-matching) on each full
-            substring from splitting the cooresponding Passport Visa Object
-            field value that is being compared by the ";" character. If any one
-            full substring matches, then the Condition Clause field has found a
-            match. "split_pattern" SHOULD only be used on fields where the
-            Passport Visa Type has been specified in a format that makes splitting
+            substring from splitting the corresponding Visa Object
+            claim value that is being compared by the ";" character. If any one
+            full substring matches, then the Condition Clause claim has found a
+            match. "split_pattern" SHOULD only be used on claims where the
+            Visa Type has been specified in a format that makes splitting
             on this character to be reliable, such as URI-encoded substrings with
             semicolon separators (see [LinkedIdentities](#linkedidentities) as an
             example).
             
-            -   For example: a Condition Clause field value of
-                "split_pattern:123,https:%2F%2Fexample?.org" will match a Passport
-                Visa Object field value of
+            -   For example: a Condition Clause claim value of
+                "split_pattern:123,https:%2F%2Fexample?.org" will match a 
+                Visa Object claim value of
                 "001,https::%2F%2Fexample1.org;123,https::%2F%2Fexample2.org;456,https::%2F%2Fexample3.org"
                 because this comparison value will be split into:
                 ```
@@ -722,36 +519,36 @@ GA4GH (or a body it elects).
         -   If prefix is unknown or unsupported, then the Condition Clause must
             fail to match.
 
--   Condition Clause fields are restricted to only [Passport Visa Field
-    names](#passport-visa-fields) (e.g. `value`, `source`, etc.) with string value
+-   Condition Clause claims are restricted to only [Visa Object Claims](#visa-object-claims)
+    (e.g. `value`, `source`, etc.) with string value
     definitions.
 
     -   It MUST NOT include `conditions` (i.e. a condition cannot be placed on
         another condition)
 
-    -   It MUST NOT contain a timestamp field such as `asserted`.
+    -   It MUST NOT contain a timestamp claim such as `asserted`.
 
 -   The Passport Clearinghouse MUST verify that for each Condition Clause
-    present, there exists a valid single corresponding [Passport Visa
-    Object](#passport-visa-object) such that:
+    present, there exists a valid single corresponding
+    [Visa Object](#visa-object) such that:
 
     -   Checking the correctness of the Condition Clause MUST be performed first.
-        For example, a `type` field MUST be present.
+        For example, a `type` claim MUST be present.
 
-    -   Ignore Passport Visa Objects that have the `conditions` field present.
+    -   Ignore Visa Objects that have the `conditions` claim present.
         This will avoid deep nesting of condition evaluation (i.e. avoid condition
         loops, stack overflows, etc).
 
-    -   A Condition Clause field matches when the `<match-type>` algorithm
-        matches a corresponding Passport Visa Object’s field in the Passport.
+    -   A Condition Clause claim matches when the `<match-type>` algorithm
+        matches a corresponding Visa Object’s claim in the Passport.
 
-    -   [Passport Visa Fields](#passport-visa-fields) that are not specified
+    -   [Visa Object Claims](#visa-object-claims) that are not specified
         in the Condition Clause are not required to match (i.e. any value will be
-        accepted within that field, including if the field is not present in the
-        Passport Visa Object).
+        accepted within that claim, including if the claim is not present in the
+        Visa Object).
 
-    -   All Condition Clause fields that are specified within one Condition
-        Clause MUST match the same Passport Visa Object in the Passport.
+    -   All Condition Clause claims that are specified within one Condition
+        Clause MUST match the same Visa Object in the Passport.
 
 -   Non-normative example:
 
@@ -779,10 +576,10 @@ GA4GH (or a body it elects).
     ]
     ```
 
-    Would match a corresponding AffiliationAndRole claim within the same
-    Passport Visa Object that has **any** of the following:
+    Would match a corresponding AffiliationAndRole assertion within the same
+    Visa Object that has **any** of the following:
 
-    -   On "Passport Visa match 1":
+    -   On "Visa match 1":
     
         -   `type` = "AffilationAndRole"; AND
 
@@ -790,13 +587,13 @@ GA4GH (or a body it elects).
 
         -   `by` = "so"
         
-        AND on any other Passport Visa as well as checking "Passport Visa match 1":
+        AND on any other Visa as well as checking "Visa match 1":
         
         -   `type` = "ResearcherStatus"; AND
 
         -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
 
-    -   OR, alternative acceptance is matching just one Passport Visa:
+    -   OR, alternative acceptance is matching just one Visa:
 
         -   `type` = "AffilationAndRole"; AND
 
@@ -838,20 +635,20 @@ GA4GH (or a body it elects).
 -   OPTIONAL. The level or type of authority within the "source" organization
     of the assertion.
 
--   A Passport Clearinghouse MAY use this field as part of an authorization
+-   A Passport Clearinghouse MAY use this claim as part of an authorization
     decision based on the policies that it enforces.
 
--   Fixed vocabulary values for this field are:
+-   Fixed vocabulary values for this claim are:
 
-    -   **self**: The Pasport Visa Identity for which the assertion is being made
+    -   **self**: The Visa Identity for which the assertion is being made
         and the person who made the assertion is the same person.
 
     -   **peer**: A person at the `source` organization has made this assertion on
-        behalf of the Passport Visa Identity's person, and the person who is making
-        the assertion has the same Passport Visa Type and `value` in that `source`
-        organization. The `source` field represents the peer’s
+        behalf of the Visa Identity's person, and the person who is making
+        the assertion has the same Visa Type and `value` in that `source`
+        organization. The `source` claim represents the peer’s
         organization that is making the assertion, which is not necessarily
-        the same organization as the Passport Visa Identity's organization.
+        the same organization as the Visa Identity's organization.
 
     -   **system**: The `source` organization’s information system has made the
         assertion based on system data or metadata that it stores.
@@ -859,21 +656,21 @@ GA4GH (or a body it elects).
     -   **so**: The person (also known as "signing official") making the assertion
         within the `source` organization possesses direct authority (as part of
         their formal duties) to bind the organization to their assertion that the
-        Passport Visa Identity, did possess such authority at the time the
+        Visa Identity did possess such authority at the time the
         assertion was made.
 
     -   **dac**: A Data Access Committee or other authority that is responsible
-        as a grantee decision-maker for the given `value` and `source` field
+        as a grantee decision-maker for the given `value` and `source` claims
         pair.
 
--   If this field is not provided, then none of the above values can be assumed
+-   If this claim is not provided, then none of the above values can be assumed
     as the level or type of authority and the authority MUST be assumed to be
     "unknown". Any policy expecting a specific value as per the list above MUST
     fail to accept an "unknown" value.
 
-### URL Fields
+### URL Claims
 
-A [Passport Visa Field](#passport-visa-fields) that is defined as being of URL
+A [Visa Object Claim](#visa-object-claims) that is defined as being of URL
 format (see [RFC3986 section
 1.1.3](https://tools.ietf.org/html/rfc3986?#section-1.1.3)) with the following
 limitations:
@@ -890,7 +687,7 @@ limitations:
         the "http" scheme.
 
     -   When the URL is being used to represent an organization or a well defined
-        child organization within a "[source](#source)" field, it is RECOMMENDED
+        child organization within a "[source](#source)" claim, it is RECOMMENDED
         to use a URL as a persistent organizational ontology identifier, whether
         managed directly or by a third-party service such as
         [GRID](https://grid.ac/institutes) when reasonable to do so.
@@ -904,15 +701,14 @@ limitations:
 5.  URLs SHOULD resolve to a human readable document for a policy maker to
     reason about.
 
-## GA4GH Standard Passport Visa Type Definitions
+## GA4GH Standard Visa Type Definitions
 
-Note: in addition to these GA4GH standard Passport Visa Types, there is also
-the ability to for a Passport Visa Issuer to encode [Custom Passport Visa
-Types](#custom-passport-visa-types).
+Note: in addition to these GA4GH standard Visa Types, there is also
+the ability to for a Visa Issuer to encode [Custom Visa Types](#custom-visa-types).
 
 ### AffiliationAndRole
 
--   The Passport Visa Identity’s role within the identity’s affiliated institution
+-   The [Visa Identity](#visa-identity)’s role within the identity’s affiliated institution
     as specified by one of the following:
 
     -   [eduPersonScopedAffiliation](http://software.internet2.edu/eduperson/internet2-mace-dir-eduperson-201602.html#eduPersonScopedAffiliation)
@@ -928,7 +724,7 @@ Types](#custom-passport-visa-types).
             to "someone in education that works with students".
 
     -   A custom role that includes a `namespace` prefix followed by a dot (".")
-        where implementers introducing a new custom claim role MUST coordinate
+        where implementers introducing a new custom role MUST coordinate
         with GA4GH (or a body it elects) to align custom role use cases in order
         to maximize interoperability and avoid fragmentation across
         implementations.
@@ -951,68 +747,68 @@ Types](#custom-passport-visa-types).
 
 ### AcceptedTermsAndPolicies
 
--   The [Passport Visa Identity](#passport-visa-identity) or the
+- The [Visa Identity](#visa-identity) or the
     "[source](#source)" organization has acknowledged the specific terms,
     policies, and conditions (or meet particular criteria) as indicated by the
-    `value` field.
+    `value` claim.
     
--   The `value` field conforms to [URL Field](#url-fields) format.
+- The `value` claim value conforms to [URL Claim](#url-claims) format.
 
--   The URL SHOULD resolve to a public-facing, human readable web page that
+- The URL SHOULD resolve to a public-facing, human readable web page that
     describe the terms and policies.
 
--   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
+- Example `value: "https://doi.org/10.1038/s41431-018-0219-y"`
     acknowledges ethics compliance for a particular version of [Registered
-    Access](#registered-access). Note that more [Passport
-    Visas](#passport-visa) are needed to meet the requirements for Registered
+    Access](#registered-access). Note that more
+    [Visas](#term-visa) are needed to meet the requirements for Registered
     Access status.
 
--   MUST include the "[by](#by)" field.
+- MUST include the "[by](#by)" claim.
 
 ### ResearcherStatus
 
 -   The person has been acknowledged to be a researcher of a particular type or
     standard.
 
--   The `value` field conforms to [URL Field](#url-fields) format, and it
+-   The `value` claim conforms to [URL Claim](#url-claims) format, and it
     indicates the minimum standard and/or type of researcher that describes
-    the person represented by the given Passport Visa Identity.
+    the person represented by the given [Visa Identity](#visa-identity).
 
 -   The URL SHOULD resolve to a human readable web page that describes the
     process that has been followed and the qualifications this person has met.
 
--   Example `value`: "<https://doi.org/10.1038/s41431-018-0219-y>"
+-   Example `value: "https://doi.org/10.1038/s41431-018-0219-y"`
     acknowledges a particular version of the registration process as needed
     for [Registered Access](#registered-access) Bona Fide researcher
-    status. Note that more [Passport Visas](#passport-visa) are needed to meet
+    status. Note that more [Visas](#term-visa) are needed to meet
     the requirements for Registered Access status.
 
 ### ControlledAccessGrants
 
 -   A dataset or other object for which controlled access has been granted to
-    this [Passport Visa Identity](#passport-visa-identity).
+    this [Visa Identity](#visa-identity).
     
--   The `value` field conforms to [URL Field](#url-fields) format.
+-   The `value` claim conforms to [URL Claim](#url-claims) format.
 
--   The `source` field contains the access grantee organization.
+-   The `source` claim contains the access grantee organization.
 
--   MUST include the "[by](#by)" field.
+-   MUST include the "[by](#by)" claim.
 
 ### LinkedIdentities
 
--   The identity as indicated by the {"sub", "iss"} pair (aka "[Passport Visa
-    Identity](#passport-visa-identity)") of the [Passport
-    Visa](#passport-visa) is the same as the identity or identities listed
-    in the "[value](#value)" field.
+-   The identity as indicated by the {"sub", "iss"} pair (aka 
+    [Visa Identity](#visa-identity)) of the 
+    [Visa](#term-visa) is the same as the identity or identities listed
+    in the "[value](#value)" claim.
 
--   The "[value](#value)" field format is a semicolon-delimited list of
+-   The "[value](#value)" claim format is a semicolon-delimited list of
     "&lt;uri-encoded-sub>,&lt;uri-encoded-iss>" entries with no added whitespace
     between entries.
   
-    -   The "sub" and "iss" that are used to encode the "value" field do
-        not need to conform to [URL Field](#url-fields)
-        requirements since they must match the corresponding Passport Visa
-        "sub" and "iss" fields that may be issued.
+    -   The "sub" and "iss" that are used to encode the "value" claim do
+        not need to conform to [URL Claim](#url-claims)
+        requirements since they must match the corresponding Visa
+        "sub" and "iss" claims that may be issued.
         
     -   By URI encoding ([RFC 3986](https://tools.ietf.org/html/rfc3986)) the
         "iss", special characters (such as "," and ";") are encoded within the URL
@@ -1021,22 +817,22 @@ Types](#custom-passport-visa-types).
     -   Example:
         "123456,https%3A%2F%2Fexample.org%2Fa%7Cb%2Cc;7890,https%3A%2F%2Fexample2.org".
 
--   The "[source](#source)" field refers to the [Passport Visa Assertion
-    Source](#passport-visa-assertion-source) that is making the assertion. This is
-    typically the same organization as the [Passport Visa
-    Issuer](#passport-visa-issuer) `iss` that signs the Passport Visa, but the
-    "source" MAY also refer to another Passport Visa Assertion Source depending
+-   The "[source](#source)" claim refers to the [Visa Assertion
+    Source](#term-visa-assertion-source) that is making the assertion. This is
+    typically the same organization as the [Visa
+    Issuer](#term-visa-issuer) (`iss`) that signs the Visa, but the
+    `source` MAY also refer to another Visa Assertion Source depending
     on which organization collected the information.
 
--   As a non-normative example, if a policy needs 3 Passport Visas and
-    there are three Passport Visas that meet the criteria on one Passport
+-   As a non-normative example, if a policy needs 3 Visas and
+    there are three Visas that meet the criteria on one Passport
     but they use 3 different `sub` values ("1234", "567", "890123"), then
     **any** of the following, if from a trusted issuers and sources, may
-    allow these Passport Visas to be combined (shown with JSON payload only
+    allow these Visas to be combined (shown with JSON payload only
     and without the REQUIRED URI-encoding in order to improve readability of
     the example).
     
-    1. One Passport Visa that links 3 Passport Visa Identities together.
+    1. One Visa that links 3 Visa Identities together.
     
        ```
        {
@@ -1053,7 +849,7 @@ Types](#custom-passport-visa-types).
     
        or
     
-    2. One Passport Visa that links a superset of Passport Visa
+    2. One Visa that links a superset of Visa
        Identities together.
     
        ```
@@ -1072,8 +868,8 @@ Types](#custom-passport-visa-types).
     
        or
     
-    3. Multiple Passport Visas that chain together a set or superset
-       of Passport Visa Identities.
+    3. Multiple Visas that chain together a set or superset
+       of Visa Identities.
     
        ```
        {
@@ -1098,19 +894,19 @@ Types](#custom-passport-visa-types).
        }
        ```
 
-## Custom Passport Visa Types
+## Custom Visa Types
 
 -   In addition to the
-    [GA4GH Standard Passport Visa Type Definitions](#ga4gh-standard-passport-visa-type-definitions),
-    Passport Visas MAY be added using custom `type` names so long as the
-    encoding of these Passport Visas will abide by the requirements described
+    [GA4GH Standard Visa Type Definitions](#ga4gh-standard-visa-type-definitions),
+    Visas MAY be added using custom `type` names so long as the
+    encoding of these Visas will abide by the requirements described
     elsewhere in this specification.
 
--   Custom Passport Visa Types MUST limit personally identifiable information
+-   Custom Visa Types MUST limit personally identifiable information
     to only that which is necessary to provide authorization.
 
 -   The custom `type` name MUST follow the format prescribed in the
-    [URL Fields](#url-fields) section of the specification.
+    [URL Claims](#url-claims) section of the specification.
 
 -   Implementers introducing a new custom `type` name MUST coordinate with the
     GA4GH (or a body it elects) to align custom `type` use cases to maximize
@@ -1118,20 +914,20 @@ Types](#custom-passport-visa-types).
     
     -   To review the custom visa registry, including any visa descriptions,
         examples and links that have been provided through proposals using this
-        process, visit the [Custom Passport Visa Registry](ga4gh_custom_visas.md)
+        process, visit the [Custom Visa Type Registry](ga4gh_custom_visas.md)
         page.
 
-    -   Documentation on encoding and interpreting the claims and fields SHOULD
+    -   Documentation on encoding and interpreting the claims SHOULD
         be provided as part of the proposal and for inclusion in a public custom
-        visa registry maintained by GA4GH. This documentation SHOULD also include
+        visa type registry maintained by GA4GH. This documentation SHOULD also include
         examples and links to relevant documentation and/or open source software
         that MAY be available.
 
--   Passport Clearinghouses MUST ignore all Passport Visas containing a custom
+-   Passport Clearinghouses MUST ignore all Visas containing a custom
     `type` name that they do not support.
 
--   Non-normative example custom `type` name:
-    "https://example.org/passportVisaTypes/researcherStudies".
+-   Non-normative example custom `type` name:\
+    `type: "https://example.org/passportVisaTypes/researcherStudies"`.
 
 ## Encoding Use Cases
 
@@ -1142,41 +938,40 @@ Use cases include, but are not limited to the following:
 -   To meet the requirements of Registered Access to data as defined by
     publication <https://doi.org/10.1038/s41431-018-0219-y> as a specific
     version of Registered Access, a user needs to have **all** of the following
-    Passport Visas:
+    Visas:
 
     1.  Meeting the ethics requirements is represented by:
     
-        -   `type` = "AcceptedTermsAndPolicies"; and
+        -   `type: "AcceptedTermsAndPolicies"`; and
         
-        -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
+        -   `value: "https://doi.org/10.1038/s41431-018-0219-y"`
 
     2.  Meeting the bona fide status is represented by:
     
-        -   `type` = "ResearcherStatus"; and
+        -   `type: "ResearcherStatus"`; and
         
-        -   `value` = "<https://doi.org/10.1038/s41431-018-0219-y>"
+        -   `value: "https://doi.org/10.1038/s41431-018-0219-y"`
 
 -   If other versions of Registered Access are introduced, then the `value`
-    fields for AcceptedTermsAndPolicies as well as ResearcherStatus MAY
+    claims for AcceptedTermsAndPolicies as well as ResearcherStatus MAY
     refer to the document or publication or sections thereof to act as the
     permanent identifiers for such versions of Registered Access.
 
--   The [Passport Clearinghouse](#passport-clearinghouse) (e.g. to
+-   The [Passport Clearinghouse](#term-passport-clearinghouse) (e.g. to
     authorize a registered access beacon) needs to evaluate the
-    multiple Passport Visas listed above to ensure their values match
+    multiple Visas listed above to ensure their values match
     before granting access.
     
-    -   If combining Passport Visas from multiple [Passport Visa
-        Identities](#passport-visa-identity), the Passport
+    -   If combining Visas from multiple
+        [Visa Identities](#visa-identity), the Passport
         Clearinghouse MUST also check the
-        [LinkedIdentities](#ga4ghlinkedidentities) Passport Visas and
+        [LinkedIdentities](#linkedidentities) Visas and
         determine if combining these identities came from a trusted
-        [Passport Visa Issuer](#passport-visa-issuer).
+        [Visa Issuer](#term-visa-issuer).
 
 ### Controlled Access
 
--   Controlled Access to data utilizes the following [Passport Visa
-    Types](#passport-visa-type):
+-   Controlled Access to data utilizes the following [Visa Types](#visa-type):
 
     -   MUST utilize one or more
         [ControlledAccessGrants](#controlledaccessgrants) and/or custom
@@ -1185,26 +980,26 @@ Use cases include, but are not limited to the following:
         encoding controlled access in future revisions of the Passport
         specification.
         
-    -   MAY utilize the [conditions](#conditions) field on
+    -   MAY utilize the [conditions](#conditions) claim on
         "ControlledAccessGrants" to cause such a grant to require
-        a Passport Visa from a trusted Passport Visa Assertion Source to
+        a Visa from a trusted Visa Assertion Source to
         assert that the identity has a role within a specific organization.
         This can be achieved by using the
-        [AffiliationAndRole](#affiliationandrole) Passport Visa Type on
+        [AffiliationAndRole](#affiliationandrole) Visa Type on
         the `conditions`.
 
-    -   MAY utilize any other valid Passport Visa Type or `conditions` field
+    -   MAY utilize any other valid Visa Type or `conditions` claim
         that may be required to meet controlled access policies.
 
-## Passport Visa Expiry
+## Visa Expiry
 
 In addition to any other policy restrictions that a Passport Clearinghouse
 may enforce, Passport Clearinghouses that provide access for a given
 duration provided by the user (excluding any revocation policies) MUST
-enforce one of the following algorithm options to ensure that Passport Visa
+enforce one of the following algorithm options to ensure that Visa
 expiry is accounted for:
 
-**Option A**: use the following algorithm to determine if the Passport Visa
+**Option A**: use the following algorithm to determine if the Visa
 is valid for the entire duration of the requested duration:
 
 ```
@@ -1243,43 +1038,43 @@ Where:
         more access tokens may be minted using a corresponding refresh token if
         it has not yet been revoked.
 
-**Expiry when using multiple Passport Visas**: if multiple Passport Visas are
+**Expiry when using multiple Visas**: if multiple Visas are
 required as part of an access policy evaluation, then the expiry to be used MUST
 be the minimum expiry timestamp, as calculated by the appropriate option above,
-across all Passport Visas (`token` set) that were accepted as part of evaluating
+across all Visas (`token` set) that were accepted as part of evaluating
 the access policy.
 
 ## Token Revocation
 
 As per the [GA4GH AAI Specification on Token
 Revocation](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#token-revocation),
-the following mechanisms are available within Passport Visa:
+the following mechanisms are available within Visa:
 
-1.  Passport Visa Objects have an "[asserted](#asserted)" field to allow
+1.  Visa Objects have an "[asserted](#asserted)" claim to allow
     downstream policies to limit the life, if needed, of how long assertions
     will be accepted for use with access and refresh tokens.
 
-2.  Passport Visas have an "[exp](#exp)" field to allow Passport Brokers and
+2.  Visas have an "[exp](#exp)" claim to allow Brokers and
     Passport Clearinghouses to limit the duration of access.
 
-At a minimum, these Passport Visa Fields MUST be checked by all Passport
+At a minimum, these Visa Claims MUST be checked by all Passport
 Clearinghouses and systems MUST be in place to begin to take action to remove access
 by the expiry timestamp or shortly thereafter. Propagation of these permission
 changes may also require some reasonable delay.
 
-Systems employing Passport Visas MUST provide mechanisms to
+Systems employing Visas MUST provide mechanisms to
 limit the life of access, and specifically MUST conform to the GA4GH AAI
-Specification requirements in this regard. Systems utilizing Passport Visas MAY also
+Specification requirements in this regard. Systems utilizing Visas MAY also
 employ other mechanisms outlined in the GA4GH AAI Specification, such as [Access
 Token Polling](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#at-polling)
-if the Passport Visa is encoded as a [Visa Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa-access-token). 
+if the Visa is encoded as a [Visa Access Token](https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md#term-visa-access-token-format). 
 
 ## Example Passport Claim
 
 This non-normative example illustrates a [Passport Claim](#passport-claim)
-that has Passport Visas representing Registered Access bona fide researcher
-status along with other Passport Visas for access to specific Controlled Access
-data. The [Passport Visa Types](#passport-visa-type) for this example are:
+that has Visas representing Registered Access bona fide researcher
+status along with other Visas for access to specific Controlled Access
+data. The [Visa Types](#visa-type) for this example are:
 
 -   **AffiliationAndRole**: The person is a member of faculty at Stanford
     University as asserted by a Signing Official at Stanford.
@@ -1290,15 +1085,15 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
 
     -   In this example, assume dataset 710 does not have any
         "[conditions](#conditions)" based on the
-        AffiliationAndRole because the system that is asserting the claim has an
+        AffiliationAndRole because the system that is asserting the assertion has an
         out of band process to check the researcher’s affiliation and role and
         withdraw the dataset 710 claim automatically, hence it does not need the
-        `conditions` field to accomplish this.
+        `conditions` claim to accomplish this.
 
     -   In this example, assume that dataset 432 does not use an out of band
         mechanism to check affiliation and role, so it makes use of the
-        "[conditions](#conditions)" field mechanism to
-        enforce the affiliation and role. The dataset 432 claim is only valid if
+        "[conditions](#conditions)" claim mechanism to
+        enforce the affiliation and role. The dataset 432 assertion is only valid if
         accompanied with a valid AffiliationAndRole claim for
         "faculty\@med.stanford.edu".
 
@@ -1310,19 +1105,18 @@ data. The [Passport Visa Types](#passport-visa-type) for this example are:
     that this person is a bona fide researcher as defined by the [Registered
     Access](#registered-access) model.
 
--   **LinkedIdentities**: A Passport Broker at example3.org has provided
+-   **LinkedIdentities**: A Broker at example3.org has provided
     software functionality to allow a user to link their own accounts together.
     After the user has successfully logged into the two accounts and passed all
-    auth challenges, the Passport Broker added the
-    [LinkedIdentities](#linkedidentities) Passport Visa for those two accounts:
+    auth challenges, the Broker added the
+    [LinkedIdentities](#linkedidentities) Visa for those two accounts:
     (1) "10001" from example1.org, and (2) "abcd" from example2.org.
-    Since the Passport Broker is signing the "LinkedIdentities"
-    [Passport Visa](#passport-visa), it is acting as the [Passport Visa
-    Issuer](#passport-visa-issuer).
+    Since the Broker is signing the "LinkedIdentities"
+    [Visa](#term-visa), it is acting as the [Visa Issuer](#term-visa-issuer).
 
-Normally a Passport like this would include [Passport Visa
-Format](#passport-visa-format) entries as JWS Compact Serialization strings,
-however this example shows the result after the GA4GH Visas have been
+Normally a Passport like this would include [Visa
+Format](#visa-format) entries as JWS Compact Serialization strings,
+however this example shows the result after the Visas have been
 unencoded into JSON (and reduced to include only the payload) to be more
 reader-friendly.
 
@@ -1426,18 +1220,3 @@ reader-friendly.
     }
 ]
 ```
-
-## Specification Revision History
-
-| Version | Date       | Editor                             | Notes                                                           |
-|---------|------------|------------------------------------|-----------------------------------------------------------------|
-| 1.0.2   | 2021-07-15 | Craig Voisin                       | Update to use new AAI spec v1.0.4 terminology, fix passport definition |
-| 1.0.1   | 2020-06-26 | Craig Voisin                       |   Address comments raised by RAS pilot implementation:<br>1.  Custom visa types may be used for controlled access<br>2.  Passport Visa definition to include "JWT" more explicitly<br>3.  Passport Visa Object isn't the only place for access info<br>4.  Requirement 7 to not imply there is only one private key<br>5.  Example passport claim to not refer to NIH specifically<br>6. Add a Passport Custom Visa Type registry |
-| 1.0.0   | 2019-10-23 | Craig Voisin                       | Change version number re GA4GH Steering Committee approval      |
-| 0.9.6   | 2019-09-20 | Craig Voisin                       | New conditions field format                                     |
-| 0.9.5   | 2019-08-26 | Craig Voisin                       | Embedded Tokens, LinkedIdentities, overview, new definitions    |
-| 0.9.4   | 2019-08-12 | Craig Voisin                       | Introduce custom claim names, changes for "no organization"     |
-| 0.9.3   | 2019-08-09 | Craig Voisin                       | Updates related to introducing Embedded Passport Tokens         |
-| 0.9.2   | 2019-07-09 | Craig Voisin                       | Introduce RI Claim Object definition and use it consistently    |
-| 0.9.1   | 2019-07-08 | Craig Voisin                       | Clarify use cases, rephrase multi-value, update links           |
-| 0.9.0   | 2017-      | Craig Voisin, Mikael Linden et al. | Initial working version                                         |
