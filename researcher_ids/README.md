@@ -3,7 +3,7 @@
 ## Quick Links
 
 - [GA4GH Passport Specification](http://bit.ly/ga4gh-passport-v1)
-- [GA4GH Authentication and Authorization Infrastructure (AAI) OpenID Connect Profile](http://bit.ly/ga4gh-aai-profile)
+- [GA4GH Authentication and Authorization Infrastructure (AAI) OpenID Connect Profile](https://ga4gh.github.io/data-security/1.2-draft-main/aai-openid-connect-profile)
 - [Update Procedure](UPDATE_PROCEDURE.md) for Researcher IDs content 
 
 ## Introduction
@@ -22,7 +22,7 @@ The genomics community was therefore in need of:
 
 GA4GH Passport specification aims to support data access policies within current and evolving data access governance systems. This specification defines [Passports](http://bit.ly/ga4gh-passport-v1#passport) and [Passport Visas](http://bit.ly/ga4gh-passport-v1#passport-visa) as the standard way of communicating the data access authorizations that a user has based on either their role (e.g. researcher), affiliation, or access status. Passport Visas from trusted organizations can therefore express data access authorizations that require either a registration process (for the [Registered Access data access model](https://doi.org/10.1038/s41431-018-0219-y)) or custom data access approval (such as the Controlled Access applications used for many datasets).
 
-Data access authorization information is encoded as Passports and transmitted according to [GA4GH AAI Specification](http://bit.ly/ga4gh-aai-profile). Passports are consumed to provide access to the user in a technical environment. For example, to support Registered Access, Passports allow for the encoding and identification of users with Bona Fide Researcher Registered Access status. To simplify access to multiple data sets, multiple Passport Visas that a user has acquired to authorize dataset access may be used simultaneously.
+Data access authorization information is encoded as Passports and transmitted according to [GA4GH AAI Specification](https://ga4gh.github.io/data-security/1.2-draft-main/aai-openid-connect-profile). Passports are consumed to provide access to the user in a technical environment. For example, to support Registered Access, Passports allow for the encoding and identification of users with Bona Fide Researcher Registered Access status. To simplify access to multiple data sets, multiple Passport Visas that a user has acquired to authorize dataset access may be used simultaneously.
 
 Organizations and individuals issuing and using Passport Visas must adhere to corresponding data access and data protection policies and regulations, with respect to both the data to which Passport Visas may be used to gain access, and to the personal data of the individual to which Passport Visas apply.
 
@@ -321,7 +321,7 @@ An example Passport Visa payload:
 
 In the example above, the user has been granted access to dataset 33333 by the
 National Cancer Institute's DAC which is using dbGaP to present the claim as the
-[Broker](http://bit.ly/ga4gh-aai-profile#term-broker).
+[Broker](https://ga4gh.github.io/data-security/1.2-draft-main/aai-openid-connect-profile#term-broker).
 
 It is important to note that the token issuer ("iss") may not be the same
 organization represented by the "source" field, as shown in the example above.
@@ -460,12 +460,12 @@ one Passport from trusted sources, that Registered Access may apply to the
 researcher in question. In this case, a Passport Clearinghouse that would
 accept these Passport Visas must trust the Brokers of ELIXIR and Heidelberg
 University as well as both [Claim Source
-organizations](http://bit.ly/ga4gh-aai-profile#term-claim-source) encoded in the
+organizations](https://ga4gh.github.io/data-security/1.2-draft-main/aai-openid-connect-profile#term-claim-source) encoded in the
 "[source](http://bit.ly/ga4gh-passport-v1#source)" field (i.e. both Cambridge University
 and Heidelberg University). The "[by](http://bit.ly/ga4gh-passport-v1#by)" field must
 also be acceptable based on policies for the Passport Clearinghouse in addition to
 other validation of the tokens and fields as described in the [AAI
-specification](http://bit.ly/ga4gh-aai-profile) and the [Passport
+specification](https://ga4gh.github.io/data-security/1.2-draft-main/aai-openid-connect-profile) and the [Passport
 specification](http://bit.ly/ga4gh-passport-v1).
 
 ## Why so many expiry timestamps?
