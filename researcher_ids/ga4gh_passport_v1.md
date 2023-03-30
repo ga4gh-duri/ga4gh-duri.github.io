@@ -249,7 +249,7 @@ When decoded, their structure is:
 
 ```
 {
-  "typ": "vnd.ga4gh.visa+jwt | at+jwt | JWT",
+  ["typ": "vnd.ga4gh.visa+jwt | at+jwt | JWT",]
   "alg": "<signing-algorithm>",
   ["jku": "<json-web-keys-set-URL>",]
   "kid": "<signing-key-identifier>"
